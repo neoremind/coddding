@@ -7,7 +7,7 @@
 	<artifactId>coddding</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<name>codinglife</name>
+	<name>coddding</name>
 
 	<properties>
 		<!-- jar's version -->
@@ -163,7 +163,6 @@
 			<artifactId>javax.el-api</artifactId>
 			<version>2.2.4</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>javax.el</artifactId>
@@ -175,7 +174,7 @@
 			<artifactId>guava</artifactId>
 			<version>13.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.dyuproject.protostuff</groupId>
 			<artifactId>protostuff-runtime</artifactId>
@@ -213,13 +212,7 @@
 			<version>2.0.0</version>
 			<classifier>asl</classifier>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.4.0</version>
-		</dependency>
-
+		
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -232,6 +225,25 @@
 			<artifactId>hamcrest-library</artifactId>
 			<version>1.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.5.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit-dep</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-legacy</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

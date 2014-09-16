@@ -28,7 +28,7 @@ public class TimeServerHandler implements Runnable {
 				if (body == null) {
 					break;
 				}
-				System.out.println("The time server receive request : " + body);
+				System.out.println("The time server receive message : " + body);
 				currentTime = "GET TIME".equals(body) ? new Date(System.currentTimeMillis()).toString() : "BAD REQUEST";
 				out.println(currentTime);
 			}

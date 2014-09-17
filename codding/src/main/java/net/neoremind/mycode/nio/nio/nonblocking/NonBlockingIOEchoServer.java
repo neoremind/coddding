@@ -99,6 +99,7 @@ public class NonBlockingIOEchoServer {
 		} else if (readBytesNum < 0) {
 			key.cancel();
 			socketChannel.close();
+			System.out.println("Channel reach end, so close it");
 		} else {
 			;
 		}

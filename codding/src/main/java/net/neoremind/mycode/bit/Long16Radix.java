@@ -25,8 +25,10 @@ public class Long16Radix {
 		String hex = Long.toHexString(l);
 		System.out.println("Long.toHexString(l)：" + hex);
 		try {
-			long ll = Long.parseLong(hex, 16);
+			long ll = Long.parseLong("ffffffffffffffff", 16);
+			System.out.println(ll);
 		} catch (Exception e) {
+			//e.printStackTrace();
 		}
 		System.out.println("Long.parseLong(\"ffffffffffffffff\", 16)发生异常");
 		
@@ -47,6 +49,12 @@ public class Long16Radix {
 		byte[] bytes = longToBytes(l);
 		long res = bytesToLong(bytes);
 		System.out.println("l = 0x7fffffffffffffffL;byte[] bytes = longToBytes(l);long res = bytesToLong(bytes);的结果" + res);
+		
+		System.out.println("===========================");
+		int i = -1;
+		String ii = Integer.toHexString(i);
+		System.out.println("Long.toHexString(0xFFFFFFFF):" + Long.toHexString(0xFFFFFFFF));
+		System.out.println("Long.toHexString(i & 0xFFFFFFFFl):" + Long.toHexString(i & 0xFFFFFFFFl));
 		
 		System.out.println("===========================");
 		//java中有3个移位运算符

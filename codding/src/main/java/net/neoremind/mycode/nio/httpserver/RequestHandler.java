@@ -150,8 +150,9 @@ public class RequestHandler implements Runnable {
 						// response header byte
 						head = builder.getHeader();
 						// add to the cache
-						if (zip)
+						if (zip) {
 							file = file + GZIP;
+						}
 						cache.put(file, head, body);
 					}
 					// cache is hit
@@ -162,8 +163,9 @@ public class RequestHandler implements Runnable {
 					}
 					// data is prepared, send out to the client
 					server.send(requestData.client, head);
-					if (body != null && header.getVerb() == Verb.GET)
+					if (body != null && header.getVerb() == Verb.GET) {
 						server.send(requestData.client, body);
+					}
 				}
 			} catch (IOException e) {
 				builder.addHeader(CONTENT_LENGTH, 0);

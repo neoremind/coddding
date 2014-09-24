@@ -17,7 +17,6 @@ public class Utils {
 				is.close();
 			} catch (IOException e) {
 			}
-
 		}
 	}
 

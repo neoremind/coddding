@@ -69,6 +69,30 @@ public class Company {
 		this.establishTime = establishTime;
 	}
 
+	public Department[] getDepartmentArray() {
+		return departmentArray;
+	}
+
+	public void setDepartmentArray(Department[] departmentArray) {
+		this.departmentArray = departmentArray;
+	}
+
+	public BigInteger[] getBigInt() {
+		return bigInt;
+	}
+
+	public void setBigInt(BigInteger[] bigInt) {
+		this.bigInt = bigInt;
+	}
+
+	public Map<Company, Department> getDepartmentMap() {
+		return departmentMap;
+	}
+
+	public void setDepartmentMap(Map<Company, Department> departmentMap) {
+		this.departmentMap = departmentMap;
+	}
+
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
 		.append("id", id)

@@ -1,6 +1,7 @@
 package net.neoremind.mycode.guava;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +36,13 @@ public class PredicateTest {
 		for (Person person : nameAndOldPeople) {
 			System.out.println(person);
 		}
+		
+		
+        Predicate<CharSequence> twoDigitsPredicate = Predicates.containsPattern("\\d\\d");
+        System.out.println(twoDigitsPredicate.apply("Hello world 40"));
+        
+        Predicate<Long> elevenInCollectionPredicate = Predicates.in(Arrays.asList(11L, 22L, 33L, 44L));
+        System.out.println(elevenInCollectionPredicate.apply(11L));
 	}
 
 	private static Predicate<Person> nameContains(final String str) {

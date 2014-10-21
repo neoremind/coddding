@@ -19,7 +19,7 @@ public class JoinerTest {
 		map.put(1, "a");
 		map.put(2, "b");
 		map.put(3, "c");
-		String joinedMapStr = Joiner.on(",").withKeyValueSeparator("|").join(map);
+		String joinedMapStr = Joiner.on(",").useForNull("this is null!!").withKeyValueSeparator("|").join(map);
 		System.out.println(joinedMapStr);
 	}
 

@@ -11,12 +11,14 @@ public class HashMultiMapTest {
 		map.put(2, "k");
 		map.put(3, "x");
 		map.put(3, "y");
+		map.put(3, "ya");
 		System.out.println(map);
 		System.out.println(map.get(3));
 		System.out.println(map.get(99));
 		System.out.println(map.containsValue("x"));
 		System.out.println(map.keys());
 		System.out.println(map.keySet());
+
 	}
 
 }

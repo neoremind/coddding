@@ -42,7 +42,7 @@ public class SignedUnsignedTest {
 		System.out.println("无符号位扩展，(short)(b & 0xff)" + (short)(b & 0xff)); //255
 		
 		System.out.println("符号位扩展后提升为int，高位全部补充了1，而右边的int高位是0，自然不相等，(byte)0x90 == 0x90:" + ((byte)0x90 == 0x90)); // false
-		System.out.println("符号位扩展后提升为int，用掩码将其保留原值高位都是0，而右边的int高位是0，二者相等，(byte)0x90 == 0x90:" + (((byte)0x90 & 0xff) == 0x90)); // true
+		//System.out.println("符号位扩展后提升为int，用掩码将其保留原值高位都是0，而右边的int高位是0，二者相等，(byte)0x90 == 0x90:" + (((byte)0x90 & 0xff) == 0x90)); // true
 		
 		byte[] byteArray = new byte[4];
 		byteArray[0] = -1;

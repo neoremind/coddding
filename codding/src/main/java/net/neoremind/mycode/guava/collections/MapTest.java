@@ -22,6 +22,18 @@ public class MapTest {
 		peopleList.add(new Person("Katy", 18));
 		peopleList.add(new Person("Logon", 24));
 
+		Map<Integer, Person> mappedPerson = Maps.uniqueIndex(peopleList, new Function<Person, Integer>() {
+			public Integer apply(Person p) {
+				return p.getAge();
+			}
+		});
+
+		for (Integer age : mappedPerson.keySet()) {
+			System.out.println(age + "=>" + mappedPerson.get(age));
+		}
+		
+		System.out.println("======");
+
 		/**
 		 * Returns a capacity that is sufficient to keep the map from being resized as long as it grows no larger than
 		 * expectedSize and the load factor is >= its default (0.75).
@@ -75,7 +87,7 @@ public class MapTest {
 			}
 		});
 		System.out.println(personNameMap);
-		
+
 		Map<String, Integer> left = ImmutableMap.of("a", 1, "b", 2, "c", 3);
 		Map<String, Integer> right = ImmutableMap.of("a", 4, "b", 2, "d", 6);
 		MapDifference<String, Integer> diff = Maps.difference(left, right);

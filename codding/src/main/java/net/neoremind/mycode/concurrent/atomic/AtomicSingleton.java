@@ -32,7 +32,7 @@ public class AtomicSingleton {
 
 		for (Future<AtomicSingleton> future : futures) {
 			if (future.get() != null) {
-				System.out.println(future.get().getAtomicInteger().get());
+				System.out.println(future.get());
 			}
 		}
 		Thread.sleep(5000);
@@ -49,7 +49,7 @@ public class AtomicSingleton {
 
 	public static AtomicSingleton getInstance() {
 		AtomicSingleton atomicSingleton = atomicReference.get();
-		if (null != atomicSingleton) {
+		if (null == atomicSingleton) {
 			System.out.println("init");
 			synchronized (AtomicSingleton.class) {
 				System.out.println("heie");

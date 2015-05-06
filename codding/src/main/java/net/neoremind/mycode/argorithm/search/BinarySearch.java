@@ -18,7 +18,7 @@ public class BinarySearch {
     }
 
     /**
-     * 查找入口,没有查找到返回-1
+     * 假设数组有序，查找入口,没有查找到返回-1
      * 
      * @param arr
      * @param target

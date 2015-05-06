@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent;
+package net.neoremind.mycode.concurrent.juc.tools;
 
 import java.io.IOException;
 import java.util.Random;

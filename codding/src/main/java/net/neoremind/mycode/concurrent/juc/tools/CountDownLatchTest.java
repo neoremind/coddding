@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent;
+package net.neoremind.mycode.concurrent.juc.tools;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

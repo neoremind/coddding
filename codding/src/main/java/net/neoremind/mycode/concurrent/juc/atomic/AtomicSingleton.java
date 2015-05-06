@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent.atomic;
+package net.neoremind.mycode.concurrent.juc.atomic;
 
 import java.util.ArrayList;
 import java.util.List;

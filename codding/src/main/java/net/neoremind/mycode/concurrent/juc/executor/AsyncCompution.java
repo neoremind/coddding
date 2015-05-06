@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent;
+package net.neoremind.mycode.concurrent.juc.executor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

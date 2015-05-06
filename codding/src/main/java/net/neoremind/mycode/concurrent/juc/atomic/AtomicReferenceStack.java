@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent.atomic;
+package net.neoremind.mycode.concurrent.juc.atomic;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

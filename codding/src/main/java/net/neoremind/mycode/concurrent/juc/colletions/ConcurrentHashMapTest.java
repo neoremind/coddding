@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent;
+package net.neoremind.mycode.concurrent.juc.colletions;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

@@ -213,6 +213,12 @@
 			<classifier>asl</classifier>
 		</dependency>
 		
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.27.Final</version>
+		</dependency>
+		
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>

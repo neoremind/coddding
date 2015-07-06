@@ -29,6 +29,7 @@ import javax.activation.MimetypesFileTypeMap;
 import net.neoremind.mycode.nio.httpserver.ButterflySoftCache.CacheEntry;
 import net.neoremind.mycode.nio.httpserver.RequestHeaderHandler.Verb;
 
+@SuppressWarnings("restriction")
 public class RequestHandler implements Runnable {
 
 	private static final DateFormat formater = new SimpleDateFormat(

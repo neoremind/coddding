@@ -12,6 +12,8 @@ import java.util.Arrays;
  * The order of elements can be changed. It doesn't matter what you leave beyond the new length.
  * <p/>
  * Tips: use array and two pointers
+ *
+ * 发现元素后，思路为直接从最后的tail补一个元素上来，一个指向tail的指针索引减1。
  * 
  * @author Zhang Xu
  */

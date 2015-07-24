@@ -1,7 +1,9 @@
 package net.neoremind.mycode.argorithm.leetcode.support;
 
 import com.google.common.base.Preconditions;
+
 import net.neoremind.mycode.util.ThreadContext;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -19,34 +21,112 @@ import static org.junit.Assert.assertThat;
 public class TreeNodeHelper {
 
     public static void main(String[] args) {
-        int[] arr = new int[]{4, 2, 7, 1, 3, 6, 9};
+        int[] arr = new int[] {4, 2, 7, 1, 3, 6, 9};
         TreeNode root = init(arr);
-        String result = inOrderTraversal(root);
-        System.out.println(result);
+        String result = preorderTraversal(root);
+        System.out.println("preorder:" + result);
+        assertThat(result, is("4,2,1,3,7,6,9,"));
+        result = inorderTraversal(root);
+        System.out.println("inorder:" + result);
         assertThat(result, is("1,2,3,4,6,7,9,"));
+        result = postorderTraversal(root);
+        System.out.println("postorder:" + result);
+        assertThat(result, is("1,3,2,6,9,7,4,"));
 
-        arr = new int[]{4, 2, 7, 1, 3, 6, 9, 10, 11, 12};
+        arr = new int[] {4, 2, 7, 1, 3, 6, 9, 10, 11, 12};
         root = init(arr);
-        result = inOrderTraversal(root);
+        result = inorderTraversal(root);
         System.out.println(result);
         assertThat(result, is("10,1,11,2,12,3,4,6,7,9,"));
+    }
+
+    /**
+     * 前序遍历一棵树
+     *
+     * @param root 树根节点
+     *
+     * @return 一棵树的字符串
+     *
+     * @see #doPreorderTraversal(TreeNode)
+     */
+    public static String preorderTraversal(TreeNode root) {
+        try {
+            ThreadContext.init();
+            ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, "");
+            return doPreorderTraversal(root);
+        } finally {
+            ThreadContext.clean();
+        }
     }
 
     /**
      * 中序遍历一棵树
      *
      * @param root 树根节点
+     *
      * @return 一棵树的字符串
-     * @see #doInOrderTraversal(TreeNode)
+     *
+     * @see #doInorderTraversal(TreeNode)
      */
-    public static String inOrderTraversal(TreeNode root) {
+    public static String inorderTraversal(TreeNode root) {
         try {
             ThreadContext.init();
             ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, "");
-            return doInOrderTraversal(root);
+            return doInorderTraversal(root);
         } finally {
             ThreadContext.clean();
         }
+    }
+
+    /**
+     * 后序遍历一棵树
+     *
+     * @param root 树根节点
+     *
+     * @return 一棵树的字符串
+     *
+     * @see #doPostorderTraversal(TreeNode)
+     */
+    public static String postorderTraversal(TreeNode root) {
+        try {
+            ThreadContext.init();
+            ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, "");
+            return doPostorderTraversal(root);
+        } finally {
+            ThreadContext.clean();
+        }
+    }
+
+    /**
+     * 前序遍历一棵树
+     * <p/>
+     * 例如，一棵树为
+     * * <pre>
+     *      4
+     *    /   \
+     *   2     7
+     *  / \   / \
+     * 1   3 6   9
+     * </pre>
+     * <p/>
+     * 打印结果为
+     * <pre>
+     *     4,2,1,3,7,6,9
+     * </pre>
+     *
+     * @param root 树根节点
+     *
+     * @return 一棵树的字符串
+     */
+    private static String doPreorderTraversal(TreeNode root) {
+        if (root != null) {
+            String str = ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
+            ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, str + root.val + ",");
+            doPreorderTraversal(root.left);
+            doPreorderTraversal(root.right);
+            return ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
+        }
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -67,14 +147,47 @@ public class TreeNodeHelper {
      * </pre>
      *
      * @param root 树根节点
+     *
      * @return 一棵树的字符串
      */
-    private static String doInOrderTraversal(TreeNode root) {
+    private static String doInorderTraversal(TreeNode root) {
         if (root != null) {
-            doInOrderTraversal(root.left);
+            doInorderTraversal(root.left);
             String str = ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
             ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, str + root.val + ",");
-            doInOrderTraversal(root.right);
+            doInorderTraversal(root.right);
+            return ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
+        }
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * 后序遍历一棵树
+     * <p/>
+     * 例如，一棵树为
+     * * <pre>
+     *      4
+     *    /   \
+     *   2     7
+     *  / \   / \
+     * 1   3 6   9
+     * </pre>
+     * <p/>
+     * 打印结果为
+     * <pre>
+     *     1,3,2,6,7,9,4
+     * </pre>
+     *
+     * @param root 树根节点
+     *
+     * @return 一棵树的字符串
+     */
+    private static String doPostorderTraversal(TreeNode root) {
+        if (root != null) {
+            doPostorderTraversal(root.left);
+            doPostorderTraversal(root.right);
+            String str = ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
+            ThreadContext.putContext(THREAD_LOCAL_STRING_KEY, str + root.val + ",");
             return ThreadContext.getContext(THREAD_LOCAL_STRING_KEY);
         }
         return StringUtils.EMPTY;
@@ -84,7 +197,9 @@ public class TreeNodeHelper {
      * 初始化一棵树
      *
      * @param arr 树节点的值，按照层次排序
+     *
      * @return 树根节点
+     *
      * @see #build(Queue, int[], int)
      */
     public static TreeNode init(int[] arr) {
@@ -144,7 +259,7 @@ public class TreeNodeHelper {
     /**
      * 为打印而使用，本地线程缓存树的字面字符串，用于递归内获取使用
      *
-     * @see #inOrderTraversal(TreeNode)
+     * @see #inorderTraversal(TreeNode)
      */
     private static final String THREAD_LOCAL_STRING_KEY = "_tree_node";
 

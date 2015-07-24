@@ -60,7 +60,7 @@ public class InvertBinaryTree {
         // invert
         test.invertTree(root);
 
-        String output = TreeNodeHelper.inOrderTraversal(root);
+        String output = TreeNodeHelper.inorderTraversal(root);
         System.out.println(output);
 
         // assert result

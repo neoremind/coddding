@@ -60,7 +60,6 @@ public class ReverseLinkedList {
             head = cur;
             cur = pre.next;
         }
-
         return head;
     }
 

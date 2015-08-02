@@ -17,8 +17,8 @@
 		<jackson.version>1.9.9</jackson.version>
 
 		<!-- src's version and endcoding -->
-		<source.version>1.6</source.version>
-		<target.version>1.6</target.version>
+		<source.version>1.7</source.version>
+		<target.version>1.7</target.version>
 		<encoding>UTF-8</encoding>
 
 		<!-- resource path -->

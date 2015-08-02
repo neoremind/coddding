@@ -1,17 +1,16 @@
 package net.neoremind.mycode.nio.nio.netty.serializer;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
-
 import java.util.List;
-
-import net.neoremind.mycode.nio.nio.netty.protocol.NsHead;
-import net.neoremind.mycode.nio.nio.netty.protocol.PbrpcMsg;
-import net.neoremind.mycode.util.JsonMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import net.neoremind.mycode.nio.nio.netty.protocol.NsHead;
+import net.neoremind.mycode.nio.nio.netty.protocol.PbrpcMsg;
+import net.neoremind.mycode.util.JsonMapper;
 
 public class PbrpcMessageDeserializer extends ByteToMessageDecoder {
 

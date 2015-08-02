@@ -1,10 +1,10 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
-import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
-import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
+import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
  * Given a binary tree, find its maximum depth.

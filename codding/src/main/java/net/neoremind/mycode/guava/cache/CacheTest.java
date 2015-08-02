@@ -3,13 +3,13 @@ package net.neoremind.mycode.guava.cache;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class CacheTest {
 

@@ -1,10 +1,10 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Given a string, find the length of the longest substring without repeating characters.

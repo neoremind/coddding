@@ -3,11 +3,11 @@ package net.neoremind.mycode.guava.collections;
 import java.util.Collection;
 import java.util.List;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class ListTest {
 

@@ -1,18 +1,17 @@
 package net.neoremind.mycode.nio.nio.netty.serializer;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
-
-import java.util.List;
-
 import net.neoremind.mycode.nio.nio.netty.protocol.NsHead;
 import net.neoremind.mycode.nio.nio.netty.protocol.PbrpcMsg;
 import net.neoremind.mycode.util.JsonMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PbrpcMessageSerializer extends MessageToMessageEncoder<PbrpcMsg> {
 

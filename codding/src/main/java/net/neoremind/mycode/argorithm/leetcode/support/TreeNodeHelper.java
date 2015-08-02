@@ -1,19 +1,19 @@
 package net.neoremind.mycode.argorithm.leetcode.support;
 
-import com.google.common.base.Preconditions;
-
-import net.neoremind.mycode.util.ThreadContext;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.base.Preconditions;
+
+import net.neoremind.mycode.util.ThreadContext;
 
 /**
  * 二叉树工具帮助类

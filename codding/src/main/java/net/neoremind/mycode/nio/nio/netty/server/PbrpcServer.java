@@ -1,5 +1,8 @@
 package net.neoremind.mycode.nio.nio.netty.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -9,9 +12,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.neoremind.mycode.nio.nio.netty.serializer.PbrpcMessageDeserializer;
 import net.neoremind.mycode.nio.nio.netty.serializer.PbrpcMessageSerializer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PbrpcServer {
 

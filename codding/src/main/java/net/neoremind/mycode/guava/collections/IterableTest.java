@@ -3,11 +3,11 @@ package net.neoremind.mycode.guava.collections;
 import java.util.Arrays;
 import java.util.List;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class IterableTest {
 

@@ -3,11 +3,11 @@ package net.neoremind.mycode.guava;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class FluentInterfaceTest {
 

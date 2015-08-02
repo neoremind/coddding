@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.Collections2;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class FunctionTest {
 

@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class MapTest {
 

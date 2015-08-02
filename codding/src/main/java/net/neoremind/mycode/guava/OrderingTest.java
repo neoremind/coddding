@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.neoremind.mycode.guava.vo.Person;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+
+import net.neoremind.mycode.guava.vo.Person;
 
 public class OrderingTest {
 

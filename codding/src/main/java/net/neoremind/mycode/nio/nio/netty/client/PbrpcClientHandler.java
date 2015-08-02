@@ -15,13 +15,13 @@
  */
 package net.neoremind.mycode.nio.nio.netty.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.neoremind.mycode.nio.nio.netty.protocol.PbrpcMsg;
 import net.neoremind.mycode.nio.nio.netty.serializer.PbrpcMessageDeserializer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PbrpcClientHandler extends SimpleChannelInboundHandler<PbrpcMsg> {
 

@@ -1,8 +1,5 @@
 package net.neoremind.mycode.designpattern.filterchain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author zhangxu
  */

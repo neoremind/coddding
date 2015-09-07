@@ -17,8 +17,7 @@ public class HelloWorld {
         int end = 8;
         System.out.println((start + end) / 2);
         System.out.println((start + end) >>> 1);
+        System.out.println((start + end) << 1);
     }
 
-    
-    
 }

@@ -132,6 +132,7 @@ public class BST<T extends Comparable<T>> {
         bst.inOrder(bst.getRoot());
         System.out.println();
         bst.postOrder(bst.getRoot());
+        System.out.println();
         System.out.println(bst.depth());
         System.out.println(bst.getElementsCount());
         OutputStreamWriter osr = new OutputStreamWriter(System.out);

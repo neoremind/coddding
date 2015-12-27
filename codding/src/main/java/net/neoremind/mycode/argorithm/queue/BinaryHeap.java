@@ -28,6 +28,8 @@ import java.util.Arrays;
  * 3）典型题目，N个数，求第k大的元素，
  * #3使用二叉堆解决的话，构造堆0(N)，然后进行k次deleteMin操作，O(k*logN)，总的是O(N+k*logN)，
  * 当k较大时为O(k*logN)，较小时为O(N)
+ * <p/>
+ * JDK中的实现是{@linkplain java.util.PriorityQueue}
  *
  * @author zhangxu
  */

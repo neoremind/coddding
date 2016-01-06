@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.primitives.Ints;
+
 /**
+ * 排序的数组帮助类
+ *
  * @author zhangxu
  */
 public class ArrayHelper {
@@ -20,12 +24,20 @@ public class ArrayHelper {
             list.add(i);
         }
         Collections.shuffle(list);
+        return Ints.toArray(list);
+    }
 
-        int[] ret = new int[len];
+    /**
+     * Get continuous int array
+     *
+     * @return array in order and elements are not duplicate
+     */
+    public static int[] getContinuousArray(int len) {
+        List<Integer> list = new ArrayList<Integer>(len);
         for (int i = 0; i < len; i++) {
-            ret[i] = list.get(i);
+            list.add(i);
         }
-        return ret;
+        return Ints.toArray(list);
     }
 
 }

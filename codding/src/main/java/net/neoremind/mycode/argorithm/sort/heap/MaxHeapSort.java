@@ -1,4 +1,4 @@
-package net.neoremind.mycode.sort.heap;
+package net.neoremind.mycode.argorithm.sort.heap;
 
 import java.util.Arrays;
 

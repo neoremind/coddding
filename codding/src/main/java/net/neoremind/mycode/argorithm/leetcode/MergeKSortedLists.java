@@ -19,7 +19,7 @@ import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
  * 根据主定理，可以算出算法的总复杂度是O(nklogk)
  * 。如果不了解主定理的朋友，可以参见 主定理-维基百科 。空间复杂度的话是递归栈的大小O(logk)。
  * 很多参考了{@link net.neoremind.mycode.argorithm.sort.MergeSort}的代码。
- * 另外这个实现在leetcode上打败了80%的java代码。
+ * 另外这个实现在leetcode上打败了79%的java代码。
  *
  * @author zhangxu
  */
@@ -44,7 +44,7 @@ public class MergeKSortedLists {
      *
      * @return
      */
-    public ListNode mergeKLists(ListNode[] lists, int start, int end) {
+    private ListNode mergeKLists(ListNode[] lists, int start, int end) {
         if (start < end) {
             int center = (start + end) / 2;
             ListNode list1 = mergeKLists(lists, start, center);
@@ -64,7 +64,7 @@ public class MergeKSortedLists {
      *
      * @return
      */
-    public ListNode mergeTwoLists(ListNode listNode1, ListNode listNode2) {
+    private ListNode mergeTwoLists(ListNode listNode1, ListNode listNode2) {
         if (listNode1 == null) {
             return listNode2;
         }

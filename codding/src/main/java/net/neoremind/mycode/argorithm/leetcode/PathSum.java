@@ -24,6 +24,8 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
  * 7    2      1
  * </pre>
  * return true, as there exist a root-to-leaf path 5->4->11->2 which sum is 22.
+ * <p/>
+ * 解题思路：递归、深度优先搜索
  *
  * @author zhangxu
  */

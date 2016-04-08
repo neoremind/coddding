@@ -1,0 +1,91 @@
+//========== 增量变化通用描述 ==========
+message ChangeDataSet {
+    // 数据库实例的序号，从producer00开始，多库依次递增
+    optional string dbInstanceName = 1;
+    // 同步点
+    optional SyncPoint syncPoint = 2;
+    // 表结构
+    repeated TableSchema tableSchema = 3;
+    // 变化的表数据
+    repeated TableChange tableChange = 4;
+    // 数据源IP和端口
+    optional string srcDbHost = 5;
+    // 增量大小，代表MySQL的一个packet
+    optional int32 dataSize = 6;
+    // Binglog event header中的时间戳，从unix epoch以来的秒数
+    // http://dev.mysql.com/doc/internals/en/binlog-event-header.html
+    optional int64 birthTime = 7;
+    // Fountain-producer下发<code>ChangeDataSet</code>生产的时间戳，从unix epoch以来的秒数
+    optional int64 sendTime = 8;
+}
+
+// 同步点
+message SyncPoint {
+    // 类型
+    enum SyncType {
+        // 适用于百度MySQL Ares5.1和databus的gtid
+        GROUPID = 1;
+        // 适用于MySQL 5.6的GTID
+        GTID = 2;
+        // 适用于binlogfilename+position的方式，一切版本均可以
+        BINLOG = 3;
+    }
+    optional SyncType syncType = 1;
+    // groupId
+    optional int64 groupId = 2;
+    // gtId
+    repeated string gtId = 3;
+    // binlogFileName
+    optional string binlogFileName = 4;
+    // binlogFile的偏移量
+    optional int32 position = 5;
+}
+
+// 表结构
+message TableSchema {
+    // gtId
+    optional string tableName = 1;
+    // 列原信息
+    message ColumnMeta {
+        // 列名
+        optional string columnName = 1;
+        // 原始的列类型，例如int(10), varchar(256)
+        optional string columnType = 2;
+        // 字段编码，例如utf8_bin
+        optional string charset = 3;
+        // 是否为空flag
+        optional string nullFlag = 4;
+        // 索引，PRI/MUL/UNI或者为空
+        optional string keyFlag = 5;
+        // 默认值
+        optional string ifNullValue = 6;
+        // 冗余字段，如果是主键，则填充为auto_increment
+        optional string extra = 7;
+        // meta值
+        optional int32 metaValue = 8;
+        // databus中的bitmap值，一个字节
+        optional int32 databusColumnBitmap = 9;
+    }
+    repeated ColumnMeta columns = 2;
+}
+
+// 变化的表数据
+message TableChange {
+    // gtId
+    optional string tableName = 1;
+    // 列数据
+    message ColumnData {
+        // 数据值，靠sql type看取哪个，下游自行处理。是否合理？protobuf无法做类型转换
+        optional string stringValue = 1;
+        optional int32 int32Value = 2;
+        optional int64 int64Value = 3;
+        optional float floatValue = 4;
+        optional bytes bytesValue = 5;
+        // 字段编码，例如utf8_bin
+        optional string isNull = 6;
+        // sql type
+        optional string sqlType = 7;
+    }
+    repeated ColumnData beforeData = 2;
+    repeated ColumnData afterData = 3;
+}

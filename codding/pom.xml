@@ -258,6 +258,12 @@
             <version>3.18.1-GA</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -326,8 +332,8 @@
                 <version>3.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <debug>true</debug>
                     <optimize>true</optimize>

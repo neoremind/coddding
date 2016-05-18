@@ -226,7 +226,9 @@ class JdkWayHashStrategy<K> implements HashStrategy<K> {
     public int hash(K key) {
         int h = hashSeed;
         if (0 != h && key instanceof String) {
-            return sun.misc.Hashing.stringHash32((String) key);
+            // only apply for JAVA7 or before!!!!!!! so comment here
+            //return sun.misc.Hashing.stringHash32((String) key);
+            return 0;
         }
 
         h ^= key.hashCode();

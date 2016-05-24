@@ -22,6 +22,8 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
  * 并且左右两个子树都是一棵平衡二叉树。
  * 下面的代码就完全按照定义，首先得到节点左右子树的高度（递归），然后判断左右子树是否为平衡二叉树，
  * 利用递归完成整棵树的判断。完全满足条件，就返回true.
+ * 这个解法是DOWN-UP方式的，时间复杂度O(N)。
+ * 有另外一种是O(N^2)的，是UP-DOWN方式的。详细可以看discussion。
  *
  * @author zhangxu
  */

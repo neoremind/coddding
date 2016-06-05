@@ -17,6 +17,8 @@ public class List_map {
         final List<Integer> b = a.map(add.f(42)); // or equivalently:
         final List<Integer> c = a.map(i -> i + 42);
         listShow(intShow).println(b); // [43,44,45]
+        java.util.List<Integer> jList = c.toJavaList();
+        System.out.println(jList);
     }
 
 }

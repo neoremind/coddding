@@ -264,6 +264,27 @@
             <version>3.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava</artifactId>
+            <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-java8</artifactId>
+            <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-quickcheck</artifactId>
+            <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-java-core</artifactId>
+            <version>4.5</version>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>

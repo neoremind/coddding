@@ -291,6 +291,17 @@
             <version>4.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-tools</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>

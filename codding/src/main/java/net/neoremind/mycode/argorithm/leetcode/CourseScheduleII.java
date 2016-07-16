@@ -98,6 +98,7 @@ public class CourseScheduleII {
 
     @Test
     public void test() {
+        // 这个testcase是《数据结构与算法分析》第9章9.2小节的拓扑排序的例子
         int numCourses = 8;
         int[][] prerequisites = new int[][] {
                 {1, 0}, {2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}, {6, 7}, {7, 4}, {7, 5}

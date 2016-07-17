@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -16,53 +17,40 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
 import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
- * 前序遍历，递归和非递归版本。非递归要求使用DFS。
+ * 层序遍历，easy
  *
  * @author zhangxu
  */
 public class BinaryTreeLevelorder {
 
-    class PreorderTraversalRecruisively implements OrderTraversal {
-
-        @Override
-        public List<Integer> traverse(TreeNode root) {
-            List<Integer> result = new ArrayList<>();
-            doPreorder(root, result);
-            return result;
+    public List<List<Integer>> traverse(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>(0);
         }
-
-        private void doPreorder(TreeNode root, List<Integer> result) {
-            if (root != null) {
-                result.add(root.val);
-                doPreorder(root.left, result);
-                doPreorder(root.right, result);
-            }
-        }
-    }
-
-    class PreorderTraversalIteratively implements OrderTraversal {
-
-        @Override
-        public List<Integer> traverse(TreeNode root) {
-            List<Integer> result = new ArrayList<>();
-            Stack<TreeNode> stack = new Stack<>();
-            stack.push(root);
-            while (!stack.isEmpty()) {
-                TreeNode top = stack.pop();
-                if (top != null) { // 要判空
-                    result.add(top.val);
-                    stack.push(top.right);
-                    stack.push(top.left);
+        List<List<Integer>> result = new ArrayList<>();
+        List<TreeNode> level = new ArrayList<>(1);
+        level.add(root);
+        List<TreeNode> newLevel;
+        List<Integer> levelValues;
+        while (true) {
+            levelValues = new ArrayList<>(level.size());
+            newLevel = new ArrayList<>(level.size() << 1);
+            result.add(levelValues);
+            for (TreeNode treeNode : level) {
+                levelValues.add(treeNode.val);
+                if (treeNode.left != null) {
+                    newLevel.add(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    newLevel.add(treeNode.right);
                 }
             }
-            return result;
+            level = newLevel;
+            if (level.isEmpty()) {
+                break;
+            }
         }
-    }
-
-    @Test
-    public void testPreorder() {
-        testPreorderTemplate(new PreorderTraversalRecruisively());
-        testPreorderTemplate(new PreorderTraversalIteratively());
+        return result;
     }
 
     /**
@@ -89,24 +77,22 @@ public class BinaryTreeLevelorder {
      *     / \     \
      *    8  10     5
      * </pre>
-     *
-     * @param orderTraversal
      */
-    private void testPreorderTemplate(OrderTraversal orderTraversal) {
-        System.out.println("Testing against " + orderTraversal.getClass().getSimpleName());
-        testOne("1,2,3,4,5", Lists.newArrayList(1, 2, 4, 5, 3), orderTraversal);
-        testOne("1", Lists.newArrayList(1), orderTraversal);
-        testOne("4,2,7,1,3,6,9", Lists.newArrayList(4, 2, 1, 3, 7, 6, 9), orderTraversal);
-        testOne("4,2,7,1,#,6,9,8,10,#,5", Lists.newArrayList(4, 2, 1, 8, 10, 7, 6, 5, 9), orderTraversal);
-        System.out.println(StringUtils.repeat("-", 30));
+    @Test
+    public void testLevelorder() {
+        testOne("1,2,3,4,5", Lists.newArrayList(1, 2, 3, 4, 5));
+        testOne("1", Lists.newArrayList(1));
+        testOne("4,2,7,1,3,6,9", Lists.newArrayList(4, 2, 7, 1, 3, 6, 9));
+        testOne("4,2,7,1,#,6,9,8,10,#,5", Lists.newArrayList(4, 2, 7, 1, 6, 9, 8, 10, 5));
     }
 
-    private void testOne(String arr, List<Integer> expected, OrderTraversal orderTraversal) {
+    private void testOne(String arr, List<Integer> expected) {
         TreeNode root = TreeNodeHelper.init(arr);
         System.out.println("Original tree: " + TreeNodeHelper.preorderTraversal(root));
-        List<Integer> res = orderTraversal.traverse(root);
-        System.out.println("Preorder traversal: " + res);
-        assertThat(res, is(expected));
+        List<List<Integer>> res = traverse(root);
+        List<Integer> res2 = res.stream().flatMap(l -> l.stream()).collect(Collectors.toList());
+        System.out.println("Levelorder traversal: " + res);
+        assertThat(res2, is(expected));
     }
 
 }

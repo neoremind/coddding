@@ -38,6 +38,11 @@ public class TreeNodeHelper {
         result = inorderTraversal(root);
         System.out.println(result);
         assertThat(result, is("10,1,11,2,12,3,4,6,7,9,"));
+
+        String arrs = "1,2,3,#,5,#,7,6,7,8,#";
+        root = init(arrs);
+        result = preorderTraversal(root);
+        System.out.println("preorder:" + result);
     }
 
     /**
@@ -99,7 +104,7 @@ public class TreeNodeHelper {
 
     /**
      * 前序遍历一棵树
-     * <p/>
+     * <p>
      * 例如，一棵树为
      * * <pre>
      *      4
@@ -108,7 +113,7 @@ public class TreeNodeHelper {
      *  / \   / \
      * 1   3 6   9
      * </pre>
-     * <p/>
+     * <p>
      * 打印结果为
      * <pre>
      *     4,2,1,3,7,6,9
@@ -131,7 +136,7 @@ public class TreeNodeHelper {
 
     /**
      * 中序遍历一棵树
-     * <p/>
+     * <p>
      * 例如，一棵树为
      * * <pre>
      *      4
@@ -140,7 +145,7 @@ public class TreeNodeHelper {
      *  / \   / \
      * 1   3 6   9
      * </pre>
-     * <p/>
+     * <p>
      * 打印结果为
      * <pre>
      *     1,2,3,4,6,7,9,
@@ -163,7 +168,7 @@ public class TreeNodeHelper {
 
     /**
      * 后序遍历一棵树
-     * <p/>
+     * <p>
      * 例如，一棵树为
      * * <pre>
      *      4
@@ -172,7 +177,7 @@ public class TreeNodeHelper {
      *  / \   / \
      * 1   3 6   9
      * </pre>
-     * <p/>
+     * <p>
      * 打印结果为
      * <pre>
      *     1,3,2,6,7,9,4
@@ -218,8 +223,34 @@ public class TreeNodeHelper {
     }
 
     /**
+     * 初始化一棵树
+     *
+     * @param arr 树节点的值，按照层次排序
+     *
+     * @return 树根节点
+     *
+     * @see #build(Queue, int[], int)
+     */
+    public static TreeNode init(String arr) {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(arr), "arr should not be empty");
+        String[] arrs = arr.split(",");
+
+        int val = Integer.parseInt(arrs[0]);
+        // init tree root node
+        TreeNode root = new TreeNode(val);
+
+        // init the whole tree
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+
+        buildForStr(queue, arrs, 1);
+
+        return root;
+    }
+
+    /**
      * 用数组<code>int[]</code>初始化一颗树，按照树深层级，从低到高的深度，从左到右，依次填满整棵树，直到数组越界位置退出
-     * <p/>
+     * <p>
      * 利用FIFO队列思路，将一棵树的某一层依次推入到队列中，利用递归，对于上一次递归完成结果的队列，poll出元素，此时也就是上一层最左边的节点，<br/>
      * 找到数组合适的索引，赋值新的左右节点，然后处理下一个节点，直到把上一层所有节点都处理完，或者数组越界而退出。
      *
@@ -237,6 +268,7 @@ public class TreeNodeHelper {
             if (index >= arr.length) {
                 break;
             }
+
             TreeNode left = new TreeNode(arr[index++]);
             t.left = left;
             ready2QueuedNodes.add(left);
@@ -254,6 +286,47 @@ public class TreeNodeHelper {
         }
 
         build(queue, arr, index);
+    }
+
+    private static void buildForStr(Queue<TreeNode> queue, String[] arr, int index) {
+        if (arr == null || arr.length == 0 || index >= arr.length) {
+            return;
+        }
+        TreeNode t;
+        List<TreeNode> ready2QueuedNodes = new ArrayList<TreeNode>();
+        while (!queue.isEmpty() && (t = queue.poll()) != null) {
+            if (index >= arr.length) {
+                break;
+            }
+
+            if (arr[index].equals("#")) {
+                index++;
+            } else {
+                int val = Integer.parseInt(arr[index++]);
+                TreeNode left = new TreeNode(val);
+                t.left = left;
+                ready2QueuedNodes.add(left);
+
+                if (index >= arr.length) {
+                    break;
+                }
+            }
+
+            if (arr[index].equals("#")) {
+                index++;
+            } else {
+                int val = Integer.parseInt(arr[index++]);
+                TreeNode right = new TreeNode(val);
+                t.right = right;
+                ready2QueuedNodes.add(right);
+            }
+        }
+
+        for (TreeNode node : ready2QueuedNodes) {
+            queue.offer(node);
+        }
+
+        buildForStr(queue, arr, index);
     }
 
     /**

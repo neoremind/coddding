@@ -16,53 +16,61 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
 import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
- * 前序遍历，递归和非递归版本。非递归要求使用DFS。
+ * 中序遍历，递归和非递归版本。非递归要求使用DFS。
  *
  * @author zhangxu
  */
-public class BinaryTreePreorderTraversal {
+public class BinaryTreeInorder {
 
-    class PreorderTraversalRecruisively implements OrderTraversal {
+    class InorderTraversalRecruisively implements OrderTraversal {
 
         @Override
         public List<Integer> traverse(TreeNode root) {
             List<Integer> result = new ArrayList<>();
-            doPreorder(root, result);
+            doInorder(root, result);
             return result;
         }
 
-        private void doPreorder(TreeNode root, List<Integer> result) {
+        private void doInorder(TreeNode root, List<Integer> result) {
             if (root != null) {
+                doInorder(root.left, result);
                 result.add(root.val);
-                doPreorder(root.left, result);
-                doPreorder(root.right, result);
+                doInorder(root.right, result);
             }
         }
     }
 
-    class PreorderTraversalIteratively implements OrderTraversal {
+    /**
+     * 有点技巧，第一次没写对，stackoverflow了
+     */
+    class InorderTraversalIteratively implements OrderTraversal {
 
         @Override
         public List<Integer> traverse(TreeNode root) {
-            List<Integer> result = new ArrayList<>();
-            Stack<TreeNode> stack = new Stack<>();
-            stack.push(root);
-            while (!stack.isEmpty()) {
-                TreeNode top = stack.pop();
-                if (top != null) { // 要判空
-                    result.add(top.val);
-                    stack.push(top.right);
-                    stack.push(top.left);
+            List<Integer> result = new ArrayList<Integer>();
+
+            Stack<TreeNode> stack = new Stack<TreeNode>();
+            TreeNode cur = root;
+
+            while (cur != null || !stack.empty()) {
+                if (cur != null) {
+                    stack.push(cur);
+                    cur = cur.left;
+                } else {
+                    TreeNode node = stack.pop();
+                    result.add(node.val);  // Add after all left children
+                    cur = node.right;
                 }
             }
+
             return result;
         }
     }
 
     @Test
-    public void testPreorder() {
-        testPreorderTemplate(new PreorderTraversalRecruisively());
-        testPreorderTemplate(new PreorderTraversalIteratively());
+    public void testInorder() {
+        testInorderTemplate(new InorderTraversalRecruisively());
+        testInorderTemplate(new InorderTraversalIteratively());
     }
 
     /**
@@ -92,12 +100,12 @@ public class BinaryTreePreorderTraversal {
      *
      * @param orderTraversal
      */
-    private void testPreorderTemplate(OrderTraversal orderTraversal) {
+    private void testInorderTemplate(OrderTraversal orderTraversal) {
         System.out.println("Testing against " + orderTraversal.getClass().getSimpleName());
-        testOne("1,2,3,4,5", Lists.newArrayList(1, 2, 4, 5, 3), orderTraversal);
+        testOne("1,2,3,4,5", Lists.newArrayList(4, 2, 5, 1, 3), orderTraversal);
         testOne("1", Lists.newArrayList(1), orderTraversal);
-        testOne("4,2,7,1,3,6,9", Lists.newArrayList(4, 2, 1, 3, 7, 6, 9), orderTraversal);
-        testOne("4,2,7,1,#,6,9,8,10,#,5", Lists.newArrayList(4, 2, 1, 8, 10, 7, 6, 5, 9), orderTraversal);
+        testOne("4,2,7,1,3,6,9", Lists.newArrayList(1, 2, 3, 4, 6, 7, 9), orderTraversal);
+        testOne("4,2,7,1,#,6,9,8,10,#,5", Lists.newArrayList(8, 1, 10, 2, 4, 6, 5, 7, 9), orderTraversal);
         System.out.println(StringUtils.repeat("-", 30));
     }
 
@@ -105,8 +113,9 @@ public class BinaryTreePreorderTraversal {
         TreeNode root = TreeNodeHelper.init(arr);
         System.out.println("Original tree: " + TreeNodeHelper.preorderTraversal(root));
         List<Integer> res = orderTraversal.traverse(root);
-        System.out.println("Preorder traversal: " + res);
+        System.out.println("Inorder traversal: " + res);
         assertThat(res, is(expected));
     }
 
 }
+

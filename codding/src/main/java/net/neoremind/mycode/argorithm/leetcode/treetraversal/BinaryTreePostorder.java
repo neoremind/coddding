@@ -3,11 +3,10 @@ package net.neoremind.mycode.argorithm.leetcode.treetraversal;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -42,21 +41,28 @@ public class BinaryTreePostorder {
         }
     }
 
+    /**
+     * 非常的巧妙，leetcode上排名靠前的都是这个解法，考虑使用一个链表，先安排最后的节点，也就是根和右节点
+     */
     class PostorderTraversalIteratively implements OrderTraversal {
 
         @Override
         public List<Integer> traverse(TreeNode root) {
             LinkedList<Integer> result = new LinkedList<>();
-            Deque<TreeNode> stack = new ArrayDeque<>();
-            TreeNode p = root;
-            while (!stack.isEmpty() || p != null) {
-                if (p != null) {
-                    stack.push(p);
-                    result.addFirst(p.val);  // Reverse the process of preorder
-                    p = p.right;             // Reverse the process of preorder
-                } else {
-                    TreeNode node = stack.pop();
-                    p = node.left;           // Reverse the process of preorder
+            Stack<TreeNode> stack = new Stack<>();
+            if (root == null) { // 必须处理
+                return result;
+            }
+
+            stack.push(root);
+            while (!stack.isEmpty()) {
+                TreeNode cur = stack.pop();
+                result.addFirst(cur.val);
+                if (cur.left != null) {
+                    stack.push(cur.left);
+                }
+                if (cur.right != null) {
+                    stack.push(cur.right);
                 }
             }
             return result;
@@ -109,7 +115,7 @@ public class BinaryTreePostorder {
         TreeNode root = TreeNodeHelper.init(arr);
         System.out.println("Original tree: " + TreeNodeHelper.preorderTraversal(root));
         List<Integer> res = orderTraversal.traverse(root);
-        System.out.println("Preorder traversal: " + res);
+        System.out.println("Postorder traversal: " + res);
         assertThat(res, is(expected));
     }
 

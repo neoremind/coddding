@@ -1,51 +1,52 @@
 package net.neoremind.mycode.guava.vo;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class Person {
 
-	private int age;
+    private int age;
 
-	private String name;
+    private String name;
 
-	public Person(String name, int age) {
-		this.name = name;
-		this.age = age;
-	}
-	
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).add("age", age).add("name", name).toString();
-	}
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(age, name);
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("age", age).add("name", name).toString();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Person) {
-			Person that = (Person) obj;
-			return Objects.equal(age, that.age) && Objects.equal(name, that.name);
-		}
-		return false;
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(age, name);
+    }
 
-	public int getAge() {
-		return age;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Person) {
+            Person that = (Person) obj;
+            return Objects.equal(age, that.age) && Objects.equal(name, that.name);
+        }
+        return false;
+    }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+    public int getAge() {
+        return age;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setAge(int age) {
+        this.age = age;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

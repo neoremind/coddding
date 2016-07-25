@@ -5,14 +5,10 @@ import static org.junit.Assert.assertThat;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.hamcrest.Matchers;
 
-import com.google.common.base.CaseFormat;
-import com.google.common.base.Charsets;
 import com.google.common.reflect.AbstractInvocationHandler;
 import com.google.common.reflect.Reflection;
 

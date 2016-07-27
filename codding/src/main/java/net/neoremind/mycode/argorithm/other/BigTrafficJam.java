@@ -75,6 +75,11 @@ public class BigTrafficJam {
         START_IDX_OF_B = MID_IDX + 1;
     }
 
+    /**
+     * 执行入口，用于启动解决方法
+     *
+     * @return 不可变结果
+     */
     public List<Id> solve() {
         List<Id> list = generateList(LENGTH);
         System.out.println("Start to solve " + list);

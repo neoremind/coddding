@@ -14,7 +14,7 @@ public class BigTrafficJamTest {
 
     @Test
     public void show() throws Exception {
-        new BigTrafficJam(13).setPrintOutIntervalMs(1200).solve();
+        new BigTrafficJam(5).setPrintOutIntervalMs(1200).solve();
     }
 
     @Test

@@ -36,7 +36,6 @@ public class ThreeSum {
 
     public List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
-        System.out.println(nums);
         List<List<Integer>> result = new ArrayList<>();
         int right = nums.length - 1;
         int left = 0;

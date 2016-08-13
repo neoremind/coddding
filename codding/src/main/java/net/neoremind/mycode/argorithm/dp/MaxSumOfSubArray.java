@@ -6,9 +6,12 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * 最大子数组的和，动态规划和暴力求解两种方式
+ * 最大子数组的和，动态规划和暴力求解两种方式。
+ * <p>
+ * 剑指offer 题目31
  *
  * @author zhangxu
+ * @see http://www.cnblogs.com/bourbon/archive/2011/08/23/2151044.html
  */
 public class MaxSumOfSubArray {
 

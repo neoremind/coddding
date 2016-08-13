@@ -8,7 +8,23 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * 01背包问题，动态规划经典案例
+ * 01背包问题，动态规划经典案例，时间复杂度O(N*M)，空间复杂度O(N*M)。
+ * <p>
+ * dynamic programming is a method for solving a complex problem by breaking it down into a collection of simpler
+ * subproblems.
+ * <p>
+ * 动态规划解决的问题多数有重叠子问题这个特点，为减少重复计算，对每一个子问题只解一次，将其不同阶段的不同状态保存在一个二维数组中。
+ * <p>
+ * 动态规划适用条件：
+ * 1）最优子结构
+ * 2）子问题重叠
+ * 通过求解一个个最优的子问题，将解存放在一张表中，当后续的子问题的求解需要用到之前的子问题的解时候，直接查表，每次查表都是常数时间O(N)。
+ * <p>
+ * 求解的关键点：
+ * 1）状态的定义。
+ * 2）最优子问题和无后效性。
+ * 3）子问题重叠。（记忆化搜索）
+ * 4）编写状态转移方程。
  *
  * @author zhangxu
  * @see https://sadakurapati.wordpress.com/2013/11/30/algorithm-knapsack/

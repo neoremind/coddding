@@ -66,11 +66,30 @@ public class EncodingTest {
                 .toString();
     }
 
+    /**
+     * 字符转unicode编码的字符串
+     *
+     * @param ch 字符
+     *
+     * @return unicode编码的字符串
+     */
+    public static String toUnicode(char ch) {
+        if (ch < 0x10) {
+            return "\\u000" + Integer.toHexString(ch);
+        }
+        if (ch < 0x100) {
+            return "\\u00" + Integer.toHexString(ch);
+        }
+        if (ch < 0x1000) {
+            return "\\u0" + Integer.toHexString(ch);
+        }
+        return "\\u" + Integer.toHexString(ch);
+    }
+
     public String string2Unicode(String string) {
         StringBuffer unicode = new StringBuffer();
         for (int i = 0; i < string.length(); i++) {
-            char c = string.charAt(i);
-            unicode.append("\\u" + Integer.toHexString(c));
+            unicode.append(toUnicode(string.charAt(i)));
         }
         return unicode.toString();
     }

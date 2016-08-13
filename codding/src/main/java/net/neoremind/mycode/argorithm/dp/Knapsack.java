@@ -11,6 +11,7 @@ import org.junit.Test;
  * 01背包问题，动态规划经典案例
  *
  * @author zhangxu
+ * @see https://sadakurapati.wordpress.com/2013/11/30/algorithm-knapsack/
  */
 public class Knapsack {
 

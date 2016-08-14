@@ -1,4 +1,4 @@
-## Leetcode records
+# Leetcode records
 
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
@@ -9,6 +9,43 @@ M, Array, Dynamic Programming
 s[i][j] = Min{s[i - 1][j] + s[i][j - 1]} + grid[i][j]
 ```
 
+### [63. Unique Paths II](https://leetcode.com/problems/unique-paths-ii/)
+
+M, Array, Dynamic Programming
+
+和63类似，只是没有了权重，每个点都是1，动态规划，核心逻辑：
+```
+if (obstacleGrid[i][j] == 1) {
+    obstacleGrid[i][j] = 0;
+} else if (i == 0 && j == 0) {
+    obstacleGrid[i][j] = 1;
+} else if (i == 0) {
+    obstacleGrid[i][j] = obstacleGrid[i][j - 1] * 1;  // 乘法用的很巧妙！！！
+    // For row 0, if there are no paths to left cell, then its 0,else 1
+} else if (j == 0) {
+    obstacleGrid[i][j] = obstacleGrid[i - 1][j] * 1;
+    // For col 0, if there are no paths to upper cell, then its 0,else 1
+} else {
+    obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1];
+}
+```
+
+
+### [62. Unique Paths](https://leetcode.com/problems/unique-paths/)
+
+M, Array, Dynamic Programming
+
+m*n矩阵，top-left -> bottom-right共有多少路线.
+
+动态规划，初始第一行、第一列为0，写出状态转移方程，计算，然后查表。O(N*M)的空间和时间复杂度。
+
+```
+[1, 1, 1, 1]
+[1, 2, 3, 4]
+[1, 3, 6, 10]
+[1, 4, 10, 20]
+```
+
 技巧是搞一个ListNode在head的前面
 
 ### [19. Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
@@ -16,3 +53,25 @@ s[i][j] = Min{s[i - 1][j] + s[i][j - 1]} + grid[i][j]
 E，linked list，two pointers
 
 技巧是搞一个ListNode在head的前面
+
+### [5. Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/)
+
+M, String
+
+例如`dfabbax`的palindromic子串是`abba`。
+
+O(N^2)，从第一个char开始左右扩展，记录一个low和maxLen表示palindromic的字符.
+
+```
+for(every char in s) {
+   j, k
+   while s[k] = s[k + 1]
+      k++ // skip duplicates
+   if s[j] to s[k] // handle well corner condition
+      j--
+      k++
+   low = j
+   maxLen = k - j + 1
+}
+
+```

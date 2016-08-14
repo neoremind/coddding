@@ -3,6 +3,7 @@
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
 M, Array, Dynamic Programming
+
 从左上到右下，最少要多少步。动态规划，定义状态和状态转移方程，状态就是到达每一个点最少的步骤，这是一个最优子结构和具有子问题重叠的问题。无后效性。
 
 ```
@@ -44,6 +45,17 @@ m*n矩阵，top-left -> bottom-right共有多少路线.
 [1, 2, 3, 4]
 [1, 3, 6, 10]
 [1, 4, 10, 20]
+```
+
+```
+for (int i = 0; i < m; i++)
+    arr[i][0] = 1;
+for (int j = 0; j < n; j++)
+    arr[0][j] = 1;
+for (int i = 1; i < m; i++)
+    for (int j = 1; j < n; j++) {
+        arr[i][j] = arr[i][j - 1] + arr[i - 1][j];  // 上面+左面的cell路径和
+    }
 ```
 
 技巧是搞一个ListNode在head的前面

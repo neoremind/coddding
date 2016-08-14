@@ -54,6 +54,17 @@ E，linked list，two pointers
 
 技巧是搞一个ListNode在head的前面
 
+### [9. Palindrome Number](https://leetcode.com/problems/palindrome-number/)
+
+E
+
+Problems related with numbers are frequently solved by / and %. No need of extra space is required. This problem
+is similar with the Reverse Integer problem.
+
+Note: no extra space here means do not convert the integer to string, since string will be a copy of the integerand take extra space. The space take by div, left, and right can be ignored.
+
+计算高位和低位是不是一样的数组，用/和%运算符即可。
+
 ### [5. Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/)
 
 M, String

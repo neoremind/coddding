@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
  * Input:Digit string "23"
  * Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
  * <p>
- * 回溯法
+ * 回溯法 + DFS，类似于笛卡尔乘积的方式
  *
  * @author zhangxu
  */

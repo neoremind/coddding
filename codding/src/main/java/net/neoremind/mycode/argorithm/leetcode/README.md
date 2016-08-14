@@ -88,7 +88,7 @@ if (Math.abs(target - (left + mid + right)) < Math.abs(target - closest)) {
 
 M, Backtracking String
 
-回溯法
+回溯法 + DFS，类似于笛卡尔乘积的方式
 ```
 find(res, combination, 0, digits);
 

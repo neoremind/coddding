@@ -84,6 +84,28 @@ if (Math.abs(target - (left + mid + right)) < Math.abs(target - closest)) {
 }
 ```
 
+### [17. Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)
+
+M, Backtracking String
+
+回溯法
+```
+find(res, combination, 0, digits);
+
+void find(List<String> res, char[] combination, int index, String digits) {
+    if (index == digits.length()) {
+        res.add(new String(combination));
+    } else {
+        int digit = digits.charAt(index) - '0';
+        for (char c : charMap[digit]) {
+            combination[index] = c;
+            find(res, combination, index + 1, digits);
+        }
+    }
+}
+```
+
+
 ### [15. 3Sum](https://leetcode.com/problems/3sum/)
 
 M, Array, Two pointers

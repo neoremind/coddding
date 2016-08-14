@@ -58,6 +58,62 @@ for (int i = 1; i < m; i++)
     }
 ```
 
+### [53. Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)
+
+M,  Array, Dynamic Programming, Divide and Conquer
+
+非常经典的动态规划问题
+
+```
+/**
+ * O(N^2)暴力求解
+ */
+public int findMaxSumOfSubArray_BruteForce(int[] array) {
+    int maxSum = array[0];
+    for (int i = 0; i < array.length; i++) {
+        int subSum = 0;
+        for (int j = i; j < array.length; j++) {
+            subSum += array[j];
+            if (subSum > maxSum) {
+                maxSum = subSum;
+            }
+        }
+    }
+    return maxSum;
+}
+
+/**
+ * 动态规划求解。
+ * s[i]表示以i结尾最大的子数组和，如果s[i - 1]小于0了，则说明在i肯定是保留现在的值更大，否则就叠加前面的s[i - 1]
+ * <pre>
+ * s[i] = Max{s[i] (s[i - 1] < 0), s[i - 1] + v[i]}
+ * </pre>
+ * <p>
+ * 最后遍历一下s[i]数组即可。
+ */
+public int findMaxSumOfSubArray_DP(int[] array) {
+    int[] s = new int[array.length];
+    s[0] = array[0];
+    for (int i = 1; i < array.length; i++) {
+        if (s[i - 1] < 0) {
+            s[i] = array[i];
+        } else {
+            s[i] = s[i - 1] + array[i];
+        }
+    }
+
+    int maxSum = s[0];
+    for (int i : s) {
+        if (i > maxSum) {
+            maxSum = i;
+        }
+    }
+    return maxSum;
+}
+```
+
+另外还有分治法，需要进一步研究[leetcode discussion](https://discuss.leetcode.com/topic/426/how-to-solve-maximum-subarray-by-using-the-divide-and-conquer-approach/2)
+
 ### [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
 
 E, Stack, String

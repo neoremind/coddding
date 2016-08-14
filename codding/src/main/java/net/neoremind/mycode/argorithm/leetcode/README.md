@@ -96,5 +96,28 @@ for(every char in s) {
    low = j
    maxLen = k - j + 1
 }
+```
 
+### [2. Add Two Numbers](https://leetcode.com/problems/add-two-numbers/)
+```
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+```
+M, Linked list, Math
+
+O(N)，two pointers分别齐头并进的在两个list中从后向前，利用/计算进位，利用%就算余数，知道一个list耗尽，把剩下的list按照刚刚相同的操作继续，最后需要注意如果进位为0，那么需要把最后一个ListNode删除。
+
+### [1. Two Sum](https://leetcode.com/problems/two-sum/)
+
+E, Array, Hash table
+
+用一个hashmap，key是值，value是index+1。
+
+```
+for (int i = 0; i < nums.length; i++) {
+    if (map.containsKey(target - nums[i])) {
+        return new int[] {map.get(target - nums[i]), i + 1};
+    }
+    map.put(nums[i], i + 1);
+}
 ```

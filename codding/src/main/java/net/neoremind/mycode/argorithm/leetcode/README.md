@@ -66,6 +66,89 @@ E，linked list，two pointers
 
 技巧是搞一个ListNode在head的前面
 
+### [16. 3Sum Closest](https://leetcode.com/problems/3sum-closest/)
+
+M, Array, Two pointers
+
+和15题类似，
+
+初始值
+```
+int closest = nums[0] + nums[1] + nums[2];
+```
+
+中间判断条件变为：
+```
+if (Math.abs(target - (left + mid + right)) < Math.abs(target - closest)) {
+    closest = (left + mid + right);
+}
+```
+
+### [15. 3Sum](https://leetcode.com/problems/3sum/)
+
+M, Array, Two pointers
+
+题目要求a, b, c in S such that a + b + c = 0
+
+* 先排序
+* 从后往前定住最后一个，然后从前往后定住一个，中间的遍历找。
+* 找到了，那么为了去重，要跳过从前往后重复的元素，以及从后往前重复的元素。这样就不用维护Set了。
+
+```
+right = nums.length - 1;
+left = 0;
+while (right > 1) {
+    rightNum = nums[right];
+    while (left < right - 1) {
+        leftNumber = nums[left];
+        for (int mid = left + 1; mid < right; mid++) {
+            int midNum = nums[mid];
+            if (midNum + positiveNum + negativeNum == 0) {
+                result.add(leftNum, midNum, rightNum);
+                break;  // need to quit in case next number is the same as mid
+            }
+        }
+        while (left < right && nums[left] == negativeNum) {
+            left++;
+        }
+    }
+    left = 0;
+    while (right > 0 && nums[right] == positiveNum) {
+        right--;
+    }
+}
+```
+
+### [14. Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/)
+
+E, String
+
+基本思想就是固定第一个str，对于其中的每一个char，后面的所有的str都去除第N个和其对比，直到发现不一样的为止。
+```
+foreach char in strs[0] {
+    idx represents position from 0 to len -1
+    for every str in strs
+        if (strs[i].length() < idx + 1 || strs[0].charAt(idx) != strs[i].charAt(idx)) {
+            return ret.toString();
+        }
+    ret.append(strs[0].charAt(idx));
+}
+```
+
+### [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/)
+
+M, Array Two Pointers
+```
+i = 0
+j = end
+while i and j not meet
+    max = MAX(area(i,j) ,max)
+    if height[i] < height[j]
+        i = i + 1
+    if height[i] > height[j]
+        j = j - 1
+```
+
 ### [9. Palindrome Number](https://leetcode.com/problems/palindrome-number/)
 
 E
@@ -76,6 +159,55 @@ is similar with the Reverse Integer problem.
 Note: no extra space here means do not convert the integer to string, since string will be a copy of the integerand take extra space. The space take by div, left, and right can be ignored.
 
 计算高位和低位是不是一样的数组，用/和%运算符即可。
+
+### [8. String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi/)
+
+E, Math,String
+
+大概简单来说，算法如下：
+```
+int x = ch - '0'; // char to int
+num = num * 10;
+num = num + x;
+```
+但是要处理一堆比如空格，正负数，溢出等等，总是没提交正确。faint。
+
+### [7. Reverse Integer](https://leetcode.com/problems/reverse-integer/)
+
+E, Math
+
+注意溢出的问题。
+```
+while (x > 0) {
+    // ret * 10 + (x % 10) > Integer.MAX_VALUE
+    if (ret > (Integer.MAX_VALUE - x % 10) / 10) {
+        return 0;
+    }
+    ret = ret * 10 + (x % 10);
+    x /= 10;
+}
+```
+负数也一样
+
+### [6. ZigZag Conversion](https://leetcode.com/problems/zigzag-conversion/)
+
+M, String
+
+所谓的zigzag就是按照某种pattern去打印字符串。这道题解的实际就是一个找“规律”的问题。
+
+我的解法是用笔和纸，按照numRows=2，3，4，5去尝试画出来实际的样子，然后计算
+
+1）首先要区分单元unit，就是所谓的一个一个小格子，比如
+numRows=3，那么ABCD，EFGH，IJK各自是一个单元，单元内元素的个数等于(numRows - 1)*2。
+
+2）计算出一共有多少个单元unit。
+
+3）一个单元一个单元的打印出来，小于numRows的很好安置位置，大于numRows的元素有一个规律，
+就是他们是row--，col++的斜线往上走的，掌握的这个规律，就可以把一个char[][]的二维数组
+
+看出我们要打印出来的样子，去确定这个row和col，遍历字符串填充进去即可。
+
+此题比较恶心，不细说了。
 
 ### [5. Longest Palindromic Substring](https://leetcode.com/problems/longest-palindromic-substring/)
 

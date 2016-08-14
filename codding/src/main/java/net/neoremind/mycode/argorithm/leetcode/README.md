@@ -98,6 +98,89 @@ for(every char in s) {
 }
 ```
 
+### [4. Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/)
+
+H, Binary Search, Array, Divide and Conquer
+
+题目要求O(log(m+n))的时间复杂度，一般来说都是分治法或者二分搜索。
+
+[refer1](http://www.07net01.com/2015/07/871155.html)
+[refer2](https://leetcode.com/submissions/detail/69094393/)
+
+另外最笨的方法就是排序下时间复杂度是O(NLogN)，不考虑。
+
+首先定义解题的入口：
+
+区分奇数和偶数，偶数需要计算两个值求平均，奇数直接取中间的即可。
+
+```
+if ((m + n) % 2 == 0) {
+    return (findKth(nums1, nums2, 0, 0, m, n, k) + findKth(nums1, nums2, 0, 0, m, n, k + 1)) / 2;
+} else {
+    return findKth(nums1, nums2, 0, 0, m, n, k + 1);
+}
+```
+
+把问题转换为Kth of two sorted array问题（搜索两个有序序列的第k个元素），归并计数法 Merge and Count，时间复杂度是O(K)，但是K比较大的时候，还是会退换成O(M+N)，即O(N)。在leetcode提交这个效率也比较高。这个算brute force版本，类似于two pointers的思想：
+
+```
+foreach n in array m and array n
+    if isKth(n)
+        found
+```
+
+优化为O(log(m+n))时间复杂度的算，采用分治法
+
+假设序列都是从小到大排列，对于第一个序列中前p个元素和第二个序列中前q个元素，我们想要的最终结果是：p+q等于k-1,且一序列第p个元素和二序列第q个元素都小于总序列第k个元素。
+
+因为总序列中，必然有k-1个元素小于等于第k个元素。这样第p+1个元素或者第q+1个元素就是我们要找的第k个元素。
+
+实际上就是不断的二分，舍弃掉绝对不可能存在要找的解的区间段这种思想。
+
+边界条件corner conditions非常多，写递归完成，退出条件要定义好。
+
+1）保证arr1的长度较为小
+
+2）arr1为空了，则直接在arr2里面直接索引定位
+
+3）如果k=1，那么直接取arr1和arr2的头元素比较，小的就是要找的。
+
+```
+double findKth(int[] arr1, int[] arr2, int start1, int start2, int len1, int len2, int k) {
+    if (len1 > len2) {
+        return findKth(arr2, arr1, start2, start1, len2, len1, k);
+    }
+    if (len1 == 0) {
+        return arr2[start2 + k - 1];
+    }
+    if (k == 1) {
+        return Math.min(arr1[start1], arr2[start2]);
+    }
+    int p1 = Math.min(k / 2, len1);
+    int p2 = k - p1;
+    if (arr1[start1 + p1 - 1] < arr2[start2 + p2 - 1]) {
+        return findKth(arr1, arr2, start1 + p1, start2, len1 - p1, len2, k - p1);
+    } else if (arr1[start1 + p1 - 1] > arr2[start2 + p2 - 1]) {
+        return findKth(arr1, arr2, start1, start2 + p2, len1, len2 - p2, k - p2);
+    } else {
+        return arr1[start1 + p1 - 1];
+    }
+}
+```
+
+### [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
+
+M,  Hash Table,Two Pointers,String
+
+维护一个窗口，从当前char，叫做curr，往回看，如果发现相同的则，重置barrier，这个区间就是无重复的一个区间。常数时间，时间复杂度O(N)。
+```
+barrier = 0
+foreach i in s
+    while s[barrier .. i] contains charaters
+        barrier = barrier + 1
+    max = MAX(max, curr - barrier + 1)
+```
+
 ### [2. Add Two Numbers](https://leetcode.com/problems/add-two-numbers/)
 ```
 Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)

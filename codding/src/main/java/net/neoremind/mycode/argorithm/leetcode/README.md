@@ -58,31 +58,27 @@ for (int i = 1; i < m; i++)
     }
 ```
 
-技巧是搞一个ListNode在head的前面
+### [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
+
+E, Stack, String
+
+```
+foreach c in s
+    if c is open brackets like [ { (
+        push c to stack
+    else
+       if stack is empty
+           return false
+       if stack.pop is NOT pair to c
+           return false
+return stack is empty true or else false
+```
 
 ### [19. Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
 
 E，linked list，two pointers
 
 技巧是搞一个ListNode在head的前面
-
-### [16. 3Sum Closest](https://leetcode.com/problems/3sum-closest/)
-
-M, Array, Two pointers
-
-和15题类似，
-
-初始值
-```
-int closest = nums[0] + nums[1] + nums[2];
-```
-
-中间判断条件变为：
-```
-if (Math.abs(target - (left + mid + right)) < Math.abs(target - closest)) {
-    closest = (left + mid + right);
-}
-```
 
 ### [17. Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)
 
@@ -105,6 +101,23 @@ void find(List<String> res, char[] combination, int index, String digits) {
 }
 ```
 
+### [16. 3Sum Closest](https://leetcode.com/problems/3sum-closest/)
+
+M, Array, Two pointers
+
+和15题类似，
+
+初始值
+```
+int closest = nums[0] + nums[1] + nums[2];
+```
+
+中间判断条件变为：
+```
+if (Math.abs(target - (left + mid + right)) < Math.abs(target - closest)) {
+    closest = (left + mid + right);
+}
+```
 
 ### [15. 3Sum](https://leetcode.com/problems/3sum/)
 

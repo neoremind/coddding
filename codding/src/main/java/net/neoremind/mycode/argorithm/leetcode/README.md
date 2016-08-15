@@ -73,6 +73,43 @@ Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
 
+### [70. Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
+
+E, DP
+
+类似Fabonacci，先写递推式和初始条件：
+```
+        1, n=1
+f(n) =  2, n=2
+        f(n-1) + f(n-2), n>=2
+```
+
+递归解：
+```
+public int climbStairs(int n) {
+    if (n <= 2) {
+        return n;
+    }
+    return climbStairs(n - 1) + climbStairs(n - 2);
+}
+```
+
+DP，节省空间的解法：
+```
+public int climbStairs2(int n) {
+    if (n < 2) {
+        return n;
+    }
+    int dp[] = new int[] {1, 1, 2};
+    for (int i = 2; i <= n; i++) {
+        dp[2] = dp[0] + dp[1];
+        dp[0] = dp[1];
+        dp[1] = dp[2];
+    }
+    return dp[2];
+}
+```
+
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
 M, Array, Dynamic Programming

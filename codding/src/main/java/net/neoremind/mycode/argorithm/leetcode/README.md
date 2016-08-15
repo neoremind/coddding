@@ -1,5 +1,17 @@
 # Leetcode records
 
+### [179. Largest Number](https://leetcode.com/problems/largest-number/)
+
+M, Array
+
+因此不要陷入数字计算的陷阱里，而是想着用字符串比较或者使用jdk的函数式编程思想
+
+```
+String[] array = Arrays.stream(num).mapToObj(String::valueOf).toArray(String[]::new);
+Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
+return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
+```
+
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
 M, Array, Dynamic Programming
@@ -38,7 +50,7 @@ M, Array, Dynamic Programming
 
 m*n矩阵，top-left -> bottom-right共有多少路线.
 
-动态规划，初始第一行、第一列为0，写出状态转移方程，计算，然后查表。O(N*M)的空间和时间复杂度。
+动态规划，初始第一行、第一列为0，写出状态转移方程以及定义初值，计算，然后查表。O(N*M)的空间和时间复杂度。
 
 ```
 [1, 1, 1, 1]
@@ -63,6 +75,8 @@ for (int i = 1; i < m; i++)
 M,  Array, Dynamic Programming, Divide and Conquer
 
 非常经典的动态规划问题
+
+最暴力的解法，起点0-n，终点0-n，计算中间的，三层for循环，O(N^3)。
 
 ```
 /**
@@ -113,6 +127,8 @@ public int findMaxSumOfSubArray_DP(int[] array) {
 ```
 
 另外还有分治法，需要进一步研究[leetcode discussion](https://discuss.leetcode.com/topic/426/how-to-solve-maximum-subarray-by-using-the-divide-and-conquer-approach/2)
+
+时间复杂度O(NlogN)。
 
 ### [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
 

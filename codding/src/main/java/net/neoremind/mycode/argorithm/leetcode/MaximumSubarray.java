@@ -37,4 +37,16 @@ public class MaximumSubarray {
         }
         return maxSum;
     }
+
+    /**
+     * 另外一种节省空间的做法
+     */
+    public int maxSubArray2(int[] nums) {
+        int maxSum = nums[0], sum = 0;
+        for(int i = 0; i < nums.length; ++i){
+            sum = Math.max(sum + nums[i], nums[i]);
+            maxSum = Math.max(maxSum, sum);
+        }
+        return maxSum;
+    }
 }

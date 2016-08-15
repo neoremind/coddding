@@ -126,6 +126,17 @@ public int findMaxSumOfSubArray_DP(int[] array) {
 }
 ```
 
+另外一种节省空间的做法。
+```
+int maxSum = nums[0], sum = 0;
+for(int i = 0; i < nums.length; ++i){
+    sum = Math.max(sum + nums[i], nums[i]);
+    maxSum = Math.max(maxSum, sum);
+}
+return maxSum;
+}
+```
+
 另外还有分治法，需要进一步研究[leetcode discussion](https://discuss.leetcode.com/topic/426/how-to-solve-maximum-subarray-by-using-the-divide-and-conquer-approach/2)
 
 时间复杂度O(NlogN)。

@@ -156,8 +156,10 @@ public int findMaxSumOfSubArray_BruteForce(int[] array) {
     }
     return maxSum;
 }
+```
 
 3、DP，时间复杂度O(N)
+```
 /**
  * 动态规划求解。
  * s[i]表示以i结尾最大的子数组和，如果s[i - 1]小于0了，则说明在i肯定是保留现在的值更大，否则就叠加前面的s[i - 1]

@@ -1,5 +1,66 @@
 # Leetcode records
 
+### [322. Coin Change](https://leetcode.com/problems/coin-change/)
+
+M, Dynamic Programming
+
+举例，当3元时候，需要计算去掉1元硬币和3元硬币后的最少数量+1，即d(3)=min{d(3-1)+1, d(3-3)+1}。
+1元和3元的挑选是所有的面值当中不小于当前要换的钱的几个值。
+
+递推式如下：
+```
+ d(i) = Min{ d(i-Vj) + 1 }，其中i-Vj >=0，Vj表示第j个硬币的面值;
+```
+
+算法如下，对于找不到的解返回-1：
+```
+int[] dp = new int[amount + 1];
+for (int i = 1; i <= amount; i++) {
+    dp[i] = Integer.MAX_VALUE;
+    for (int j = 0; j < coins.length; j++) {
+        if (coins[j] <= i && dp[i - coins[j]] != Integer.MAX_VALUE) {
+            dp[i] = Integer.min(dp[i], 1 + dp[i - coins[j]]);
+        }
+    }
+}
+if (dp[amount] == Integer.MAX_VALUE) {
+    return -1;
+} else {
+    return dp[amount];
+}
+```
+
+### [300. Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
+
+M, Dynamic Programming, Binary Search
+
+找到状态转移方程的，例如N个数的序列是：
+```
+5，3，4，8，6，7
+```
+根据上面找到的状态，
+* 前1个数的LIS长度d(1)=1(序列：5)
+* 前2个数的LIS长度d(2)=1(序列：3；3前面没有比3小的)
+* 前3个数的LIS长度d(3)=2(序列：3，4；4前面有个比它小的3，所以d(3)=d(2)+1)
+* 前4个数的LIS长度d(4)=3(序列：3，4，8；8前面比它小的有3个数，所以 d(4)=max{d(1),d(2),d(3)}+1=3)
+
+OK，分析到这，我觉得状态转移方程已经很明显了，如果我们已经求出了d(1)到d(i-1)， 那么d(i)可以用下面的状态转移方程得到：
+```
+d(i) = max{1, d(j)+1},其中j<i,A[j]<=A[i]
+```
+
+代码如下：
+```
+int len = 1;  //初始最长的子串
+for(int i=0; i<n; ++i){  // 遍历
+    d[i] = 1;
+    for(int j=0; j<i; ++j)  // 往回找，所有的值，如果值小，并且以这个值结尾的最长递增子串+1>以现在字符结尾的子串，那么改变下值。
+        if(A[j]<=A[i] && d[j]+1>d[i])
+            d[i] = d[j] + 1;
+    if(d[i]>len) len = d[i];
+}
+```
+
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
 M, Array

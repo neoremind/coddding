@@ -22,6 +22,12 @@ import org.junit.Test;
  */
 public class LongestIncreasingSubsequence {
 
+    /**
+     * 递推式如下：
+     * <pre>
+     *     d(i) = max{1, d(j) + 1},其中j<i,A[j]<=A[i]
+     * </pre>
+     */
     public int lengthOfLIS(int[] nums) {
         int[] longest = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {

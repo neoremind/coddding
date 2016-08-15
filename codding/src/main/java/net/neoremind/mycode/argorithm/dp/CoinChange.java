@@ -4,8 +4,11 @@ import org.junit.Test;
 
 /**
  * 硬币找零问题
+ * {@link #coinChange(int[], int[], int)}是一个接受最小硬币为1的解。
+ * {@link #coinChange2(int[], int)}是leetcode上要求找不到解返回-1的算法。
  *
  * @author zhangxu
+ * @see https://leetcode.com/problems/coin-change/
  */
 public class CoinChange {
 
@@ -18,12 +21,12 @@ public class CoinChange {
      *     d(i) = Min{ d(i-Vj) + 1 }，其中i-Vj >=0，Vj表示第j个硬币的面值;
      * </pre>
      *
-     * @param minCoinChanges :保存面值为i的纸币找零所需的最小硬币数
-     * @param values         :保存每一种硬币的币值的数组
-     * @param money          :需要找零的面值
+     * @param minCoinChanges 保存面值为i的纸币找零所需的最小硬币数
+     * @param coins          保存每一种硬币的币值的数组
+     * @param money          需要找零的面值
      */
-    public static void makeChange(int[] minCoinChanges, int[] values, int money) {
-        int coinsValueNum = values.length; //零钱的种类数量
+    public static void coinChange(int[] minCoinChanges, int[] coins, int money) {
+        int coinsNum = coins.length; //零钱的种类数量
         minCoinChanges[0] = 0; //0元需要0个硬币，这是初始值
         // 对每一分钱都找零，即保存子问题的解以备用，即填表
         for (int cents = 1; cents <= money; cents++) {
@@ -31,10 +34,10 @@ public class CoinChange {
             int minCoins = cents;
 
             // 遍历每一种面值的硬币，看是否可作为找零的其中之一
-            for (int kind = 0; kind < coinsValueNum; kind++) {
+            for (int kind = 0; kind < coinsNum; kind++) {
                 // 若当前面值的硬币小于当前的cents则分解问题并查表
-                if (values[kind] <= cents) {
-                    int temp = minCoinChanges[cents - values[kind]] + 1;
+                if (coins[kind] <= cents) {
+                    int temp = minCoinChanges[cents - coins[kind]] + 1;
                     if (temp < minCoins) {
                         minCoins = temp;
                     }
@@ -46,15 +49,36 @@ public class CoinChange {
         }
     }
 
+    public int coinChange2(int[] coins, int amount) {
+        if (coins == null || coins.length == 0 || amount == 0) {
+            return 0;
+        }
+        int[] dp = new int[amount + 1];
+        for (int i = 1; i <= amount; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int j = 0; j < coins.length; j++) {
+                if (coins[j] <= i && dp[i - coins[j]] != Integer.MAX_VALUE) {
+                    dp[i] = Integer.min(dp[i], 1 + dp[i - coins[j]]);
+                }
+            }
+        }
+        if (dp[amount] == Integer.MAX_VALUE) {
+            return -1;
+        } else {
+            return dp[amount];
+        }
+    }
+
     @Test
     public void test() {
         // 硬币面值预先已经按降序排列
-        int[] coinValue = new int[] {1, 2, 5, 10};
+        int[] coins = new int[] {1, 2, 5, 10};
         // 需要找零的面值
         int money = 18;
         // 保存每一个面值找零所需的最小硬币数，0号单元舍弃不用，所以要多加1
         int[] minCoinChanges = new int[money + 1];
-        makeChange(minCoinChanges, coinValue, money);
+        coinChange(minCoinChanges, coins, money);
+        System.out.println(coinChange2(coins, money));
     }
 
 }

@@ -91,7 +91,7 @@ public class LCSubstring {
 
     /**
      * 和{@link LCS#longestCommonSubsequenceDP(String, String)}非常类似，只是当i>0,j>0并且Xi!=Yj时，需要归零，
-     * 并且要记录最长子串的end和长度。
+     * 并且要记录最长子串的end和长度。时间复杂度 O(N*M)
      * <pre>
      *            0                               if i = 0 or j = 0
      * C[i, j] =  C[i - 1, j - 1] + 1             if i,j > 0 and Xi = Yj

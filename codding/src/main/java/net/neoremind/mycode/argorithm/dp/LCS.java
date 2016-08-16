@@ -8,7 +8,9 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * 最长公共子序列，和0/1背包问题非常相似，同时找子序列还用到了回溯法backtrack
+ * Longest Common Subsequence, LCS, 最长公共子序列
+ * <p>
+ * 和0/1背包问题非常相似，同时找子序列还用到了回溯法backtrack
  *
  * @author zhangxu
  * @see https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
@@ -18,7 +20,7 @@ public class LCS {
     /**
      * 递推式如下，初值是第一行和第一列为0
      * 不断的遍历两个字符串，维护i和j两个索引，先遍历X串的某行，如果发现相同char的则最长的串+1，并且记录C[i][j]是这个长度，
-     * 然后下一个j，知道遍历完毕这行，然后下一行
+     * 然后下一个j，直到遍历完毕这行，然后下一行
      * <pre>
      *            0                               if i = 0 or j = 0
      * C[i, j] =  C[i - 1, j - 1] + 1             if i,j > 0 and Xi = Yj

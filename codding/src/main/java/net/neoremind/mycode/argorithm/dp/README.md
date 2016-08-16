@@ -9,9 +9,10 @@
 * 最长递增子序列(Longest Increasing Subsequence,LIS)[OK-leetcode300]
 * Fibonacci[OK]
 * Climbing stairs[OK]
+* 最长公共子序列(Longest Common Subsequence,LCS)[OK]
+* 最长公共子串(Longest Common Substring,LCS)[OK]
 
 ### 未解决
-* 最长公共子序列(Longest Common Subsequence,LCS)
 * Max sum sub matrix
 
 https://github.com/careermonk/DataStructureAndAlgorithmsMadeEasyInJava/blob/master/src/chapter19dynamicprogramming/MaximumSumSubMatrix.java

@@ -122,6 +122,9 @@ public class LCS {
         String a = "abcdefg";
         String b = "xjkcdealcefgk";
         assertThat(longestCommonSubsequenceDP(a, b), Matchers.is(5)); //acefg
+        a = "cnblogs";
+        b = "belong";
+        assertThat(longestCommonSubsequenceDP(a, b), Matchers.is(4)); //blog
     }
 
 }

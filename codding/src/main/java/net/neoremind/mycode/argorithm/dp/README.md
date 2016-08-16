@@ -11,6 +11,8 @@
 * Climbing stairs[OK]
 * 最长公共子序列(Longest Common Subsequence,LCS)[OK]
 * 最长公共子串(Longest Common Substring,LCS)[OK]
+* 子序列个数[OK]
+* 字符串相似度/编辑距离（edit distance）[OK]
 
 ### 未解决
 * Max sum sub matrix
@@ -23,4 +25,3 @@ https://github.com/careermonk/DataStructureAndAlgorithmsMadeEasyInJava/blob/mast
 
 * 矩阵链乘法
 
-* 字符串相似度/编辑距离（edit distance）

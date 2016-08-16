@@ -73,6 +73,18 @@ Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
 
+### [72. Edit Distance](https://leetcode.com/problems/edit-distance/)
+
+HARD, DP
+
+初始条件、递推式
+```
+d[i][0] = i
+d[0][j] = j
+d[i][j] = d[i-1][j-1] if word1[i-1]=word2][j-1]
+d[i][j] = min(d[i-1][j-1] + 1, d[i-1][j] + 1, d[i][j-1] + 1)
+```
+
 ### [70. Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
 
 E, DP

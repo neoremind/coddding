@@ -313,10 +313,10 @@ dfs(step0) {
 伪代码如下：
 ```
 a boolean[n][n] array to simulate a chessboard
-```
 chessboard[row][column] = true is for putting a queen
+```
 
-possibility checker function:
+检查是否可以构成不互相攻击的皇后函数：
 ```
 function check_can_put(row, col)
 
@@ -328,10 +328,10 @@ function check_can_put(row, col)
 ```
 
 这里有一个技巧，就是判断是否皇后合法的函数里面，可以按照如下的公式进行计算
-主对角线（45度）上的i - j为定值
-辅对角线（135度）上的i + j为定值，因此可以做一个数组来记录，省去多次循环判断。
+* 主对角线（45度）上的i - j为定值
+* 辅对角线（135度）上的i + j为定值，因此可以做一个数组来记录，省去多次循环判断。
 
-DFS function
+DFS和回溯解法的代码骨架：
 ```
 function N_queen(row)
     if row > N

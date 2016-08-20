@@ -65,7 +65,7 @@ import org.junit.Test;
  * </pre>
  *
  * @author zhangxu
- * @see https://leetcode.com/submissions/detail/70996495/
+ * @see https://leetcode.com/problems/n-queens/
  */
 public class NQueens {
 

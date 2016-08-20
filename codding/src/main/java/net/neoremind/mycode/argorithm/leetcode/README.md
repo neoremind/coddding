@@ -278,6 +278,27 @@ int maxSubArray(int *A,int l,int r) {
 }
 ```
 
+### [52. N-Queens II](https://leetcode.com/problems/n-queens-ii/)
+
+H, Backtracking
+
+和51题类似，不用输出解，只要输出多少种解法即可。
+
+回溯的时间复杂度比较高，试探的成本比较高，因此如下到计算16个皇后，是O(16!)是非常大的，(2^32)^2
+```
+assertThat(totalNQueens(4), Matchers.is(2));
+assertThat(totalNQueens(5), Matchers.is(10));
+assertThat(totalNQueens(6), Matchers.is(4));
+assertThat(totalNQueens(7), Matchers.is(40));
+assertThat(totalNQueens(8), Matchers.is(92));
+assertThat(totalNQueens(9), Matchers.is(352));
+assertThat(totalNQueens(10), Matchers.is(724));
+assertThat(totalNQueens(11), Matchers.is(2680));
+assertThat(totalNQueens(12), Matchers.is(14200));
+assertThat(totalNQueens(13), Matchers.is(73712));
+assertThat(totalNQueens(14), Matchers.is(365596));  // so slow....
+```
+
 ### [51. N-Queens](https://leetcode.com/problems/n-queens/)
 
 H, Backtracking
@@ -345,6 +366,69 @@ function N_queen(row)
             // take queen away
             chessboard[row][col] = false
 ```
+
+### [37. Sudoku Solver](https://leetcode.com/problems/sudoku-solver/)
+
+H, Backtracking Hash Table
+
+利用回溯法，详细见N-Queens问题的接替模板，是一个递归的过程。注意这里的返回true或者false，当所有值都填补进去的时候，
+需要返回false，因为无解，就需要回溯到上次，换一个数字试试。
+
+这里需要幸好我们已经有了is valid soduku的算法。
+
+```
+public boolean doSolveSudoku(char[][] board) {
+    for (int i = 0; i < board.length; i++) {
+        for (int j = 0; j < board[0].length; j++) {
+            if (board[i][j] != '.') {
+                continue;
+            } else {
+                for (int k = 1; k < 10; k++) {
+                    board[i][j] = (char) ('0' + k);
+                    if (isValid(board)) {
+                        if (doSolveSudoku(board)) {
+                            return true;
+                        }
+                    }
+                    board[i][j] = '.';
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+```
+
+### [36. Valid Sudoku](https://leetcode.com/problems/valid-sudoku/)
+
+E, hash table
+
+这道题是Sudoku Solver的一个子问题，在解数独的时候我们需要验证当前数盘是否合法。其实思路比较简单，也就是用brute
+force。对于每一行，每一列，每个九宫格进行验证，总共需要27次验证，每次看九个元素。所以时间复杂度就是O(3*n^2), n=9。代码如下：
+
+行列比较好说。直接双层for循环。
+
+对于某个小九宫格，需要有点技巧：
+
+```
+for (int block = 0; block < 9; block++) {
+    boolean[] map = new boolean[9];
+    for (int i = block / 3 * 3; i < block / 3 * 3 + 3; i++) {
+        for (int j = block % 3 * 3; j < block % 3 * 3 + 3; j++) {
+            if (board[i][j] != '.') {
+                if (map[(int) (board[i][j] - '1')]) {
+                    return false;
+                }
+                map[(int) (board[i][j] - '1')] = true;
+            }
+        }
+    }
+}
+```
+
+
 
 ### [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
 

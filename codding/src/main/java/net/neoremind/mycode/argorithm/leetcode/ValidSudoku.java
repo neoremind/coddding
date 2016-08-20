@@ -21,6 +21,7 @@ import org.junit.Test;
  * force。对于每一行，每一列，每个九宫格进行验证，总共需要27次验证，每次看九个元素。所以时间复杂度就是O(3*n^2), n=9。代码如下：
  *
  * @author zhangxu
+ * @see https://leetcode.com/problems/valid-sudoku/
  */
 public class ValidSudoku {
 
@@ -47,7 +48,6 @@ public class ValidSudoku {
             boolean[] map = new boolean[9];
             for (int j = 0; j < 9; j++) {
                 if (board[j][i] != '.') {
-                    System.out.println(j + "\t" + i);
                     if (map[(int) (board[j][i] - '1')] == true) {
                         return false;
                     }

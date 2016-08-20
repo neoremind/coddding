@@ -280,7 +280,7 @@ int maxSubArray(int *A,int l,int r) {
 
 ### [51. N-Queens](https://leetcode.com/problems/n-queens/)
 
-Backtracking
+H, Backtracking
 
 1、暴力解法，8个皇后64种位置，那么可以O(64^8)时间复杂度解决，理论可行，实际不可行。
 

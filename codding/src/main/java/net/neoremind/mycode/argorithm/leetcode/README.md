@@ -228,6 +228,7 @@ Given
 ```
 
 find SEECFBC
+
 ![](http://neoremind.com/wp-content/uploads/2016/08/wordseach2.gif)
 
 This time we check from the top-left, goes to the right and then next row, one by one until we find the S which located at last of row2. Then start to test from the right, left, down and up position to see if the element is the next expected character.
@@ -241,6 +242,7 @@ Given
 ```
 
 find ABCESEEEFS
+
 ![](http://neoremind.com/wp-content/uploads/2016/08/wordsearch3.gif)
 
 This time we deliberately goes to the wrong triple EEE then correct it, this process shows the core of backtracking.

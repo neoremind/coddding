@@ -973,6 +973,29 @@ for (int block = 0; block < 9; block++) {
 }
 ```
 
+### [24. Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/)
+
+E, Linked list
+
+一次性写对，画个图什么就都知道了。
+
+还是利用一个dummy作为开头。这里注意使用了curr.next.next.next看着恐怖，但是逻辑正确即可。
+
+```
+ListNode dummy = new ListNode(0);
+dummy.next = head;
+ListNode curr = dummy;
+while (curr.next != null && curr.next.next != null) {
+    ListNode t = curr.next.next;
+    ListNode temp = curr.next.next.next;
+    curr.next.next.next = curr.next;
+    curr.next.next = temp;
+    curr.next = t;
+    curr = curr.next.next;
+}
+return dummy.next;
+```
+
 ### [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)
 
 M, Backtracking

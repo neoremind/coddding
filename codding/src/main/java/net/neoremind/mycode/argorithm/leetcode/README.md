@@ -61,6 +61,46 @@ for(int i=0; i<n; ++i){  // 遍历
 }
 ```
 
+### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
+
+M, Backtracking, Array
+
+给一个k，表示数组大小，然后从1-9中挑出不重复的数字，使这些数字的和等于target，即n。和题目39，40非常类似，只不过给定的数组是[1..9]，并且只允许挑固定k个数字，不允许重复。
+
+Example:
+```
+Input: k = 3, n = 9
+```
+Output:
+```
+[[1,2,6], [1,3,5], [2,3,4]]
+```
+
+模板和N-Queens完全一样，这是解决回溯问题的标准模板。一切都是套路！！
+
+```
+public List<List<Integer>> combinationSum3(int k, int n) {
+    List<List<Integer>> list = new ArrayList<>();
+    backtrack(list, new ArrayList<>(), k, n, 1);
+    return list;
+}
+
+private void backtrack(List<List<Integer>> list, List<Integer> tempList, int k, int remain, int currDigit) {
+    if (k < 0 || remain < 0) {
+        return;
+    } else if (remain == 0 && k == 0) {  // 去掉这个K==0就会输出各种组合，不会保证有K个数字
+        list.add(new ArrayList<>(tempList));
+    } else {
+        for (int i = currDigit; i < 10; i++) {
+            tempList.add(i);
+            backtrack(list, tempList, k - 1, remain - i, i + 1);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+```
+
+
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
 M, Array
@@ -72,6 +112,340 @@ String[] array = Arrays.stream(num).mapToObj(String::valueOf).toArray(String[]::
 Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
+
+### [93. Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
+
+M, Backtracking, String
+
+和N-Queens的回溯模板一样，一切都是套路！！！
+
+```
+public List<String> restoreIpAddresses(String s) {
+    List<String> result = new ArrayList<>();
+    backtrack(result, new ArrayList<>(), s, 0, s.length(), 0);
+    return result;
+}
+public void backtrack(List<String> result, List<Integer> tempList, String s,
+                      int start, int length, int maskNum) {
+    if (maskNum == 4 && start == length) {
+        add templist to result
+    }
+    if (maskNum > 4) {
+        return;
+    }
+    for (int j = 1; j < 4 && start + j <= length; j++) {
+        String num = s.substring(start, start + j);
+        if (isValid(num)) {  // 如果 num.startsWith("0") && num.length() > 1 其他情况 n >= 0 && n < 256
+            tempList.add(Integer.parseInt(num));
+            backtrack(result, tempList, s, start + j, length, maskNum + 1);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+```
+
+### [90. Subsets II](https://leetcode.com/problems/subsets-ii/)
+
+M, Backtracking, Array
+
+有重复数组子集，和题目78很类似，使用方法1回溯DFS，那么需要在加一个判断条件
+
+If nums = [1,2,2], a solution is:
+```
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+```
+
+注意先排序，然后加入这个判断，这个和题目39，40计算子元素和的组合类似。
+```
+if (i > start && nums[i] == nums[i - 1])
+    continue;
+```
+
+### [89. Gray Code](https://leetcode.com/problems/gray-code/)
+
+M, Backtracking
+
+这题完全无思路，从[wikipedia](https://en.wikipedia.org/wiki/Gray_code#Converting_to_and_from_Gray_code
+)拷贝的一个函数实现
+```
+Gray(N) = (n >> 1) XOR n
+```
+这里注意异或的使用
+```
+5^5=0
+5^0=5
+1）^异或操作符：两个位相同为0，相异为1
+2）一个数异或本身恒等于0，如5^5恒等于0
+3）一个数异或0恒等于本身，如5^0恒等于5
+异或通常用于数字交换
+a ^= b;
+b ^= a;
+a ^= b;
+```
+
+解法如下：
+```
+return IntStream.range(0, (int) Math.pow(2, n))
+        .map(i -> (i >> 1) ^ i)
+        .boxed()
+        .collect(Collectors.toList());
+```
+
+### [79. Word Search](https://leetcode.com/problems/word-search/)
+
+M, Array Backtracking
+
+二维char数组内找指定的string词。
+
+这是一道我把自己的解法提到Discussion里面的题目，[链接点此](https://discuss.leetcode.com/topic/55137/java-backtracking-solution-with-gif-motion-picture-to-show-every-step)
+
+Example1:
+Given
+```
+{'A', 'B', 'C', 'E'}
+{'S', 'F', 'C', 'S'}
+{'A', 'D', 'E', 'E'}
+```
+
+find ABCCED
+
+![](http://neoremind.com/wp-content/uploads/2016/08/wordsearch.gif)
+
+
+Example2:
+Given
+```
+{'A', 'B', 'C', 'E'}
+{'S', 'F', 'C', 'S'}
+{'A', 'D', 'E', 'E'}
+```
+
+find SEECFBC
+![](http://neoremind.com/wp-content/uploads/2016/08/wordseach2.gif)
+
+This time we check from the top-left, goes to the right and then next row, one by one until we find the S which located at last of row2. Then start to test from the right, left, down and up position to see if the element is the next expected character.
+
+Example3:
+Given
+```
+{'A', 'B', 'C', 'E'}
+{'S', 'F', 'E', 'S'}
+{'A', 'D', 'E', 'E'}
+```
+
+find ABCESEEEFS
+![](http://neoremind.com/wp-content/uploads/2016/08/wordsearch3.gif)
+
+This time we deliberately goes to the wrong triple EEE then correct it, this process shows the core of backtracking.
+
+```
+public boolean exist(char[][] board, String word) {
+    // 处理word为空或者长度等于0的情况
+
+    boolean[][] visited = new boolean[board.length][board[0].length];
+
+    char[] words = word.toCharArray();
+    for (int i = 0; i < board.length; i++) {
+        for (int j = 0; j < board[0].length; j++) {
+            if (backtrack(board, words, i, j, 0, visited)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+public boolean backtrack(char[][] board, char[] words, int x, int y, int step, boolean[][] visited) {
+    if (step == words.length) {
+        return true;
+    }
+    if (x < 0 || x == board.length || y < 0 || y == board[0].length) {
+        return false;
+    }
+    if (visited[x][y]) {
+        return false;
+    }
+    if (words[step] != board[x][y]) {
+        return false;
+    }
+    visited[x][y] = true;
+    boolean isAnyOk = backtrack(board, words, x, y + 1, step + 1, visited) ||
+            backtrack(board, words, x, y - 1, step + 1, visited) ||
+            backtrack(board, words, x + 1, y, step + 1, visited) ||
+            backtrack(board, words, x - 1, y, step + 1, visited);
+    visited[x][y] = false;
+    return isAnyOk;
+}
+```
+
+### [78. Subsets](https://leetcode.com/problems/subsets/)
+
+M, Array Backtracking Bit Manipulation
+
+无重复数组所有子集合。
+
+For example,
+If nums = [1,2,3], a solution is:
+```
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+```
+
+这是一道很有意思的题目，首先先用数学的角度分析，子集合，就是从一堆数里面，做一些选择，所有的选择如下：
+* 不选
+* 选一个
+* 选两个
+* ...
+* 选N个
+
+那么公式就是
+```
+       N     N-1     N-2          1    0
+NUM = C  + C     + C     + .... C   + C
+       N     N       N            N    N
+```
+那么，例子中就是N=3，NUM=1+3+3+1=8
+
+N=4, NUM=1+4+6+4+1=16
+
+正好是2次幂，当然这个只是分析，写代码有三种实现。
+
+1）Recursive (Backtracking, DFS)
+
+没有退出条件，“来者不拒”
+```
+public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> list = new ArrayList<>();
+    Arrays.sort(nums);
+    dfs(list, new ArrayList<>(), nums, 0);
+    return list;
+}
+
+private void dfs(List<List<Integer>> list, List<Integer> tempList, int[] nums, int start) {
+    list.add(new ArrayList<>(tempList));
+    for (int i = start; i < nums.length; i++) {
+        tempList.add(nums[i]);
+        dfs(list, tempList, nums, i + 1);
+        tempList.remove(tempList.size() - 1);
+    }
+}
+```
+
+2）Bit Manipulation
+很巧妙
+Each element is either in the subset or not
+
+* : element is in subset
+* -: element NOT in subset
+
+so subsets of [1,2,3] are
+```
+[-,-,*] = [3]
+[*,-,-] = [1]
+[-,*,-] = [2]
+[*,*,*] = [1,2,3]
+[*,-,*] = [1,3]
+[-,*,*] = [2,3]
+[*,*,-] = [1,2]
+[-,-,-] = []
+```
+use binary to repsent only two states
+```
+001 = [3]
+100 = [1]
+010 = [2]
+111 = [1,2,3]
+101 = [1,3]
+011 = [2,3]
+110 = [1,2]
+000 = []
+```
+
+```
+public List<List<Integer>> subsets2(int[] S) {
+    Arrays.sort(S);
+    int totalNumber = 1 << S.length;
+    List<List<Integer>> collection = new ArrayList<List<Integer>>(totalNumber);
+    for (int i = 0; i < totalNumber; i++) {
+        List<Integer> set = new LinkedList<Integer>();
+        for (int j = 0; j < S.length; j++) {
+            if ((i & (1 << j)) != 0) {
+                set.add(S[j]);
+            }
+        }
+        collection.add(set);
+    }
+    return collection;
+}
+```
+
+3）Iterative
+
+This problem can also be solved iteratively. Take [1, 2, 3] in the problem statement as an example. The processof generating all the subsets is like:
+
+Initially: [[]]
+
+Adding the first number to all the existed subsets: [[], [1]];
+
+Adding the second number to all the existed subsets: [[], [1], [2], [1, 2]]
+
+Adding the third number to all the existed subsets: [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]].
+
+### [77. Combinations](https://leetcode.com/problems/combinations/)
+
+M, Backtracking
+
+给定一个数字n，表示只能从1..n里面选择数字，然后只能选择k个数字，列出所有的组合。
+
+If n = 4 and k = 2, a solution is:
+```
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+```
+
+和题目39，40的回溯模板一模一样，一切都是套路！！！
+
+```
+public List<List<Integer>> combine(int n, int k) {
+    List<List<Integer>> result = new ArrayList<>();
+    backtrack(n, k, 1, new ArrayList<>(2), result);
+    return result;
+}
+
+private void backtrack(int n, int k, int i, List<Integer> tempList, List<List<Integer>> result) {
+    if (tempList.size() == k) {
+        result.add(new ArrayList<>(tempList));
+    } else {
+        for (int j = i; j <= n; j++) {
+            tempList.add(j);
+            backtrack(n, k, j + 1, tempList, result);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+```
+
 
 ### [72. Edit Distance](https://leetcode.com/problems/edit-distance/)
 
@@ -179,6 +553,37 @@ for (int i = 1; i < m; i++)
         arr[i][j] = arr[i][j - 1] + arr[i - 1][j];  // 上面+左面的cell路径和
     }
 ```
+
+### [60. Permutation Sequence](https://leetcode.com/problems/permutation-sequence/)
+
+M, Backtracking, Math
+
+给定一个排列，找全排列的下一个值，这个在C++的STL库里有标准的next_permutation函数，这里就是一个实现。
+
+说实话，这是个技巧活，和Gray Code这道题很像，根本想不出来:-(
+
+using wikipedia example
+
+2982th permutation of [1, 2, 3, 4, 5, 6, 7].
+
+Convert k to factorial based number
+```
+k = 2982
+n = 7
+```
+start form n - 1
+```
+2982 / 6! = 4 and remainder 102     |  4
+102  / 5! = 0 and remainder 102     |  0
+102  / 4! = 4 and remainder 6       |  4
+6    / 3! = 1 and remainder 0       |  1
+0    / 2! = 0 and remainder 0       |  0
+0    / 1! = 0 and remainder 0       |  0
+0    / 0! = 0 and remainder 0       |  0
+```
+So, 2982(10base) = 4041000(!base)
+
+怎么把这个4041000还原回来看这个帖子吧，[点击此](http://leetcode.tgic.me/permutation-sequence/index.html)。
 
 ### [53. Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)
 
@@ -367,6 +772,144 @@ function N_queen(row)
             chessboard[row][col] = false
 ```
 
+### [47. Permutations II](https://leetcode.com/problems/permutations-ii/)
+
+M, Backtracking
+
+有重复数全排列问题。
+
+和46非常类似。在继续DFS之前要判断下，第一自己跟自己比的时候不判断是否相同，只判断后面的数和固定的数比较。从start即i开始往后看，算法的基本思路是从start开始依次和后面的数字交换，然后递归全排列，后面的数字就是j，如果j在之前交换过了，就没必要做了，否则就重复了。
+
+```
+private boolean isNotSame(int[] nums, int i, int j) {
+    for (int k = i; k < j; k++) {
+        if (nums[k] == nums[j]) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+### [46. Permutations](https://leetcode.com/problems/permutations/)
+
+M, Backtracking
+
+无重复数全排列问题。
+
+全排列的算法是一个基础，排列算法在它的基础上增加了选数过程（select），即先选后排。
+
+这里面主要是用到了一个递归的思想， 利用递归法来做这题关键下几点：
+* 1.普通情况-取出序列中的一个数并且将剩下的序列全排列
+* 2.特殊情况-序列中只剩一个数，则全排列就是其自身。将增个获得的序列输出。
+* 3.在不止一个数的情况下，该位要分别交换剩下的数（例如：两个数A，B 则有两种情况，一个是AB 一个是BA）
+
+全排列就是从第一个数字起每个数分别与它后面的数字交换。
+
+例如1,2,3
+* 步骤1.1）1和1交换（实际没动），然后加上2,3的全排列即可。
+* 步骤1.2）1和2交换，然后加上1,3的全排列即可。
+* 步骤1.3）1和3交换，然后加上2,1的全排列即可。
+
+计算后面的排列是一个递归的过程，例如计算2,3的排列。
+* 步骤2.1），2和2交换（实际没动），然后加上3的全排列即可，就是本身。
+* 步骤2.2），2和3交换，然后加上2的全排列即可，就是本身。
+
+所以步骤1.1加上子步骤2.1和2.2后，得出的结果如下： [1, 2, 3] [1, 3, 2]
+
+全排列的数学公式如下: 从n个不同的元素中任取m个，按照一定的顺序排成一列，极为Pnm 当n=m时称作全排列，记为Pnn
+
+排列数公式：
+```
+n!=1*2*3...*n, 规定0!=1
+Pnm=n! / (n-m)! = n(n-1)(n-2)...(n-m+1)
+Pnn=n!
+```
+所以1,2,3的全排列有3!种，即6种
+
+```
+public void permuation(int[] nums) {
+    doPermuation(nums, 0, nums.length);
+}
+
+public void doPermuation(int[] nums, int m, int len) {
+    if (m == len) {
+        System.out.println(Arrays.toString(nums));
+    } else {
+        for (int i = m; i < len; i++) {
+            swap(nums, i, m);
+            doPermuation(nums, m + 1, len);
+            swap(nums, i, m);
+        }
+    }
+}
+```
+
+### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
+
+M, Backtracking, Array
+
+和题目39类似，只不过这回不允许重复使用数字。
+
+在遍历每一个数字的时候加一个条件，首先start根自己不能算重复，之和前面的：
+```
+if (i > start && nums[i] == nums[i - 1]) {
+    continue; // skip duplicates
+}
+```
+同时，回溯的时候的start要+1，因为不允许重复使用某个数字了，注意结尾参数是`i+1`。一切都是套路！！
+```
+backtrack(list, tempList, nums, remain - nums[i], i + 1);
+```
+
+### [39. Combination Sum](https://leetcode.com/problems/combination-sum/)
+
+M, Backtracking, Array
+
+给一个数组和一个target，从数组中找一些“组合”，注意不是“排列”，使这些数字的和等于target。
+
+这道题目允许数字重复利用。
+
+given candidate set [2, 3, 6, 7] and target 7,
+A solution set is:
+```
+[
+  [7],
+  [2, 2, 3]
+]
+```
+
+注意这里三点：
+* 退出条件是要不然相等、要不然减过头了。
+* 必须先排序！一是为了加和考虑，二来为40题中解决重复数字的问题。
+* `tempList.remove(tempList.size() - 1)`这个技巧是删除最后一个元素，需要回溯到之前的状态。
+
+
+```
+public List<List<Integer>> combinationSum(int[] nums, int target) {
+    List<List<Integer>> list = new ArrayList<>();
+    Arrays.sort(nums); // 先排序！！！
+    backtrack(list, new ArrayList<>(), nums, target, 0);
+    return list;
+}
+
+private void backtrack(List<List<Integer>> list, List<Integer> tempList, int[] nums, int remain, int start) {
+    if (remain < 0) {
+        return;
+    } else if (remain == 0) {
+        list.add(new ArrayList<>(tempList));
+    } else {
+        for (int i = start; i < nums.length; i++) {
+            tempList.add(nums[i]);
+            backtrack(list, tempList, nums, remain - nums[i], i); // not i + 1 because we can reuse same elements
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
+
+```
+
+
 ### [37. Sudoku Solver](https://leetcode.com/problems/sudoku-solver/)
 
 H, Backtracking Hash Table
@@ -428,6 +971,45 @@ for (int block = 0; block < 9; block++) {
 }
 ```
 
+### [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)
+
+M, Backtracking
+
+以n=3为例，生成结果如下：
+```
+((()))
+(()())
+(())()
+()(())
+()()()
+```
+
+1）基本思想就是不断的添加左括号 (，直到添加不了了，然后补右括号。
+2）推一栈帧，补齐一个右括号)，然后剩下的继续如栈，重复1的操作。
+
+这个步骤比较抽象，较难理解:-(
+
+```
+public List<String> generateParenthesis(int n) {
+    List<String> list = new ArrayList<>();
+    backtrack(list, "", 0, 0, n);
+    return list;
+}
+
+public void backtrack(List<String> list, String str, int open, int close, int max) {
+    if (str.length() == max * 2) {
+        list.add(str);
+        return;
+    }
+    if (open < max) {
+        backtrack(list, str + "(", open + 1, close, max);
+    }
+    if (close < open) {
+        backtrack(list, str + ")", open, close + 1, max);
+    }
+}
+```
+
 
 
 ### [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
@@ -455,6 +1037,9 @@ E，linked list，two pointers
 ### [17. Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)
 
 M, Backtracking String
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
 
 回溯法 + DFS，类似于笛卡尔乘积的方式
 ```

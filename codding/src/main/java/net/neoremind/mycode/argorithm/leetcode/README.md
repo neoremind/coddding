@@ -162,6 +162,29 @@ Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
 
+### [151. Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)
+
+M, String
+
+利用reverse string 344题的方法，步骤如下：
+```
+* 1. trim leading, trailing spaces
+* 2. handle s.length == 0
+* 3. trim inner multiple spaces
+    // barrier - 1 is the trimmed ending index
+    // like 316题 RemoveDuplicatesFromSortedArray
+    int barrier = 1;
+    for (int i = 1; i < str.length; i++)
+        if (str[i] == ' ' && str[i] == str[i - 1])
+            continue;
+        else
+            str[barrier++] = str[i];
+* 4. reverse(str, 0, barrier - 1);
+* 5. reverse each word
+* 6. reverse the last word
+* 7. return new String(str, 0, barrier);
+```
+
 ### [93. Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
 
 M, Backtracking, String

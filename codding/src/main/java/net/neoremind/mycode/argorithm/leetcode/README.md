@@ -1,5 +1,39 @@
 # Leetcode records
 
+### [344. Reverse String](https://leetcode.com/problems/reverse-string/)
+
+E, String, Two pointer
+
+多种方式，
+1）双指针，注意这里的技巧是用了异或来做交换，而不是临时变量。
+```
+char[] str = s.toCharArray();
+int begin = 0;
+int end = s.length() - 1;
+while (begin < end) {
+  str[begin] = (char) (str[begin] ^ str[end]);
+  str[end] = (char) (str[begin] ^ str[end]);
+  str[begin] = (char) (str[end] ^ str[begin]);
+  begin++;
+  end--;
+}
+return new String(str);
+```
+
+2）栈，FILO
+
+3）String += every char left
+
+4）用JDK函数，new StringBuilder(s).reverse().toString()
+
+5）比较巧妙的是还可以用分治算法
+```
+String left = s.substring(0, length / 2);
+String right = s.substring(length / 2, length);
+return reverse(right) + reverse(left);
+```
+
+
 ### [322. Coin Change](https://leetcode.com/problems/coin-change/)
 
 M, Dynamic Programming

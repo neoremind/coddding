@@ -1,5 +1,20 @@
 # Leetcode records
 
+### [345. Reverse Vowels of a String](https://leetcode.com/problems/reverse-vowels-of-a-string/)
+
+E, String, Two pointer
+
+和344非常类似，用双指针即可。
+
+```
+while(start<end && !vowels.contains(chars[start]+"")){
+    start++;
+}
+while(start<end && !vowels.contains(chars[end]+"")){
+    end--;
+}
+```
+
 ### [344. Reverse String](https://leetcode.com/problems/reverse-string/)
 
 E, String, Two pointer

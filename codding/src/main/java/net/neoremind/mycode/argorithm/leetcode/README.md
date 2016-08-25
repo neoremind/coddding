@@ -1045,6 +1045,32 @@ for (int block = 0; block < 9; block++) {
 }
 ```
 
+### [28. Implement strStr()](https://leetcode.com/problems/implement-strstr/)
+
+E, Two Pointer, String
+
+两种解法：
+1）Brute force
+
+JDK的`String.indexOf(..)`的实现就是这个
+
+```
+return 0 if needle is empty
+return -1 if needle is longer than haystack
+for each char in haystack[0 .. haystack.len - needle.len + 1]
+    j=0
+    while haystack[i+j] == target[j]
+        j++
+    if j == needle.len
+        return char index in haystack
+return -1;
+```
+
+2）KMP算法
+
+
+
+
 ### [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
 
 E, Array, Two pointers

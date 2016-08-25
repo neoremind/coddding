@@ -6,6 +6,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
+/**
+ * 摘自http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/LockSupport.html
+ */
 public class FIFOMutex {
 
     private final AtomicBoolean locked = new AtomicBoolean(false);

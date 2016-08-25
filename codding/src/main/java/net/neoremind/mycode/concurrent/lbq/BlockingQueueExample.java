@@ -1,4 +1,4 @@
-package net.neoremind.mycode.concurrent.juc.colletions.lbq;
+package net.neoremind.mycode.concurrent.lbq;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

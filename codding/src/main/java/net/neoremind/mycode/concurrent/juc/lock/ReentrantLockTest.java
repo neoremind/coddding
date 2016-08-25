@@ -44,9 +44,11 @@ public class ReentrantLockTest {
 
         executor.execute(new Worker("A"));
         executor.execute(new Worker("B"));
+        executor.execute(new Worker("C"));
+        executor.execute(new Worker("D"));
 
         try {
-            executor.awaitTermination(5, TimeUnit.SECONDS);
+            executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }

@@ -973,6 +973,25 @@ for (int block = 0; block < 9; block++) {
 }
 ```
 
+### [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
+
+E, Array, Two pointers
+
+双指针，维护一个slow指针，一旦相同就i++，slow原地不动，等着大的i赋值过来，最后返回的length就是slow，时间复杂度是O(N)，如果每次都移动那么就是O(N!)。
+
+```
+if (nums.length < 2) {
+    return 1;
+}
+int slow = 1;
+for (int i = 1; i < nums.length; i++) {
+    if (nums[i] != nums[slow - 1]) {
+        nums[slow++] = nums[i];
+    }
+}
+return slow;
+```
+
 ### [24. Swap Nodes in Pairs](https://leetcode.com/problems/swap-nodes-in-pairs/)
 
 E, Linked list

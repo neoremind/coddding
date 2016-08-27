@@ -520,6 +520,51 @@ private void backtrack(int n, int k, int i, List<Integer> tempList, List<List<In
 }
 ```
 
+### [74. Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/)
+
+M, Array Binary Search
+
+方法1：
+剑指offer当中的题目3：二维数组中的查询。这个解法是从右上角开始找，如果target小于右上角的，则col--，如果大于右上角，则row++，直到数组越界或者找到target为止。
+
+方法2：不要看做是个二维数组，实际这就是一个sorted list！用二分查找。
+```
+int begin = 0;
+int end = m * n - 1;
+while (begin <= end) {
+    int mid = (begin + end) >> 1;
+    if (matrix[mid / n][mid % n] < target) {
+        begin = mid + 1;
+    } else if (matrix[mid / n][mid % n] > target) {
+        end = mid - 1;
+    } else {
+        return true;
+    }
+}
+return false;
+```
+
+注意二分的模板是这样的，这是从JDK里拷贝出来的：
+```
+searchLoop(arr, 0, arr.length - 1, target)
+
+private int searchLoop(int[] arr, int start, int end, int target) {
+    while (start <= end) {
+        int mid = (start + end) >>> 1;
+        int midVal = arr[mid];
+
+        if (midVal < target) {
+            start = mid + 1;
+        } else if (midVal > target) {
+            end = mid - 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+```
+
 
 ### [72. Edit Distance](https://leetcode.com/problems/edit-distance/)
 

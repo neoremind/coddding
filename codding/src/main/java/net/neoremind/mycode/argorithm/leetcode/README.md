@@ -110,6 +110,64 @@ for(int i=0; i<n; ++i){  // 遍历
 }
 ```
 
+### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
+
+M, Binary Search, Divide and Conquer
+
+和题目74类似。只不过不能看做一个sorted list，但是方法1还是通用适用的。
+
+方法1：
+剑指offer当中的题目3：二维数组中的查询的变种。可以用一个通用的方法：这个解法是从右上角开始找，如果target小于右上角的，则col--，如果大于右上角，则row++，直到数组越界或者找到target为止。
+
+方法2：分治算法。
+```
+zone 1      zone 2
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+-----------------------
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+*  *  *  * | *  *  *  *
+  zone 3      zone 4
+```
+We then compare the element in the center of the matrix with the target. There are three possibilities:
+
+center < target. In this case, we discard zone 1 because all elements in zone 1 are less than target.
+
+center > target. In this case, we discard zone 4.
+
+center == target. return true.
+
+```
+boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int target) {
+    if (stX >= edX || stY >= edY)
+        return false;
+    int max = matrix[edX - 1][edY - 1];
+    int min = matrix[stX][stY];
+    if (min <= target && target <= max) {
+        int mdX = (stX + edX) / 2;
+        int mdY = (stY + edY) / 2;
+        if (matrix[mdX][mdY] > target) { //ignore zone 4
+            return searchMatrixDAC(matrix, stX, stY, mdX, mdY, target) ||
+                    searchMatrixDAC(matrix, stX, mdY, mdX, edY, target) ||
+                    searchMatrixDAC(matrix, mdX, stY, edX, mdY, target);
+        } else if (matrix[mdX][mdY] < target) { //ignore zone 1
+            return searchMatrixDAC(matrix, stX, mdY, mdX, edY, target) ||
+                    searchMatrixDAC(matrix, mdX, stY, edX, mdY, target) ||
+                    searchMatrixDAC(matrix, mdX, mdY, edX, edY, target);
+        } else {
+            return true;
+        }
+    }
+    return false;
+}
+
+return searchMatrixDAC(matrix, 0, 0, matrix.length, matrix[0].length, target);
+```
+
 ### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
 
 M, Backtracking, Array
@@ -525,7 +583,7 @@ private void backtrack(int n, int k, int i, List<Integer> tempList, List<List<In
 M, Array Binary Search
 
 方法1：
-剑指offer当中的题目3：二维数组中的查询。这个解法是从右上角开始找，如果target小于右上角的，则col--，如果大于右上角，则row++，直到数组越界或者找到target为止。
+剑指offer当中的题目3：二维数组中的查询的变种。可以用一个通用的方法：这个解法是从右上角开始找，如果target小于右上角的，则col--，如果大于右上角，则row++，直到数组越界或者找到target为止。
 
 方法2：不要看做是个二维数组，实际这就是一个sorted list！用二分查找。
 ```

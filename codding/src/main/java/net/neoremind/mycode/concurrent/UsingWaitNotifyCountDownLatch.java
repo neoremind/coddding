@@ -6,6 +6,7 @@ import java.util.Random;
  * 自己实现的一个用wait/notify做的闭锁，和{@link java.util.concurrent.CountDownLatch}功能类似
  *
  * @author zhangxu
+ * @see http://www.javamex.com/tutorials/synchronization_wait_notify_4.shtml
  */
 public class UsingWaitNotifyCountDownLatch {
 

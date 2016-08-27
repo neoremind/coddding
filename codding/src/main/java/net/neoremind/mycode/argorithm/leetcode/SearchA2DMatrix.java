@@ -27,7 +27,8 @@ import org.junit.Test;
 public class SearchA2DMatrix {
 
     /**
-     * 剑指offer当中的题目3：二维数组中的查询
+     * 剑指offer当中的题目3：二维数组中的查询的变种。时间复杂度O(M+N)。
+     * 可以用一个通用的方法：
      * 这个解法是从右上角开始找，如果target小于右上角的，则col--，如果大于右上角，则row++，直到数组越界或者找到target为止。
      */
     public boolean searchMatrix(int[][] matrix, int target) {

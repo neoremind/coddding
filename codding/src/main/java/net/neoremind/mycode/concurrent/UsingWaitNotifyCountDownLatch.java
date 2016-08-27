@@ -17,6 +17,16 @@ public class UsingWaitNotifyCountDownLatch {
         this.count = noThreads;
     }
 
+    /**
+     * 下面是javadoc里面的标准模板实现
+     * <pre>
+     *     synchronized (obj) {
+     *         while (&lt;condition does not hold&gt;)
+     *             obj.wait();
+     *         ... // Perform action appropriate to condition
+     *     }
+     * </pre>
+     */
     public synchronized void awaitZero() throws InterruptedException {
         while (count > 0) {
             wait();  // 阻塞线程挂起，随时有人完成就notify，判断count>0继续挂起，相比CDL性能略低

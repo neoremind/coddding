@@ -849,7 +849,7 @@ return maxSum;
 int maxSubArray(int *A,int l,int r) {
    if l == r
        return A[l]
-       mid = (l+r)/2;
+   mid = (l+r)/2;
    ml = maxSubArray(A,l,mid); //分治
    mr = maxSubArray(A,mid+1,r);
    for i=mid downto l do
@@ -1215,6 +1215,47 @@ while (curr.next != null && curr.next.next != null) {
 }
 return dummy.next;
 ```
+
+### [23. Merge k Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/)
+
+H, Divide and Conquer, Linked List, Heap
+
+这道题目在分布式系统中非常常见，来自不同client的sorted list要在central server上面merge起来。这个题目一般有两种做法，下面一一介绍并且分析复杂度。
+
+方法1：分治法
+
+第一种做法比较容易想到，就是有点类似于MergeSort的思路,就是分治法，不了解MergeSort的朋友，请参见归并排序-维基百科，是一个比较经典的O(nlogn)
+的排序算法，还是比较重要的。思路是先分成两个子任务，然后递归求子任务，最后回溯回来。这个题目也是这样，先把k个list分成两半，然后继续划分，知道剩下两个list就合并起来，合并时会用到 题目21-Merge Two Sorted
+Lists这道题。
+分析一下上述算法的时间复杂度。假设总共有k个list，每个list的最大长度是n，那么运行时间满足递推式T(k) = 2T(k/2)+O(n*k)。 根据主定理，可以算出算法的总复杂度是O(nklogk) 。如果不了解主定理的朋友，可以参见主定理-维基百科。空间复杂度的话是递归栈的大小O(logk)。 很多参考了net.neoremind.mycode.argorithm.sort.MergeSort的代码。 另外这个实现在leetcode上打败了79%的java代码。
+
+```
+public ListNode mergeKLists(ListNode[] lists) {
+   // 处理lists为空或者长度为0的情况，否则就会StackOverFlow
+   return doMergeKLists(lists, 0, lists.length - 1);
+}
+
+public ListNode doMergeKLists(ListNode[] lists, int left, int right) {
+    if (left == right) {
+        return lists[left];
+    } else {
+        int mid = left + ((right - left) >> 1);
+        ListNode l1 = doMergeKLists(lists, left, mid);
+        ListNode l2 = doMergeKLists(lists, mid + 1, right);
+        return mergeTwoSortedList(l1, l2);  //参考题目21
+    }
+}
+```
+
+方法2：建堆
+这种方法用到了堆的数据结构，思路比较难想到，但是其实原理比较简单。
+维护一个大小为k的堆，每次去堆顶的最小元素放到结果中，然后读取该元素的下一个元素放入堆中，重新维护好。
+因为每个链表是有序的，每次又是去当前k个元素中最小的，所以当所有链表都读完时结束，这个时候所有元素按从小到大放在结果链表中。
+这个算法每个元素要读取一次，即是k*n次，然后每次读取元素要把新元素插入堆中要logk的复杂度，所以总时间复杂度是O(nklogk)。
+空间复杂度是堆的大小，即为O(k)。
+这个实现在leetcode上打败了71%的java代码。
+本解法没有用到java自带的优先队列PriorityQueue，而是自己实现的。
+
 
 ### [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)
 

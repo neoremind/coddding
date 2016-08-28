@@ -1249,12 +1249,128 @@ public ListNode doMergeKLists(ListNode[] lists, int left, int right) {
 
 方法2：建堆
 这种方法用到了堆的数据结构，思路比较难想到，但是其实原理比较简单。
+
 维护一个大小为k的堆，每次去堆顶的最小元素放到结果中，然后读取该元素的下一个元素放入堆中，重新维护好。
 因为每个链表是有序的，每次又是去当前k个元素中最小的，所以当所有链表都读完时结束，这个时候所有元素按从小到大放在结果链表中。
+
 这个算法每个元素要读取一次，即是k*n次，然后每次读取元素要把新元素插入堆中要logk的复杂度，所以总时间复杂度是O(nklogk)。
 空间复杂度是堆的大小，即为O(k)。
+
 这个实现在leetcode上打败了71%的java代码。
-本解法没有用到java自带的优先队列PriorityQueue，而是自己实现的。
+
+可以用java自带的优先队列PriorityQueue，也可以自己实现一个二叉堆（Binary Heap）。
+
+实现的模板如下：
+```
+// 处理空或者长度为1
+
+PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, new Comparator<ListNode>() {
+    @Override
+    public int compare(ListNode o1, ListNode o2) {
+        if (o1.val < o2.val) {
+            return -1;
+        } else if (o1.val > o2.val) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+});
+
+ListNode dummy = new ListNode(0);
+ListNode curr = dummy;
+for (ListNode node : lists) {
+    if (node != null) {
+        priorityQueue.add(node);
+    }
+}
+
+while (!priorityQueue.isEmpty()) {
+    ListNode node = priorityQueue.poll();
+    curr.next = node;
+    curr = curr.next;
+    if (node.next != null) {
+        priorityQueue.add(node.next);
+    }
+}
+
+return dummy.next;
+```
+
+自己实现堆的一个模板如下，记住自己总结的口诀吧：
+* 插入放尾，上滤，把大的爸爸挪下来，给小的新人一个合适的位置。
+* 获取弹根，尾上位，下滤，把小的孩子上移上去，给大的爸爸一个合适的位置。
+* 建堆，从N/2的位置开始到顶，下滤，把小的孩子上移上去，给大的爸爸一个合适的位置沉下来。
+
+动画地址：
+
+* [wikimedia](https://upload.wikimedia.org/wikipedia/commons/4/4d/Heapsort-example.gif)
+* [usfca](http://www.cs.usfca.edu/~galles/visualization/Heap.html)
+
+
+```
+class BinaryHeap {
+    int[] array = new int[size];
+    int currentSize = 1;
+    int size;
+
+    //插入新元素n，在最后的元素位置上建立一个空穴，放入n。然后比较n和空穴父亲的值，把“大的爸爸”下移，以此类推，直到n放置到合适的位置。
+    void insert(int n) {
+        int hole = currentSize++;
+        array[hole] = n;
+        percolateUp(hole);
+    }
+
+    //上滤，应用于插入{@link #insert(int)}操作，新元素在堆中不断的上浮（找到父亲），直到找到正确的位置
+    void percolateUp(int hole) {
+        int tmp = array[hole];
+        for (; hole > 1 && tmp < array[hole / 2]; hole = hole / 2) {
+            array[hole] = array[hole / 2];
+        }
+        array[hole] = tmp;
+    }
+
+    //找到最小元素很容易，就是第一个元素，难的是恢复堆的性质：需要假设把最后一个元素放到第一个元素的位置，也就是根节点，然后依次下沉，把较小的孩子换上来的思想，直到到达合适的位置。
+    int deleteMin() {
+        int ret = array[1];
+        array[1] = array[--currentSize];
+        array[currentSize] = 0;
+        percolateDown(1);
+        return ret;
+    }
+
+    //下滤用于{@link #deleteMin()}删除和{@link #buildHeap(int[])}建堆。
+    //应用堆的性质，左儿子在2i，右儿子在2i+1，父亲在i/2
+    void percolateDown(int hole) {
+        int tmp = array[hole];
+        for (int child; hole * 2 < currentSize; hole = child) {
+            child = hole * 2;
+            if (child + 1 < currentSize && array[child] > array[child + 1]) {
+                child++;
+            }
+            if (array[child] < tmp) {
+                array[hole] = array[child];
+            } else {
+                break;
+            }
+        }
+        array[hole] = tmp;
+    }
+
+    //建堆，每个insert O(1)，下滤最坏情况是O(logN)，因此总的时间复杂度是O(N)，而不是O(NlogN)
+    void buildHeap(int[] from) {
+        if (from == null || from.length == 0) {
+            throw new RuntimeException("Input array should not be empty");
+        }
+        this.array = new int[from.length + 2];
+        System.arraycopy(from, 0, this.array, 1, from.length);
+        currentSize = from.length + 1;
+        for (int i = currentSize / 2; i > 0; i--) {
+            percolateDown(i);
+        }
+    }
+}
+```
 
 
 ### [22. Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)

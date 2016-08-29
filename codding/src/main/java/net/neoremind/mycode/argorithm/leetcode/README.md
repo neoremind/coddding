@@ -207,6 +207,108 @@ private void backtrack(List<List<Integer>> list, List<Integer> tempList, int k, 
 }
 ```
 
+### [215. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
+
+M, Heap Divide and Conquer
+
+方法1：纯排序：
+时间 O(NlogN)，时间不可接受
+
+方法2：部分排序
+建立一个长度为k的数组，找到最小的元素MIN。
+```
+for num in a[n-k...n]
+   if num > MIN
+       delete MIN and find MIN again
+```
+时间复杂度O(k) + (n-k)O(k) = O(nk)，当k比较大的时候退化为O(N^2)，不可取。
+
+方法3：建立一个小顶堆 Binary Heap
+
+时间 O(NlogK)，空间 O(K)
+
+可以用自己写的堆，也可以用JDK自带的优先队列PriorityQueue。这个比方法二的优点就是堆找MIN的时间复杂度降为了O(logK)。
+
+自己实现堆只用实现buildHeap和deleteMin（也就是siftDown）方法即可，不用实现add（即siftUp）方法。
+
+```
+PriorityQueue<Integer> p = new PriorityQueue<Integer>();
+for (int i = 0; i < k; i++) {
+    p.add(nums[i]);
+}
+for (int i = k; i < nums.length; i++) {
+    if (p.peek() < nums[i]) {
+        p.add(nums[i]); //这里堆的大小如果加入了就是k+1，注意！！！
+        p.poll();
+    }
+}
+return p.poll();
+```
+
+方法4：分治思想的，线性选择算法
+
+利用Quick Sort思想做一个Quick select
+
+时间 Avg O(N) Worst O(N^2)，空间 O(1)
+
+跟快速排序一个思路。先取一个枢纽值，将数组中小于枢纽值的放在左边，大于枢纽值的放在右边，具体方法是用左右两个指针，
+如果他们小于枢纽值则将他们换到对面，一轮过后记得将枢纽值赋回分界点。如果这个分界点是k，说明分界点的数就是第k
+个数。否则，如果分界点大于k，则在左半边做同样的搜索。如果分界点小于k，则在右半边做同样的搜索。
+
+```
+public int findKthLargest(int[] nums, int k) {
+    // 处理两个特殊的情况
+    // 找第最后大的，那就是找最小的
+    if (nums.length == k)
+        return min;
+
+    // 找第一个大的，那就是最大的了
+    if (k == 1)
+        return max
+
+    // 先分隔数组，枢纽是mid，左边的全大于mid，右边的全小于mid
+    int mid = quickSelect(nums, 0, nums.length - 1);
+    int right = nums.length - 1;
+    int left = 0;
+    while (true) {
+        if (mid == k - 1) { // 这里是k-1的原因是，Kth大的，那就是枢纽索引是K-1，否则Kth大的就是枢纽左边中最小的，不是枢纽本身
+            break;
+        } else if (mid < k - 1) {
+            left = mid + 1;  // 缩小左边界
+            mid = quickSelect(nums, mid + 1, right);
+        } else {
+            right = mid - 1;  // 缩小右边界
+            mid = quickSelect(nums, left, mid - 1);
+        }
+    }
+    return nums[mid];
+}
+
+//快速选择，参考{@link net.neoremind.mycode.argorithm.sort.QuickSort}来实现
+private int quickSelect(int[] nums, int low, int high) {
+    int pivot = nums[low];
+    int i = low;
+    int j = high + 1;
+    while (true) {
+        while (nums[++i] > pivot) {
+            if (i == high) {
+                break;
+            }
+        }
+        while (nums[--j] < pivot) {
+            if (j == low) {
+                break;
+            }
+        }
+        if (i >= j) {
+            break;
+        }
+        swap(nums, i, j);
+    }
+    swap(nums, low, j);
+    return j;
+}
+```
 
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
@@ -218,6 +320,51 @@ M, Array
 String[] array = Arrays.stream(num).mapToObj(String::valueOf).toArray(String[]::new);
 Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
+```
+
+### [169. Majority Element](https://leetcode.com/problems/majority-element/)
+
+E, Array Divide and Conquer Bit Manipulation
+
+方法1：排序
+```
+Arrays.sort(nums); nums[nums.length / 2]是结果
+```
+
+方法2：哈希表，但是太浪费空间了O(N)
+
+方法3：Moore voting algorithm
+```
+int count = 0, ret = 0;
+for (int num : nums) {
+    if (count == 0) {
+        ret = num;
+    }
+    if (num != ret) {
+        count--;
+    } else {
+        count++;
+    }
+}
+return ret;
+```
+
+方法4：Bit manipulation
+```
+int[] bit = new int[32];
+for (int num : nums) {
+    for (int i = 0; i < 32; i++) {
+        if ((num >> (31 - i) & 1) == 1) {
+            bit[i]++;
+        }
+    }
+}
+int ret = 0;
+for (int i = 0; i < 32; i++) {
+    bit[i] = bit[i] > nums.length / 2 ? 1 : 0;
+    ret += bit[i] * (1 << (31 - i));
+}
+return ret;
 ```
 
 ### [151. Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)

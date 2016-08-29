@@ -10,10 +10,10 @@ import org.junit.Test;
 /**
  * Find the kth largest element in an unsorted array.
  * Note that it is the kth largest element in the sorted order, not the kth distinct element.
- * <p/>
+ * <p>
  * For example,
  * Given [3,2,1,5,6,4] and k = 2, return 5.
- * <p/>
+ * <p>
  * Note:
  * You may assume k is always valid, 1 ≤ k ≤ array's length.
  * 这个实现在leetcode上击败了60%的java。最好的是快速选择，自己实现的优先队列、二叉堆也比原生JDK的数据结构快很多，
@@ -29,6 +29,23 @@ public class KthLargestElementInAnArray3 {
         for (int i = 0; i < nums.length; i++) {
             p.add(nums[i]);
             if (p.size() > k) {
+                p.poll();
+            }
+        }
+        return p.poll();
+    }
+
+    /**
+     * 优化后的版本，利用peek函数，比上一个方法快一些
+     */
+    public int findKthLargest2(int[] nums, int k) {
+        PriorityQueue<Integer> p = new PriorityQueue<Integer>();
+        for (int i = 0; i < k; i++) {
+            p.add(nums[i]);
+        }
+        for (int i = k; i < nums.length; i++) {
+            if (p.peek() < nums[i]) {
+                p.add(nums[i]);
                 p.poll();
             }
         }

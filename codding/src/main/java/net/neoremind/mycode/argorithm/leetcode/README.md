@@ -1318,7 +1318,11 @@ return -1;
 
 2）KMP算法
 
+KMP算法的重点在于每次模式串不用回到匹配串的i+1的位置去重新匹配，而是可以利用最长前缀后缀的方法来挪到i+N的位置，从而可以跳过不必要的元素。
 
+重点在于如何求这个N，是利用一个next数组的东西，需要提前计算好，可以利用递推式搞定。
+
+实际的KMP代码非常短小，这里暂时没有是实现。
 
 
 ### [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)

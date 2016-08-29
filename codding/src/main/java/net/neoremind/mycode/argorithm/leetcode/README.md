@@ -1295,6 +1295,52 @@ for (int block = 0; block < 9; block++) {
 }
 ```
 
+### [35. Search Insert Position](https://leetcode.com/problems/search-insert-position/)
+
+M, Array Binary Search
+
+二分查找的两种实现方式要背熟！end都是length - 1，是指index。
+
+```
+//递归查找
+private int searchRecursive(int[] arr, int start, int end, int target) {
+    int mid = (start + end) / 2;
+    if (start > end) {
+        return -1;
+    }
+    if (arr[mid] > target) {
+        return searchRecursive(arr, start, mid - 1, target);
+    } else if (arr[mid] < target) {
+        return searchRecursive(arr, mid + 1, end, target);
+    } else {
+        return mid;
+    }
+}
+
+//iterative查找
+private int searchLoop(int[] arr, int start, int end, int target) {
+    while (start <= end) {
+        int mid = (start + end) >>> 1;
+        int midVal = arr[mid];
+
+        if (midVal < target) {
+            start = mid + 1;
+        } else if (midVal > target) {
+            end = mid - 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+```
+
+这道题解法就是判断找不到的时候返回end+1即可。
+```
+if (start > end)
+    return end + 1
+```
+
 ### [28. Implement strStr()](https://leetcode.com/problems/implement-strstr/)
 
 E, Two Pointer, String

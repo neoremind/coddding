@@ -909,6 +909,33 @@ So, 2982(10base) = 4041000(!base)
 
 怎么把这个4041000还原回来看这个帖子吧，[点击此](http://leetcode.tgic.me/permutation-sequence/index.html)。
 
+### [54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
+
+M, Array
+
+```
+int rowBegin = 0;
+int rowEnd = matrix.length-1;
+int colBegin = 0;
+int colEnd = matrix[0].length - 1;
+while (rowBegin <= rowEnd && colBegin <= colEnd) {
+    from colBegin to colEnd add matrix[rowBegin][$var]) // Traverse Right
+    rowBegin++;
+
+    from rowBegin to rowEnd add matrx[$var][colEnd] // Traverse Down
+    colEnd--;
+
+    if (rowBegin <= rowEnd)  // Traverse Left
+        from colEnd to colBegin add matrix[rowEnd][$var]
+    rowEnd--;
+
+    if (colBegin <= colEnd)  // Traver Up
+        from rowEnd to rowBegin add matrix[$var][colBegin]
+    colBegin ++;
+}
+```
+
+
 ### [53. Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)
 
 M,  Array, Dynamic Programming, Divide and Conquer

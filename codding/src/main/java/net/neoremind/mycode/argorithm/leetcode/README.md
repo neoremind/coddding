@@ -1108,6 +1108,34 @@ Anagrams:由颠倒字母顺序而构成的字
 
 可以尝试使用JDK8的stream API。
 
+### [48. Rotate Image](https://leetcode.com/problems/rotate-image/)
+
+M, Array
+
+clockwise
+行颠倒，对角线互换
+```
+1 2 3     7 8 9     7 4 1
+4 5 6  => 4 5 6  => 8 5 2
+7 8 9     1 2 3     9 6 3
+```
+或者对角线互换，列颠倒
+```
+1 2 3     1 4 7     7 4 1
+4 5 6  => 2 5 8  => 8 5 2
+7 8 9     3 6 9     9 6 3
+```
+互换的代码如下：
+```
+for (int i = 0; i < matrix.length; i++) {
+    for (int j = i + 1; j < matrix[0].length; j++)
+        swap(matrix, i, j, j, i);
+```
+
+anti-clockwise
+列颠倒，对角线互换
+或者对角线互换，行颠倒
+
 
 ### [47. Permutations II](https://leetcode.com/problems/permutations-ii/)
 

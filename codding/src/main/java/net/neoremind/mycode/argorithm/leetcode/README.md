@@ -1096,6 +1096,19 @@ function N_queen(row)
             chessboard[row][col] = false
 ```
 
+### [49. Group Anagrams](https://leetcode.com/problems/anagrams/)
+
+M,  Hash Table String
+
+Anagrams:由颠倒字母顺序而构成的字
+
+很简单遍历列表，用一个散列表，key是Sting.valueOf(Arrays.sort(str.toCharArray[]))，value就是一个list，里面是单词。
+
+然后输出散列表.values();
+
+可以尝试使用JDK8的stream API。
+
+
 ### [47. Permutations II](https://leetcode.com/problems/permutations-ii/)
 
 M, Backtracking

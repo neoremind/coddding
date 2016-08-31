@@ -1390,7 +1390,6 @@ private int searchLoop(int[] arr, int start, int end, int target) {
     while (start <= end) {
         int mid = (start + end) >>> 1;
         int midVal = arr[mid];
-
         if (midVal < target) {
             start = mid + 1;
         } else if (midVal > target) {
@@ -1408,6 +1407,24 @@ private int searchLoop(int[] arr, int start, int end, int target) {
 if (start > end)
     return end + 1
 ```
+
+### [34. Search for a Range](https://leetcode.com/problems/search-for-a-range/)
+
+M, Binary Search Array
+
+和35题一样在mid==target的逻辑要变下，分别找左、右的终点，注意不要溢出。
+```
+int left = mid;
+int right = mid;
+while (left > 0 && nums[left - 1] == target) {
+    left--;
+}
+while (right < nums.length - 1 && nums[right + 1] == target) {
+    right++;
+}
+return new int[] {left, right};
+```
+
 
 ### [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/)
 

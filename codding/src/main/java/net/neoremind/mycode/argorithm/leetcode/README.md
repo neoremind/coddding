@@ -1151,6 +1151,46 @@ function N_queen(row)
             chessboard[row][col] = false
 ```
 
+### [50. Pow(x, n)](https://leetcode.com/problems/powx-n/)
+
+M, Binary Search Math
+
+对于正负数都OK的代码：
+```
+if (n == 0) {
+    return 1;
+}
+double temp = myPow(x, n / 2);
+if (n % 2 == 0) {
+    return temp * temp;
+} else {
+    if (n > 0) {
+        return x * temp * temp;
+    } else {
+        return (temp * temp) / x;
+    }
+}
+```
+以12^4为例，12^4=12^2 * 12^2 = (12^1*12^1) * (12^1*12^1) = ...
+
+以12^5为例，12^4=12^2 * 12^2 * 12 = (12^1*12^1) * (12^1*12^1) * 12 = ...
+
+以12^-4为例，12^-4=12^-2 * 12^-2 = (12^-1*12^-1) * (12^-1*12^-1) = (1/12*1/12) * (1/12*1/12) = ...
+
+其实，这可以看做是二分，也可以看做是分治法，下面的方法适用于整数，和大于1的幂：
+```
+if (n == 0)
+    return 1;
+else if (n == 1)
+    return num;
+else
+    if (n % 2 == 0) {
+        return powerDAC(num, n / 2) * power(num, n / 2);
+    } else {
+        return powerDAC(num, (n - 1) / 2) * power(num, (n - 1) / 2) * num;
+    }
+```
+
 ### [49. Group Anagrams](https://leetcode.com/problems/anagrams/)
 
 M,  Hash Table String

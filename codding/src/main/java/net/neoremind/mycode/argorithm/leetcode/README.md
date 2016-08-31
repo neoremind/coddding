@@ -1493,73 +1493,6 @@ while (right < nums.length - 1 && nums[right + 1] == target) {
 return new int[] {left, right};
 ```
 
-
-### [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/)
-
-M, Math Binary Search
-
-首先看核心的方法，这是非常耐人寻味的一段代码，里面有二分的思想，有递归，很经典！
-```
-// Recursion exit condition
-if (ldividend < ldivisor) {
-    return 0;
-}
-
-//  Find the largest multiple so that (divisor * multiple <= dividend),
-//  whereas we are moving with stride 1, 2, 4, 8, 16...2^n for performance reason.
-//  Think this as a binary search.
-long sum = ldivisor;
-long multiple = 1;
-while ((sum + sum) <= ldividend) {
-    sum += sum;
-    multiple += multiple;
-}
-
-//Look for additional value for the multiple from the reminder (dividend - sum) recursively.
-return multiple + ldivide(ldividend - sum, ldivisor);
-```
-
-思想大概就是：
-```
-按照421/3演示：
-3+3=6       < 421    1+1=2个3
-6+6=12      < 421    2+2=4个3
-12+12=24    < 421    4+4=8个3
-24+24=48    < 421    8+8=16个3
-48+48=96    < 421    16+16=32个3
-96+96=192   < 421    32+32=64个3
-192+192=384 < 421    64+64=128个3
-384+384=768 > 421
-----------------
-reminder is 421 - 384 = 37
-
-
-3+3=6       < 37    1+1=2个3
-6+6=12      < 37    2+2=4个3
-12+12=24    < 37    4+4=8个3
-24+24=48    > 37
-----------------
-reminder is 37 - 24 = 13
-
-
-3+3=6       < 13    1+1=2个3
-6+6=12      < 13    2+2=4个3
-12+12=24    > 13
-----------------
-reminder is 13 - 12 = 1
-
-
-3+3=6       > 1 退出
-
-所以上面一共出现了128个3 + 8个3 + 4个3 = 140个3，所以结果就是140，这是*3之后最接近421的值。
-```
-
-然后还需要处理一些特殊的逻辑：
-* 判断sign，正负号，然后两个值都取绝对值 Math.abs(..)
-* 如果除数=0返回MAX_INT
-* 如果被除数=0，或者被除数<除数返回0
-* 算法要注意在JAVA里要用long来计算，因为没有UINT类型，会溢出，所以最后还需要判断下。
-
 ### [33. Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/)
 
 H, Binary Search Array
@@ -1636,6 +1569,74 @@ while (lo < hi) {
 }
 return nums[lo] == target ? lo : -1;
 ```
+
+
+### [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/)
+
+M, Math Binary Search
+
+首先看核心的方法，这是非常耐人寻味的一段代码，里面有二分的思想，有递归，很经典！
+```
+// Recursion exit condition
+if (ldividend < ldivisor) {
+    return 0;
+}
+
+//  Find the largest multiple so that (divisor * multiple <= dividend),
+//  whereas we are moving with stride 1, 2, 4, 8, 16...2^n for performance reason.
+//  Think this as a binary search.
+long sum = ldivisor;
+long multiple = 1;
+while ((sum + sum) <= ldividend) {
+    sum += sum;
+    multiple += multiple;
+}
+
+//Look for additional value for the multiple from the reminder (dividend - sum) recursively.
+return multiple + ldivide(ldividend - sum, ldivisor);
+```
+
+思想大概就是：
+```
+按照421/3演示：
+3+3=6       < 421    1+1=2个3
+6+6=12      < 421    2+2=4个3
+12+12=24    < 421    4+4=8个3
+24+24=48    < 421    8+8=16个3
+48+48=96    < 421    16+16=32个3
+96+96=192   < 421    32+32=64个3
+192+192=384 < 421    64+64=128个3
+384+384=768 > 421
+----------------
+reminder is 421 - 384 = 37
+
+
+3+3=6       < 37    1+1=2个3
+6+6=12      < 37    2+2=4个3
+12+12=24    < 37    4+4=8个3
+24+24=48    > 37
+----------------
+reminder is 37 - 24 = 13
+
+
+3+3=6       < 13    1+1=2个3
+6+6=12      < 13    2+2=4个3
+12+12=24    > 13
+----------------
+reminder is 13 - 12 = 1
+
+
+3+3=6       > 1 退出
+
+所以上面一共出现了128个3 + 8个3 + 4个3 = 140个3，所以结果就是140，这是*3之后最接近421的值。
+```
+
+然后还需要处理一些特殊的逻辑：
+* 判断sign，正负号，然后两个值都取绝对值 Math.abs(..)
+* 如果除数=0返回MAX_INT
+* 如果被除数=0，或者被除数<除数返回0
+* 算法要注意在JAVA里要用long来计算，因为没有UINT类型，会溢出，所以最后还需要判断下。
+
 
 
 ### [28. Implement strStr()](https://leetcode.com/problems/implement-strstr/)

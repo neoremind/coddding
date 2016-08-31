@@ -1560,6 +1560,84 @@ reminder is 13 - 12 = 1
 * 如果被除数=0，或者被除数<除数返回0
 * 算法要注意在JAVA里要用long来计算，因为没有UINT类型，会溢出，所以最后还需要判断下。
 
+### [33. Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/)
+
+H, Binary Search Array
+
+考虑如下三种情况，是逐步演进的：
+```
+       /|
+      / |
+     /  |
+    /   |
+   /    |
+  /     |
+ /      |
+/       |
+---------
+s < m < e
+
+    /|
+   / |
+  /  |
+ /   |
+/    |
+|    |  /|
+|    | / |
+|    |/  |
+----------
+s < m > e
+
+ /|
+/ |
+| |     /|
+| |    / |
+| |   /  |
+| |  /   |
+| | /    |
+| |/     |
+----------
+s > m < e
+
+NO!
+s > m > e
+```
+**三种情况，一二掐头/三去尾！找到合适位置lo，否则-1，注意while是lo<hi不是<=**。
+
+对于第一种和第二种来说都是nums[lo] <= nums[mid]，第三种是nums[lo] > nums[mid]。
+
+针对nums[lo] <= nums[mid]，缩小的范围判断是nums[lo]<=target<nums[mid]，那么就hi=mid-1，在左半部分。否则就lo=mid+1，在右半部分。
+
+针对nums[lo] > nums[mid]，缩小的范围判断是nums[mid]<=target<nums[hi]，那么就lo=mid+1，在右半部分。否则就hi=mid-1，在左半部分。
+
+最后判断target和nums[lo]是否相等，lo就是最合适插入的地方，不想当返回-1，找不到。
+```
+int lo = 0;
+int hi = nums.length - 1;
+while (lo < hi) {
+    int mid = (lo + hi) / 2;
+    if (nums[mid] == target) {
+        return mid;
+    }
+
+    if (nums[lo] <= nums[mid]) {
+        if (target >= nums[lo] && target < nums[mid]) {
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
+    } else {
+        if (target > nums[mid] && target <= nums[hi]) {
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+}
+return nums[lo] == target ? lo : -1;
+```
+
+
 ### [28. Implement strStr()](https://leetcode.com/problems/implement-strstr/)
 
 E, Two Pointer, String

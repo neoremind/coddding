@@ -820,6 +820,34 @@ public int climbStairs2(int n) {
 }
 ```
 
+### [69. Sqrt(x)](https://leetcode.com/problems/sqrtx/)
+
+M,Binary Search Math
+
+Brute force的解法就是
+```
+from i to x
+   find i such that i^2 == x or i^2 < x < (i + 1)^2.
+```
+超时了。
+
+二分的模板需要稍加修改，这里注意判断mid^2>x需要考虑溢出的情况，改为mid>x/2
+```
+// 处理0的情况
+int left = 1;
+int right = x;
+while (left <= right) {
+    int mid = left + (right - left) / 2;
+    if (mid <= x / mid) {
+        left = mid + 1;
+        ans = mid;
+    } else {
+        right = mid - 1;
+    }
+}
+return ans;
+```
+
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
 M, Array, Dynamic Programming

@@ -725,6 +725,28 @@ private void backtrack(int n, int k, int i, List<Integer> tempList, List<List<In
 }
 ```
 
+### [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
+
+M, Array Two Pointers Sort
+
+荷兰国旗问题，类似快速排序的分区思想，只不过这里面是三段的分区
+
+```
+int begin = 0; int current = 0; int end = nums.length - 1;
+while (current <= end) {
+    if (nums[current] == 0) {
+        swap(current, begin, nums);
+        begin++;
+        current++;
+    } else if (nums[current] == 1) {
+        current++;
+    } else {
+        swap(current, end, nums);
+        end--;
+    }
+}
+```
+
 ### [74. Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/)
 
 M, Array Binary Search

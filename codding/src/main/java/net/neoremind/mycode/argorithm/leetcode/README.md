@@ -390,6 +390,36 @@ M, String
 * 7. return new String(str, 0, barrier);
 ```
 
+### [120. Triangle](https://leetcode.com/problems/triangle/)
+
+M,  Array Dynamic Programming
+
+递推式如下：
+```
+          f(i - 1, j) + V(i,j) j=0
+f(i, j) = Min{f(i-1,j-1), f(i-1,j)} + V(i,j) 0<j<len-1
+          f(i - 1, j - 1) + V(i,j) j=len-1
+```
+
+简单的动态规划：
+```
+for (int i = 0; i < height; i++) {
+    List<Integer> list = triangle.get(i);
+    for (int j = 0; j < list.size(); j++) {
+        if (i - 1 < 0) {
+            s[i][j] = list.get(j);
+        } else if (j - 1 < 0) {
+            s[i][j] = s[i - 1][j] + list.get(j);
+        } else if (j == list.size() - 1) {
+            s[i][j] = s[i - 1][j - 1] + list.get(j);
+        } else {
+            s[i][j] = Math.min(s[i - 1][j - 1], s[i - 1][j]) + list.get(j);
+        }
+    }
+}
+return min in s[height - 1]
+```
+
 ### [93. Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
 
 M, Backtracking, String

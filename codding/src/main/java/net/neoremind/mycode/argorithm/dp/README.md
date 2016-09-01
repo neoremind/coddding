@@ -13,6 +13,7 @@
 * 最长公共子串(Longest Common Substring,LCS)[OK]
 * 子序列个数[OK]
 * 字符串相似度/编辑距离（edit distance）[OK]
+* Triangle三角形从顶到底找最短路[OK-leetcode130]
 
 ### 未解决
 * Max sum sub matrix

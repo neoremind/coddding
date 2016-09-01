@@ -310,6 +310,58 @@ private int quickSelect(int[] nums, int low, int high) {
 }
 ```
 
+### [208. Implement Trie (Prefix Tree)](https://leetcode.com/problems/implement-trie-prefix-tree/)
+
+M, Design Trie
+
+抓住Trie树，字典树，前缀树的性质：
+* 根节点不包含字符，除根节点外每一个节点都只包含一个字符。
+* 从根节点到某一节点，路径上经过的字符连接起来，为该节点对应的字符串。
+* 每个节点的所有子节点包含的字符都不相同。
+
+基本思想：
+
+1、插入过程：
+对于一个单词，从根开始，沿着单词的各个字母所对应的树中的节点分支向下走，直到单词遍历完，将最后的节点标记为红色，表示该单词已插入Trie树。
+
+2、查询过程：
+同样的，从根开始按照单词的字母顺序向下遍历trie树，一旦发现某个节点标记不存在或者单词遍历完成而最后的节点未标记为红色，则表示该单词不存在，若最后的节点标记为红色，表示该单词存在。
+
+比较全的一个实现[java-program-implement-trie](http://www.sanfoundry.com/java-program-implement-trie/)
+
+//TODO 应用场景
+
+discuss高分答案：
+```
+class TrieNode {
+    public char val;
+    public boolean isWord;
+    public TrieNode[] children = new TrieNode[26];
+}
+
+public void insert(String word) {
+    TrieNode ws = root;
+    for(int i = 0; i < word.length(); i++){
+        char c = word.charAt(i);
+        if(ws.children[c - 'a'] == null){
+            ws.children[c - 'a'] = new TrieNode(c);
+        }
+        ws = ws.children[c - 'a'];
+    }
+    ws.isWord = true;
+}
+
+public boolean search(String word) {
+    TrieNode ws = root;
+    for(int i = 0; i < word.length(); i++){
+        char c = word.charAt(i);
+        if(ws.children[c - 'a'] == null) return false;
+        ws = ws.children[c - 'a'];
+    }
+    return ws.isWord;  //startWith直接返回true
+}
+```
+
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
 M, Array

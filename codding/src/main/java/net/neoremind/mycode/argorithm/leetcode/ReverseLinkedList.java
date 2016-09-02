@@ -8,10 +8,10 @@ import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
 
 /**
  * Reverse a singly linked list.
- * <p/>
+ * <p>
  * Hint:
  * A linked list can be reversed either iteratively or recursively. Could you implement both?
- * <p/>
+ * <p>
  * http://blog.csdn.net/foreverling/article/details/45768031
  *
  * @author zhangxu
@@ -19,29 +19,33 @@ import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
 public class ReverseLinkedList {
 
     /**
+     * while(head != null)
      * <pre>
-     * Step1:   head/pre   cur
-     *            7     ->  4  ->  9  ->  6  ->  3
+     * Step1: newHead   head
+     *          null      7    ->  4  ->  9  ->  6  ->  3
      *
-     * Step2:  head/pre    cur
-     *            7         4  ->  9  ->  6  ->  3
-     *            |                /\
-     *            |_________________|
+     * Step2: newHead   head      next
+     *          null      7    ->  4  ->  9  ->  6  ->  3
      *
-     * Step3:  head/pre    cur
-     *            7     <-  4  ->  9  ->  6  ->  3
-     *            |                /\
-     *            |_________________|
+     * Step3: newHead   head      next
+     *          null  <-  7    ->  4  ->  9  ->  6  ->  3
      *
-     * Step4:    pre    head/cur
-     *            7     <-  4  ->  9  ->  6  ->  3
-     *            |                /\
-     *            |_________________|
+     * Step4:           newHead   head
+     *          null  <-  7    ->  4  ->  9  ->  6  ->  3
+     * </pre>
+     * <p>
+     * <pre>
+     * Step1:          newHead   head
+     *          0   <-   7   ->  4  ->  9  ->  6  ->  3
      *
-     * Step5:    pre       head   cur
-     *            7     <-  4  ->  9  ->  6  ->  3
-     *            |                /\
-     *            |_________________|
+     * Step2:          newHead   head  next
+     *          0   <-   7   ->  4  ->  9  ->  6  ->  3
+     *
+     * Step3:          newHead   head  next
+     *          0   <-   7   <-  4  ->  9  ->  6  ->  3
+     *
+     * Step3       :          newHead  head
+     *          0   <-   7   <-  4  ->  9  ->  6  ->  3
      * </pre>
      *
      * @param head
@@ -49,28 +53,27 @@ public class ReverseLinkedList {
      * @return
      */
     public static ListNode reverseListIteratively(ListNode head) {
-        if (head == null) {
-            return head;
+        ListNode newHead = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = next;
         }
-        ListNode cur = head.next;
-        ListNode pre = head;
-        while (cur != null) {
-            pre.next = cur.next;
-            cur.next = head;
-            head = cur;
-            cur = pre.next;
-        }
-        return head;
+        return newHead;
     }
 
     public static ListNode reverseListRecursiveLy(ListNode head) {
-        if (head == null || head.next == null) {
-            return head;
+        return doReverseListRecursiveLy(head, null);
+    }
+
+    public static ListNode doReverseListRecursiveLy(ListNode head, ListNode newHead) {
+        if (head == null) {
+            return newHead;
         }
-        ListNode newHead = reverseListRecursiveLy(head.next);
-        head.next.next = head;
-        head.next = null;
-        return newHead;
+        ListNode next = head.next;
+        head.next = newHead;
+        return doReverseListRecursiveLy(next, head);
     }
 
     public static void main(String[] args) {

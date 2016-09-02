@@ -362,6 +362,67 @@ public boolean search(String word) {
 }
 ```
 
+### [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/)
+
+E, Linked List
+
+想象过程，迭代和递归两种写法的思想一致。
+```
+while(head != null)
+Step1: newHead   head
+        null      7    ->  4  ->  9  ->  6  ->  3
+
+Step2: newHead   head     next
+        null      7    ->  4  ->  9  ->  6  ->  3
+
+Step3: newHead   head     next
+        null  <-  7    ->  4  ->  9  ->  6  ->  3
+
+Step4:           newHead  head
+        null  <-  7    ->  4  ->  9  ->  6  ->  3
+
+
+Step1:          newHead   head
+        0   <-   7   ->  4  ->  9  ->  6  ->  3
+
+Step2:          newHead  head  next
+        0   <-   7   ->  4  ->  9  ->  6  ->  3
+
+Step3:          newHead  head  next
+        0   <-   7   <-  4  ->  9  ->  6  ->  3
+
+Step3       :          newHead head
+        0   <-   7   <-  4  ->  9  ->  6  ->  3
+```
+
+```
+//Iterative solution
+public static ListNode reverseListIteratively(ListNode head) {
+    ListNode newHead = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = newHead;
+        newHead = head;
+        head = next;
+    }
+    return newHead;
+}
+
+//Recursive solution
+public static ListNode reverseListRecursiveLy(ListNode head) {
+    return doReverseListRecursiveLy(head, null);
+}
+
+public static ListNode doReverseListRecursiveLy(ListNode head, ListNode newHead) {
+    if (head == null) {
+        return newHead;
+    }
+    ListNode next = head.next;
+    head.next = newHead;
+    return doReverseListRecursiveLy(next, head);
+}
+```
+
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
 M, Array

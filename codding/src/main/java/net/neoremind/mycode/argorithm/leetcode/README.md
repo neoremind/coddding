@@ -423,6 +423,49 @@ public static ListNode doReverseListRecursiveLy(ListNode head, ListNode newHead)
 }
 ```
 
+### [189. Rotate Array](https://leetcode.com/problems/rotate-array/)
+
+E, Array
+
+注意不管怎样都需要先**k %= len**
+
+方法1：时间O(N)，空间O(N)
+
+新建一个int[len]
+```
+k = 3
+index:
+[0,1,2,3,4,5,6]
+
+nums:
+[1,2,3,4,5,6,7]
+
+result:
+[5,6,7,1,2,3,4]
+
+找规律：
+result[i] = nums[(i + k)%len]
+
+result[3] = nums[0]  3%7
+result[4] = nums[1]  4%7
+result[5] = nums[2]  5%7
+result[6] = nums[3]  6%7
+result[0] = nums[4]  7%7
+result[1] = nums[5]  8%7
+result[2] = nums[6]  9%7
+```
+
+方法2：时间O(N)，空间O(1)
+
+in-place结合reverse函数，先reverse 0到len-k，再reverse后面的k个，然后整体reverse下。
+```
+k=4
+step1: [1,2,3,4,5,6,7]
+step2: [3,2,1,4,5,6,7]  reverse(nums, 0, nums.length - k - 1)
+step3: [3,2,1,7,6,5,4]  reverse(nums, nums.length - k, nums.length - 1)
+step4: [4,5,6,7,1,2,3]  reverse(0, nums.length - 1)
+```
+
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
 
 M, Array

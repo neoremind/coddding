@@ -607,6 +607,36 @@ public void backtrack(List<String> result, List<Integer> tempList, String s,
 }
 ```
 
+### [92. Reverse Linked List II](https://leetcode.com/problems/reverse-linked-list-ii/)
+
+M, Linked list
+
+复用了题目206 ReverseLinkedList的iterative solution的逻辑。
+
+```
+//定位到位置m，就是curr和tail，同时保存前面的last和begin
+last/begin  curr/tail
+   1     ->  2     ->  3  ->  4  ->  5
+
+//利用题目206 ReverseLinkedList的逻辑做反转
+begin      tail             last   curr
+   1   <->  2     <-  3  <-  4      5
+
+
+//begin接last
+begin      tail             last   curr
+   1   <-  2     <-  3  <-  4      5
+   |_______________________/|
+
+
+//tail接curr
+            _________________________
+           |                      |/
+begin      tail             last   curr
+   1       2     <-  3  <-  4      5
+   |_______________________/|
+```
+
 ### [90. Subsets II](https://leetcode.com/problems/subsets-ii/)
 
 M, Backtracking, Array

@@ -691,6 +691,55 @@ return IntStream.range(0, (int) Math.pow(2, n))
         .collect(Collectors.toList());
 ```
 
+### [83. Remove Duplicates from Sorted List](https://leetcode.com/problems/remove-duplicates-from-sorted-list/)
+
+E, Linked list
+
+```
+ListNode dummy = new ListNode(0);
+dummy.next = head;
+while (head != null)
+    ListNode begin = head;
+    while (head.next != null && head.next.val == head.val) {
+        head = head.next;
+    }
+    begin.next = head.next;
+    head = head.next;
+return dummy.next;
+```
+
+另外一种递归的方法，从后往前倒，保留最后一个重复的节点，很巧妙！要理解深刻递归！
+```
+public ListNode deleteDuplicates2(ListNode head) {
+    if (head == null || head.next == null) return head;
+    head.next = deleteDuplicates(head.next);
+    return head.val == head.next.val ? head.next : head;
+}
+```
+
+### [82. Remove Duplicates from Sorted List II](https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/)
+
+M, Linked list
+
+比题目83稍微复杂一点
+```
+ListNode dummy = new ListNode(0);
+dummy.next = head;
+ListNode pre = dummy;
+while (head != null)
+    while (head.next != null && head.next.val == head.val) {
+        head = head.next;
+    }
+    if (pre.next == head) {  //重点在这里可以跳过连续相同的比如1,1,2,2,3,4
+        pre = pre.next;
+    } else {
+        pre.next = head.next;
+    }
+    head = head.next;
+return dummy.next;
+```
+
+
 ### [79. Word Search](https://leetcode.com/problems/word-search/)
 
 M, Array Backtracking

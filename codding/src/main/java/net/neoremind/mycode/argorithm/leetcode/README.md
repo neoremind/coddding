@@ -546,6 +546,66 @@ M, String
 * 7. return new String(str, 0, barrier);
 ```
 
+### [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)
+
+E,  Linked list Two Pointers
+
+快（走两步）、慢指针（走一步）的方式，总会相遇。
+
+X是runner（快指针）和walker（慢指针）相遇的点，设
+* 1）从head到cycle起点的距离是A
+* 2）cycle起点到X的举例是B，
+* 3）环的长度是N 那么根据快慢指针的追的特性可以得出：
+
+ A+B+N = 2A+2B
+
+ 那么可以推出：
+
+ N=A+B
+
+所以从X点再走A步，也相当于从head走A步，肯定相遇的点就是cycle的起点。
+
+               B
+                 o->o->X->o
+                 |        |
+                 o        o
+      A          |        |
+o->o->o->o->o->o->o        o
+                 |        | A
+                 |        |
+                 o<-o<-o<-o
+
+
+相比于题目141，在runner==walker相遇后，继续走相遇的点肯定是cycle的起点。
+```
+ListNode slow = walker;
+while (head != slow) {
+    slow = slow.next;
+    head = head.next;
+}
+return slow;
+```
+
+### [141. Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/)
+
+E,  Linked list Two Pointers
+
+快（走两步）、慢指针（走一步）的方式，总会相遇。
+
+```
+if (head == null) return false;
+ListNode walker = head;
+ListNode runner = head;
+while (runner.next != null && runner.next.next != null) {
+    walker = walker.next;
+    runner = runner.next.next;
+    if (walker == runner)
+        return true;
+}
+return false;
+```
+
+
 ### [120. Triangle](https://leetcode.com/problems/triangle/)
 
 M,  Array Dynamic Programming

@@ -362,7 +362,7 @@ public boolean search(String word) {
 }
 ```
 
-### [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/)
+### [206. Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/)
 
 E, Linked List
 
@@ -1070,6 +1070,27 @@ for (int i = 1; i < m; i++)
         arr[i][j] = arr[i][j - 1] + arr[i - 1][j];  // 上面+左面的cell路径和
     }
 ```
+
+### [61. Rotate List](https://leetcode.com/problems/rotate-list/)
+
+M,Linked List Two Pointers
+
+```
+if (head == null) return null;
+ListNode tail = head;
+len = 1;
+while (tail.next != null)
+    len++;
+    tail = tail.next;   //1）遍历一遍知道长度，定位tail到尾巴
+tail.next = head;  //cycle 2）连城一个环
+k %= len;   //3）非常重要，取模！避免无谓的循环扫描
+for (int i = 0; i < len - k; i++)   //4）既然成环了，就从tail往前跑到合适的“断点”位置，断开
+    tail = tail.next;
+ListNode newHead = tail.next;
+tail.next = null;
+return newHead;
+```
+
 
 ### [60. Permutation Sequence](https://leetcode.com/problems/permutation-sequence/)
 
@@ -2123,6 +2144,18 @@ return stack is empty true or else false
 E，linked list，two pointers
 
 技巧是搞一个ListNode在head的前面
+
+```
+start=end=dummy
+for (int i = 0; i <= n; i++) 
+    end = end.next;  //多走一步
+while (end != null) 
+    start = start.next; end = end.next;
+start.next = start.next.next;
+return dummy.next;
+```
+
+
 
 ### [17. Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)
 

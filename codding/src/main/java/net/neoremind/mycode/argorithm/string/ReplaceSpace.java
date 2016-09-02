@@ -6,6 +6,8 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
+ * 将字符串中的空格替换为%20这种ASCII的十六进制表示
+ *
  * @author zhangxu
  */
 public class ReplaceSpace {

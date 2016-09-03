@@ -739,6 +739,72 @@ TreeNode doBuildTree(int[] preorder, int preStart, int preEnd, int[] inorder, in
 }
 ```
 
+### [101. Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)
+
+E, Tree Depth-first Search Breadth-first Search
+
+是否是镜像树，和题目100-Same Tree的思想一样，首先可以利用DFS思想的Recursive递归，Iterative非递归（BFS思想利用queue）两种方式。
+```
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+```
+
+DFS递归：
+```
+public boolean isSymmetric1(TreeNode root) {
+    return root == null || helper(root.left, root.right);
+}
+
+public boolean helper(TreeNode node1, TreeNode node2) {
+    if (node1 == null && node2 == null) {
+        return true;
+    } else if (node1 != null && node2 != null) {
+        return node1.val == node2.val && helper(node1.left, node2.right) && helper(node1.right, node2.left);
+    } else {
+        return false;
+}
+```
+
+BFS用queue一层一层的对比：
+```
+if (root == null) return true;
+Queue<TreeNode> queue = new LinkedList<>();
+queue.add(root.left);
+queue.add(root.right);
+while (queue.size() > 1) {
+    TreeNode node1 = queue.poll();
+    TreeNode node2 = queue.poll();
+    if (node1 == null && node2 == null)  //和递归的类似
+        continue;
+    else if (node1 != null && node2 != null)
+        if (node1.val != node2.val) return false;
+    else return false;
+    queue.add(node1.left);
+    queue.add(node2.right);
+    queue.add(node1.right);
+    queue.add(node2.left);
+}
+return true;
+```
+
+### [100. Same Tree](https://leetcode.com/problems/same-tree/)
+
+E, Tree Depth-first Search
+
+DFS用递归。
+```
+if (p != null && q != null) {
+    return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+} else if (p == null && q == null) {
+    return true;
+} else {
+    return false;
+}
+```
+
 
 ### [93. Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
 

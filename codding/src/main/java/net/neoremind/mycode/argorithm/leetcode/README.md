@@ -636,6 +636,59 @@ for (int i = 0; i < height; i++) {
 return min in s[height - 1]
 ```
 
+### [106. Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+
+和105类似，只不过postorder遍历尾巴是根节点。不再赘述。
+
+
+### [105. Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+M, Tree Array Depth-first Search
+
+剑指offer面试题6-重建二叉树。
+
+利用递归来做Recursion
+
+假设
+```
+Pre-order: F, B, A, D, C, E, G, I, H
+           p
+
+In-order:  A, B, C, D, E, F, G, H, I
+                          q
+```
+F肯定是当前的根节点，那么久从In-order里面找到F即可，因为题目说了不重复数字。
+
+从In-order相当于“抡”起来，两个部分，左边的就是左子树，右边的就是右子树。
+
+```
+               F
+             /   \
+A, B, C, D, E     G, H, I
+```
+
+A, B, C, D, E和G, H, I又是新的问题，所以可以递归的解决，然后赋值左右节点的node给F即可。
+
+```
+public TreeNode buildTree(int[] preorder, int[] inorder) {
+    return doBuildTree(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+}
+
+TreeNode doBuildTree(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
+    if (preStart > preEnd || inStart > inEnd) {
+        return null;
+    }
+    int nodeIndex = find node index equal to preorder[preStart];
+    int leftChildrenLen = nodeIndex - inStart;
+    TreeNode node = new TreeNode(preorder[preStart]);
+    // 做好边界条件即可
+    node.left = doBuildTree(preorder, preStart + 1, preStart + leftChildrenLen, inorder, inStart,nodeIndex - 1);
+    node.right = doBuildTree(preorder, preStart + leftChildrenLen + 1, preEnd, inorder,nodeIndex + 1, inEnd);
+    return node;
+}
+```
+
+
 ### [93. Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
 
 M, Backtracking, String

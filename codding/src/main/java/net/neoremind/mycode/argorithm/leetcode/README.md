@@ -168,6 +168,57 @@ boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int 
 return searchMatrixDAC(matrix, 0, 0, matrix.length, matrix[0].length, target);
 ```
 
+### [232. Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/)
+
+E, Stack Design
+
+两个队列一进一出。
+
+```
+Stack<Integer> input = new Stack();
+Stack<Integer> output = new Stack();
+
+public void push(int x) { input.push(x); }
+
+public void pop() { peek(); output.pop(); }
+
+public int peek() {
+    if (output.empty()) {
+        while (!input.empty()) {
+            output.push(input.pop());
+        }
+    }
+    return output.peek();
+}
+
+public boolean empty() { return input.empty() && output.empty(); }
+```
+
+### [225. Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)
+
+E, Stack Design
+
+There are two solutions cost O(n) and O(1) for different operations:
+* push: O(n), pop/top: O(1)
+* push: O(1), pop/top: O(n)
+Time efficiency depends on operation frequency of push, pop, top:
+* if push>pop+top, second solution is better.
+* if push<pop+top, first solution is better.
+
+下面的例子是O(n), pop/top: O(1)的方法：
+```
+Queue<Integer> queue = new LinkedList<Integer>();
+public void push(int x) {
+    queue.add(x);
+    for (int i = 0; i < queue.size() - 1; i++) {
+        queue.add(queue.poll());
+    }
+}
+public void pop() { queue.poll(); }
+public int top() { return queue.peek(); }
+public boolean empty() { return queue.isEmpty(); }
+```
+
 ### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
 
 M, Backtracking, Array

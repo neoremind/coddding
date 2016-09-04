@@ -75,6 +75,9 @@ public class TrappingRainWater {
             }
             System.out.println();
         }
+        for (int j = 0; j < height.length; j++) {
+            System.out.print(j);
+        }
         System.out.println();
     }
 }

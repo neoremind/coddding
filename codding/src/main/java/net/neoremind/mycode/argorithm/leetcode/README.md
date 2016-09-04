@@ -2009,6 +2009,25 @@ H, Array Stack Two Pointers
 到头了，重新赋值maxLeft，依次按照前面的逻辑来，说白了，就是不断找高点，把水圈进去。
 
 ```
+       ∏
+   ∏   ∏∏ ∏
+ ∏ ∏∏ ∏∏∏∏∏∏
+∏∏∏∏∏∏∏∏∏∏∏∏
+012345678910
+
+例如下面的水maxHeight=3，maxHeightIndex=7，
+那么左边就是从0开始，
+index=0，maxLeft不变=0
+index=1，maxLeft=1，
+index=2，加上水量maxLeft - height[2] = 1
+index=3，又是一个高点，maxLeft=2
+index=4，加上水量maxLeft - height[4] = 1
+index=5，加上水量maxLeft - height[5] = 2
+index=6，加上水量maxLeft - height[6] = 1
+所以左边的水量就是1+1+2+1=5，右边的同理
+```
+
+```
 int maxHeight = find max height;
 int maxHeightIdx = find max height index;
 int res = 0;

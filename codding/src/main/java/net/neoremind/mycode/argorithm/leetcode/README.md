@@ -1996,6 +1996,38 @@ public void doPermuation(int[] nums, int m, int len) {
 }
 ```
 
+### [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
+
+H, Array Stack Two Pointers
+
+![](http://www.leetcode.com/wp-content/uploads/2012/08/rainwatertrap.png)
+
+看起来复杂，但是其实非常简单，首先可以找到最高点，然后就分两步，遍历左边、然后右边，时间复杂度O(N)。
+
+对于左边，维护一个当前最高的高度maxLeft（初始化为0），做最左边到最高点，如果当前高度比maxLeft小，
+那么可以用maxLeft - height[index]取得当前的可以承载的水量，直到遇到又一个新高度，那么之前的水就
+到头了，重新赋值maxLeft，依次按照前面的逻辑来，说白了，就是不断找高点，把水圈进去。
+
+```
+int maxHeight = find max height;
+int maxHeightIdx = find max height index;
+int res = 0;
+int left = 0, maxLeft = 0;
+int right = a.length - 1, maxRight = 0;
+while (left < maxHeightIdx) {
+    if (a[left] > maxLeft) maxLeft = a[left];
+    else  res += maxLeft - a[left];
+    left++;
+}
+while (right > maxHeightIdx) {
+    if (a[right] > maxRight) maxRight = a[right];
+    else res += maxRight - a[right];
+    right--;
+}
+return res;
+```
+
+
 ### [41. First Missing Positive](https://leetcode.com/problems/first-missing-positive/)
 
 H, Array

@@ -1996,6 +1996,71 @@ public void doPermuation(int[] nums, int m, int len) {
 }
 ```
 
+### [41. First Missing Positive](https://leetcode.com/problems/first-missing-positive/)
+
+H, Array
+
+比较难，想法难，而且处理边界条件很迷惑。第一次完全做不出来。
+过程就是按照nums[i]的值安插在合适的位置，进行nums[i] <-> nums[nums[i] -
+1]进行交换，大于0或者没有出界才换，否则不动i++，交换完了i不能动，还需要继续判断，知道这个位置小于0或者是合适的值了。和冒泡排序的思想有些像。
+```
+[3, 4, -1, 1]
+ 1  2   3  4    [index starts from 1]
+
+ i
+3 should be at index 3, swap index i and index 3
+
+[-1, 4, 3, 1]
+  1  2  3  4    [index starts from 1]
+
+  i
+-1 should not be in the set, ignore and i move to next
+
+[-1, 4, 3, 1]
+  1  2  3  4    [index starts from 1]
+
+     i
+4 should be at index 4, swap index i and index 4
+
+[-1, 1, 3, 4]
+  1  2  3  4    [index starts from 1]
+
+     i
+1 should be at index 1, swap index i and index 1
+
+[1, -1, 3, 4]
+ 1   2  3  4    [index starts from 1]
+
+     i
+-1 should not be in the set, ignore and i move to next
+
+[1, -1, 3, 4]
+ 1   2  3  4    [index starts from 1]
+
+        i
+3 is already at the right position, move i to next
+
+[1, -1, 3, 4]
+ 1   2  3  4    [index starts from 1]
+
+           i
+4 is already at the right position, move i to next
+
+we can know 2 is the first missing positive number, because 2 != -1.
+```
+
+```
+for (int i = 0; i < nums.length; i++) {
+    while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+        swap(i, nums[i] - 1, nums);
+    }
+}
+for (int i = 0; i < nums.length; i++)
+    if (nums[i] != i + 1)
+        return i + 1;
+return nums.length + 1;
+```
+
 ### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
 
 M, Backtracking, Array

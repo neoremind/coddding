@@ -2074,6 +2074,8 @@ return new int[] {left, right};
 
 H, Binary Search Array
 
+这是数组非重复的情况，如果重复需要看题目81//TODO
+
 考虑如下三种情况，是逐步演进的：
 ```
        /|

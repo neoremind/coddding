@@ -538,6 +538,43 @@ public static ListNode doReverseListRecursiveLy(ListNode head, ListNode newHead)
 }
 ```
 
+### [191. Number of 1 Bits](https://leetcode.com/problems/number-of-1-bits/)
+
+E, Bit Manipulation
+
+题目要求是无符号整形，因此Java中要注意处理Integer.MAX_VALUE和Integer.MIN_VALUE做检查。
+
+Integer.MAX_VALUE + 1 = Integer.MIN_VALUE
+
+* hamming weight 汉明重量是字符串相对于同样长度的零字符串的汉明距离
+* hamming distance 汉明距离就是将一个字符串替换成另外一个字符串所需要替换的字符长度
+
+```
+//方法1：n不动，flag依次和低位到高位（共32）个做“与”，转成2的幂，看是否不等于0，不能是>0因为，0x80000000是个负数。
+public int hammingWeight(int n) {
+    int flag = 1;
+    int res = 0;
+    for (int i = 0; i < 32; i++) {
+        if ((n & (flag << i)) != 0) {
+            res++;
+        }
+    }
+    return res;
+}
+
+//方法2：n从高位往低位滑动，此时要用无符号右移，否则会死循环。
+public int hammingWeight2(int n) {
+    int res = 0;
+    while (n != 0) {
+        if ((n & 1) == 1) {
+            res++;
+        }
+        n = n >>> 1;  //>>退出不了循环
+    }
+    return res;
+}
+```
+
 ### [189. Rotate Array](https://leetcode.com/problems/rotate-array/)
 
 E, Array

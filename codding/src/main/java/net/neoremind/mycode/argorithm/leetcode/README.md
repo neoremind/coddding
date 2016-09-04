@@ -194,6 +194,70 @@ public int peek() {
 public boolean empty() { return input.empty() && output.empty(); }
 ```
 
+### [230. Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/)
+
+M, Binary Search Tree
+
+三种解法：
+
+1）二分查找思想
+```
+int count = countNodes(root.left);
+if (k <= count) {
+    return kthSmallest(root.left, k);
+} else if (k > count + 1) {
+    return kthSmallest(root.right, k - 1 - count); // 1 is counted as current node
+}
+return root.val;
+
+int countNodes(TreeNode n) {
+    if (n == null) return 0;
+    return 1 + countNodes(n.left) + countNodes(n.right);
+}
+```
+
+2）中序遍历，递归
+```
+int counter = 0;int num = 0;
+public int kthSmallest(TreeNode root, int k) {
+    helper(root, k);
+    return num;
+}
+
+void helper(TreeNode node, int k) {
+    if (node.left != null) {
+        helper(node.left, k);
+    }
+    if (++counter == k) {
+        num = node.val;
+        return;
+    }
+    if (node.right != null) {
+        helper(node.right, k);
+    }
+}
+```
+
+3）中序遍历，非递归，使用stack，模板！！！和中序遍历题目94一样。非常巧妙。
+```
+int counter = 0;
+Stack<TreeNode> stack = new Stack<TreeNode>();
+TreeNode cur = root;
+while (cur != null || !stack.empty()) {
+    if (cur != null) {
+        stack.push(cur);
+        cur = cur.left;
+    } else {
+        TreeNode node = stack.pop();
+        counter++;
+        if (counter == k) { return node.val; }
+        cur = node.right;
+    }
+}
+return -1;
+```
+
+
 ### [225. Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)
 
 E, Stack Design

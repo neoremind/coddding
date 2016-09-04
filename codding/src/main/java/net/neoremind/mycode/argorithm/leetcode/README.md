@@ -574,6 +574,35 @@ for (int i = 0; i < 32; i++) {
 return ret;
 ```
 
+### [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
+
+H, Array Binary Search
+
+见题目153，修改mid和end相等情况，end--即可。
+
+### [153. Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/)
+
+M, Array Binary Search
+
+利用另外一种非递归的二分查找，start<end，中间做文章，判断mid和end，如果mid大于end，说明
+最小的肯定还在最右边，start=mid+1即可，如果小于等于则可能说明这个元素在左边，并且很有可能就是mid。
+
+
+```
+int start = 0;
+int end = nums.length - 1;
+while (start < end) {
+    int mid = (start + end) >> 1;
+    if (nums[mid] > nums[end]) {
+        start = mid + 1;
+    } else if (nums[mid] <= nums[end]) {  //这个等于放到上面也可以，单独拿出来做end--就可以避免重复
+        end = mid;
+    }
+}
+return nums[start];
+```
+
+
 ### [151. Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)
 
 M, String

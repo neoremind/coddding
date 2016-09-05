@@ -978,6 +978,48 @@ while (runner.next != null && runner.next.next != null) {
 return false;
 ```
 
+### [127. Word Ladder](https://leetcode.com/problems/word-ladder/)
+
+M, Graph
+
+经典的词梯。
+
+```
+public int ladderLength(String beginWord, String endWord, Set<String> wordList) {
+    if (beginWord.endsWith(endWord)) { return 0; }
+    wordList.add(endWord);
+    Set<String> visited = new HashSet<>();
+    Map<String, Vertex> map = new HashMap<>();
+    Queue<String> queue = new LinkedList<>();
+    queue.add(beginWord);
+    visited.add(beginWord);
+    map.put(beginWord, new Vertex(beginWord));
+    while (!queue.isEmpty()) {
+        String currWord = queue.poll();
+        char[] chs = currWord.toCharArray();
+        for (int i = 0; i < currWord.length(); i++) {
+            from 'a' to 'z' change current char to newWord
+            if (!visited.contains(newWord) && wordList.contains(newWord)) {
+                queue.add(newWord);
+                Vertex v = new Vertex(newWord);
+                v.prev = map.get(currWord);
+                map.put(newWord, v);
+                visited.add(newWord);
+            }
+            change back to currWord
+        }
+    }
+    if (!map.containsKey(endWord))
+        return 0;  //找不到路径
+    //从end往前找prev计数并且return
+}
+
+class Vertex {
+    String word;
+    Vertex prev;
+    int dist = Integer.MAX_VALUE;
+}
+```
 
 ### [120. Triangle](https://leetcode.com/problems/triangle/)
 

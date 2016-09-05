@@ -425,6 +425,74 @@ private int quickSelect(int[] nums, int low, int high) {
 }
 ```
 
+### [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
+
+M,  Depth-first Search Breadth-first Search Graph Topological Sort
+
+和题目207类似，只不过在queue里poll出来的时候，如果in-degree=0，重新add进去，顺便更新下返回的数组即可。
+
+当然也可以按照下面的来，但是leetcode上一些corner condition总是过不去，没AC。
+
+```
+/** 图的顶点*/
+class Vertex {
+    /** 与该顶点邻接的顶点*/
+    public ArrayList<Integer> adjacences = new ArrayList<>();
+    /** 入度，也就是指向这个节点的边的数量*/
+    public int inDegree = 0;
+}
+
+public int[] findOrder(int numCourses, int[][] prerequisites) {
+    int[] orders = new int[numCourses];
+    int counter = 0;
+
+    // 初始化邻接表
+    Vertex[] adjacencyList = new Vertex[numCourses];
+    for (int i = 0; i < prerequisites.length; i++) {
+        int source = prerequisites[i][1];
+        int target = prerequisites[i][0];
+        if (adjacencyList[source] == null) {
+            adjacencyList[source] = new Vertex();
+        }
+        if (adjacencyList[target] == null) {
+            adjacencyList[target] = new Vertex();
+        }
+        adjacencyList[source].adjacences.add(target);
+        adjacencyList[target].inDegree++;
+    }
+
+    Queue<Vertex> queue = new LinkedList<>();
+    // 遍历，入队列，入度=0的，即源头节点
+    for (int i = 0; i < adjacencyList.length; i++) {
+        if (adjacencyList[i] == null) {
+            continue;
+        }
+        if (adjacencyList[i].inDegree == 0) {
+            orders[counter++] = i;
+            queue.offer(adjacencyList[i]);
+        }
+    }
+
+    // 不断的poll节点出来，与它邻接的入度-1，然后看是不是入度=0，等于0则证明是个源头，放进去队列继续。
+    while (!queue.isEmpty()) {
+        Vertex vertex = queue.poll();
+        for (Integer index : vertex.adjacences) {
+            if (--adjacencyList[index].inDegree == 0) {
+                orders[counter++] = index;
+                queue.add(adjacencyList[index]);
+            }
+        }
+    }
+
+    if (counter != numCourses) {
+        throw new RuntimeException("Cyclic graph");
+    }
+
+    return orders;
+}
+```
+
+
 ### [208. Implement Trie (Prefix Tree)](https://leetcode.com/problems/implement-trie-prefix-tree/)
 
 M, Design Trie
@@ -474,6 +542,130 @@ public boolean search(String word) {
         ws = ws.children[c - 'a'];
     }
     return ws.isWord;  //startWith直接返回true
+}
+```
+
+### [207. Course Schedule](https://leetcode.com/problems/course-schedule/)
+
+M,Depth-first Search Breadth-first Search Graph Topological Sort
+
+输入示例：
+```
+      ------> 2 ----------
+     |        |          |  ----------------
+     |        \/        \/ |               \/
+1 ---         5 -------> 4 --------         6
+     |                  /\         |       /|\
+     |                   |         \/       |
+     ---------------------         3---------
+     |                            /\
+     ------------------------------
+```
+
+以下两个方法参考[discussion](https://discuss.leetcode.com/topic/15762/java-dfs-and-bfs-solution)
+* BFS
+
+输入时Edge lists，格式按照{course, pre_course}
+```
+{2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}
+```
+
+需要转换为邻接矩阵，Adjacency lists，二维数组
+```
+0 ->
+1 -> 2,3,4
+2 -> 5,4
+3 -> 6
+4 -> 3,6
+5 -> 4
+6 ->
+```
+
+保存一个入度in-degree数组：
+```
+0 = 0
+1 = 0
+2 = 1
+3 = 2
+4 = 3
+5 = 1
+6 = 2
+```
+
+代码如下，标准标准教科书般的邻接表，广度优先搜索解法。
+```
+// 邻接表（二维列表）以及初始化
+ArrayList[] graph = new ArrayList[numCourses];
+for (int i = 0; i < numCourses; i++) { graph[i] = new ArrayList(); }
+
+// 课程的入度
+int[] degree = new int[numCourses];
+
+Queue queue = new LinkedList();
+int count = 0;
+
+// 第一步，总之就是先初始化邻接表
+for (int i = 0; i < prerequisites.length; i++)
+    degree[prerequisites[i][0]]++;  //入度+1
+    graph[prerequisites[i][1]].add(prerequisites[i][0]);  //邻接表赋值
+
+// 第二步，找度0的，放入队列
+for (int i = 0; i < degree.length; i++)
+    if (degree[i] == 0)
+        queue.add(i);
+        count++;
+
+// 第三步，不断的出队列，把所有邻接的兄弟，也就是依赖于自己的全部度-1，如果发现度=0的，则入队列，否则就有环了
+while (queue.size() != 0) {
+    int course = (int) queue.poll();
+    for (int i = 0; i < graph[course].size(); i++) {
+        int next = (int) graph[course].get(i);
+        degree[next]--;
+        if (degree[next] == 0) {
+            queue.add(next);
+            count++;
+        }
+    }
+}
+
+return count == numCourses;
+```
+
+* DFS
+也是要做一个邻接表，不需要in-degree入度表。不断探测，理论上，应该会收殓到所有的终点，如果发现探测过程中有已经访问过的，则证明有了环。
+
+可以参考N-Queens题目的backtracking的模板，实际也是一个DFS的思想。
+
+```
+public boolean canFinish(int numCourses, int[][] prerequisites) {
+    ArrayList[] graph = new ArrayList[numCourses];
+    for (int i = 0; i < numCourses; i++) { graph[i] = new ArrayList();}
+
+    boolean[] visited = new boolean[numCourses];
+    for (int i = 0; i < prerequisites.length; i++) {
+        graph[prerequisites[i][1]].add(prerequisites[i][0]);
+    }
+
+    for (int i = 0; i < numCourses; i++) {
+        if (!dfs(graph, visited, i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+private boolean dfs(ArrayList[] graph, boolean[] visited, int course) {
+    if (visited[course]) {
+        return false;
+    }
+    visited[course] = true;
+    for (int i = 0; i < graph[course].size(); i++) {
+        if (!dfs(graph, visited, (int) graph[course].get(i))) {
+            return false;
+        }
+    }
+    visited[course] = false;
+    return true;
 }
 ```
 

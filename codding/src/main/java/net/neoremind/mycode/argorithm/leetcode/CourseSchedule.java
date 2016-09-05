@@ -157,8 +157,8 @@ public class CourseSchedule {
 
         // 第一步，总之就是先初始化邻接表
         for (int i = 0; i < prerequisites.length; i++) {
-            degree[prerequisites[i][1]]++;
-            graph[prerequisites[i][0]].add(prerequisites[i][1]);
+            degree[prerequisites[i][0]]++;
+            graph[prerequisites[i][1]].add(prerequisites[i][0]);
         }
 
         // 第二步，找度0的，放入队列
@@ -217,10 +217,9 @@ public class CourseSchedule {
     private boolean dfs(ArrayList[] graph, boolean[] visited, int course) {
         if (visited[course]) {
             return false;
-        } else {
-            visited[course] = true;
         }
 
+        visited[course] = true;
         for (int i = 0; i < graph[course].size(); i++) {
             if (!dfs(graph, visited, (int) graph[course].get(i))) {
                 return false;
@@ -230,15 +229,35 @@ public class CourseSchedule {
         return true;
     }
 
+    /**
+     * 第二个测试case：
+     * <pre>
+     *       ------> 2 ----------
+     *      |        |          |
+     *      |        \/         \/
+     * 1 ---         5 -------> 4 -------> 3 ------> 6
+     *      |                  /\ |                 /|\
+     *      |                   | -------------------
+     *      ---------------------
+     * </pre>
+     */
     @Test
     public void test() {
-        int numCourses = 7;
+        int numCourses = 8;
         int[][] prerequisites = new int[][] {
                 {2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}, {6, 7}, {7, 4}, {7, 5}
         };
-        assertThat(canFinish(numCourses + 1, prerequisites), Matchers.is(true));
-        assertThat(canFinishBFS(numCourses + 1, prerequisites), Matchers.is(true));
-        assertThat(canFinishDFS(numCourses + 1, prerequisites), Matchers.is(true));
+        assertThat(canFinish(numCourses, prerequisites), Matchers.is(true));
+        assertThat(canFinishBFS(numCourses, prerequisites), Matchers.is(true));
+        assertThat(canFinishDFS(numCourses, prerequisites), Matchers.is(true));
+
+        numCourses = 7;
+        prerequisites = new int[][] {
+                {2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}
+        };
+        assertThat(canFinish(numCourses, prerequisites), Matchers.is(true));
+        assertThat(canFinishBFS(numCourses, prerequisites), Matchers.is(true));
+        assertThat(canFinishDFS(numCourses, prerequisites), Matchers.is(true));
     }
 
 }

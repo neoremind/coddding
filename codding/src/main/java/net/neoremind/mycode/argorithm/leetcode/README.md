@@ -2230,6 +2230,42 @@ public void doPermuation(int[] nums, int m, int len) {
 }
 ```
 
+### [43. Multiply Strings](https://leetcode.com/problems/multiply-strings/)
+
+M, Math String
+
+```
+       0   1   2  i   <- index
+           0   1  j   <- index
+==================
+       1   2   3      <- num1
+           4   5      <- num2
+------------------
+           1   5
+       1   0
+   0   5
+==================
+       1   2
+   0   8
+   4
+==================
+0   1   2   3   4      <- 结果数组index
+```
+首先可以判断结果数组的长度是len1+len2，低索引存储高位，最低索引可能是0，因为没那么大。
+
+```
+for (int i = len1 - 1; i >= 0; i--) {
+    for (int j = len2 - 1; j >= 0; j--) {
+        int value = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+        int sum = value + res[i + j + 1];  //这个很重要，处理了低位的进位
+        res[i + j] = res[i + j] + sum / 10;  //处理高位进位
+        res[i + j + 1] = (sum) % 10;
+    }
+}
+```
+这里的技巧是，先计算低位，第i位*第j位相乘，结果的高位存储在(i+j)位，低位存储在(i+j+1)位。
+
+
 ### [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
 
 H, Array Stack Two Pointers

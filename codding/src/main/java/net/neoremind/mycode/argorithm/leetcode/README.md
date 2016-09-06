@@ -2270,7 +2270,7 @@ for (int i = len1 - 1; i >= 0; i--) {
 
 H, Array Stack Two Pointers
 
-![](http://www.leetcode.com/wp-content/uploads/2012/08/rainwatertrap.png)
+图片地址：[http://articles.leetcode.com/wp-content/uploads/2012/08/rainwatertrap.png](http://www.leetcode.com/wp-content/uploads/2012/08/rainwatertrap.png)
 
 看起来复杂，但是其实非常简单，首先可以找到最高点，然后就分两步，遍历左边、然后右边，时间复杂度O(N)。
 

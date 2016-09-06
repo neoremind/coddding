@@ -2230,6 +2230,36 @@ public void doPermuation(int[] nums, int m, int len) {
 }
 ```
 
+### [44. Wildcard Matching](https://leetcode.com/problems/wildcard-matching/)
+
+H,Dynamic Programming Backtracking Greedy String
+
+//TODO
+
+一个解如下，中间两个else if中的逻辑还是不太能理解。
+```
+int i = 0;int j = 0;int starIdx = -1;int match = 0;
+while (i < s.length()) {
+    if (j < p.length() && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')) {
+        i++;
+        j++;
+    } else if (j < p.length() && p.charAt(j) == '*') {
+        starIdx = j;
+        match = i;
+        j++;
+    } else if (starIdx != -1) {
+        j = starIdx + 1;
+        match++;
+        i = match;
+    } else {
+        return false;
+    }
+}
+while (j < p.length() && p.charAt(j) == '*') {j++;}
+return j == p.length();
+```
+
+
 ### [43. Multiply Strings](https://leetcode.com/problems/multiply-strings/)
 
 M, Math String

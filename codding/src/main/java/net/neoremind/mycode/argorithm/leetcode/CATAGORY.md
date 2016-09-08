@@ -31,9 +31,13 @@
 
 [42. Trapping Rain Water](README.md#42-trapping-rain-water)
 
+[45. Jump Game II](README.md#45-jump-game-ii)
+
 [48. Rotate Image](README.md#48-rotate-image)
 
 [53. Maximum Subarray](README.md#53-maximum-subarray)
+
+[55. Jump Game](README.md#55-jump-game)
 
 [54. Spiral Matrix](README.md#54-spiral-matrix)
 
@@ -60,6 +64,10 @@
 [106. Construct Binary Tree from Inorder and Postorder Traversal](README.md#106-construct-binary-tree-from-inorder-and-postorder-traversal)
 
 [120. Triangle](README.md#120-triangle)
+
+[121. Best Time to Buy and Sell Stock](README.md#121-best-time-to-buy-and-sell-stock)
+
+[123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
 [153. Find Minimum in Rotated Sorted Array](README.md#153-find-minimum-in-rotated-sorted-array)
 
@@ -206,7 +214,7 @@
 
 [43. Multiply Strings](README.md#43-multiply-strings)
 
-[44. Wildcard Matching]()  //
+[44. Wildcard Matching](README.md#44-wildcard-matching)
 
 [49. Group Anagrams](README.md#49-group-anagrams)
 
@@ -269,7 +277,7 @@ Current done.
 
 ##Dynamic Programming
 
-[44. Wildcard Matching]()  //
+[44. Wildcard Matching](README.md#44-wildcard-matching)
 
 [53. Maximum Subarray](README.md#53-maximum-subarray)
 
@@ -284,6 +292,12 @@ Current done.
 [72. Edit Distance](README.md#72-edit-distance)
 
 [120. Triangle](README.md#120-triangle)
+
+[121. Best Time to Buy and Sell Stock](README.md#121-best-time-to-buy-and-sell-stock)
+
+[122. Best Time to Buy and Sell Stock II](README.md#122-best-time-to-buy-and-sell-stock-ii)
+
+[123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
 
@@ -300,7 +314,7 @@ Current done.
 
 [40. Combination Sum II](README.md#40-combination-sum-ii)
 
-[44. Wildcard Matching]()  //
+[44. Wildcard Matching](README.md#44-wildcard-matching)
 
 [46. Permutations](README.md#46-permutations)
 
@@ -352,17 +366,24 @@ Current done.
 
 ##Greedy
 
-[44. Wildcard Matching]()  //
+[44. Wildcard Matching](README.md#44-wildcard-matching)
 
-[45. Jump Game II]() //
+[45. Jump Game II](README.md#45-jump-game-ii)
 
-[55. Jump Game]() //
+[55. Jump Game](README.md#55-jump-game)
+
+[122. Best Time to Buy and Sell Stock II](README.md#122-best-time-to-buy-and-sell-stock-ii)
+
+[134. Gas Station](README.md#134-gas-station)
+
+
 
 ##Sort
 
 [75. Sort Colors](README.md#75-sort-colors)
 
 [179. Largest Number](README.md#179-largest-number)
+
 
 ##Bit Manipulation
 

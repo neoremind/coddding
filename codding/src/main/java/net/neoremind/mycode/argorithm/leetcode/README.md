@@ -1141,6 +1141,17 @@ for (int i = 0; i < prices.length; i++) {
 return maxPro;
 ```
 
+和[53. Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)类似的动态规划思想，都能做非常小的空间复杂度。
+
+记录以i为结尾的，最大的连续子数组和，应该是当前前面最大的sum + 自己，或者干脆就自立门户自己了。
+```
+int maxSum = nums[0], sum = 0;
+for(int i = 0; i < nums.length; ++i)
+    sum = Math.max(sum + nums[i], nums[i]);
+    maxSum = Math.max(maxSum, sum);
+return maxSum;
+```
+
 ### [120. Triangle](https://leetcode.com/problems/triangle/)
 
 M,  Array Dynamic Programming
@@ -2088,14 +2099,13 @@ public int findMaxSumOfSubArray_DP(int[] array) {
 ```
 
 另外一种节省空间的做法。
+记录以i为结尾的，最大的连续子数组和，应该是当前前面最大的sum + 自己，或者干脆就自立门户自己了。
 ```
 int maxSum = nums[0], sum = 0;
-for(int i = 0; i < nums.length; ++i){
+for(int i = 0; i < nums.length; ++i)
     sum = Math.max(sum + nums[i], nums[i]);
     maxSum = Math.max(maxSum, sum);
-}
 return maxSum;
-}
 ```
 
 4、分治法，需要进一步研究[leetcode discussion](https://discuss.leetcode.com/topic/426/how-to-solve-maximum-subarray-by-using-the-divide-and-conquer-approach/2)

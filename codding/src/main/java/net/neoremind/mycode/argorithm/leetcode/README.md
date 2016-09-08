@@ -1021,6 +1021,126 @@ class Vertex {
 }
 ```
 
+### [134. Gas Station](https://leetcode.com/problems/gas-station/)
+
+M, Greedy
+
+先检查总加油和总消耗能不能满足跑完一圈。
+```
+15,5    180,20
+A <---- E <--------- D 1,2
+|                    |
+|                    |
+|                    |
+------>B ----------->C
+     5,10         20,100
+
+```
+从A开始走，可以走到C就不行就，这时候start可以是D，不用再从B返回走了，因为既然从A都能空邮箱走过来， 那么肯定A之后的E,D是有可能的起点，因为要过C，必须要有足够的储备。
+
+```
+int tank = 0;
+for (int i = 0; i < gas.length; i++) tank += gas[i] - cost[i];
+if (tank < 0) { return -1; } //检查总续航和总消耗是否满足要求
+
+int start = 0; //然后在有解的基础上找起点。
+int accumulate = 0;
+for (int i = 0; i < gas.length; i++)
+    int curGain = gas[i] - cost[i];
+    if (accumulate + curGain < 0)
+        start = i + 1;
+        accumulate = 0;
+    else
+        accumulate += curGain;
+return start;
+```
+
+### [123. Best Time to Buy and Sell Stock III](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/)
+
+用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。最多交易两次，手上最多只能持有一支股票，求最大收益。
+
+分析：动态规划法。以第i天为分界线，计算第i天之前进行一次交易的最大收益preProfit[i]，和第i天之后进行一次交易的最大收益postProfit[i]，最后遍历一遍，max{preProfit[i] + postProfit[i]} (0≤i≤n-1)就是最大收益。第i天之前和第i天之后进行一次的最大收益求法同Best Time to Buy and Sell Stock I。
+
+时间O(n)，空间O(n)。
+
+[参考链接](http://liangjiabin.com/blog/2015/04/leetcode-best-time-to-buy-and-sell-stock.html)
+
+另外还有一个更难的[题目188 Best Time to Buy and Sell Stock IV](https://leetcode
+.com/problems/best-time-to-buy-and-sell-stock-iv) 最多进行K次交易，动态规划的方程比较难写。
+
+```
+if (prices.length < 2) { return 0; }
+
+int n = prices.length;
+int[] preProfit = new int[n];
+int[] postProfit = new int[n];
+
+int curMin = prices[0];
+for (int i = 1; i < n; i++)
+    curMin = Math.min(curMin, prices[i]);
+    preProfit[i] = Math.max(preProfit[i - 1], prices[i] - curMin);
+
+int curMax = prices[n - 1];
+for (int i = n - 2; i >= 0; i--)
+    curMax = Math.max(curMax, prices[i]);
+    postProfit[i] = Math.max(postProfit[i + 1], curMax - prices[i]);
+
+int maxProfit = 0;
+for (int i = 0; i < n; i++)
+    maxProfit = Math.max(maxProfit, preProfit[i] + postProfit[i]);
+
+return maxProfit;
+```
+
+### [122. Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/)
+
+M, Array Greedy
+
+用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。交易次数不限，但一次只能交易一支股票，也就是说手上最多只能持有一支股票，求最大收益。
+
+贪心法。从前向后遍历数组，只要当天的价格高于前一天的价格，就算入收益。
+
+时间O(n)，空间O(1)。
+
+注意这里是T+0的交易.
+
+```
+if (prices.length < 2) { return 0; }
+int maxProfit = 0;
+for (int i = 1; i < prices.length; i++)
+    int diff = prices[i] - prices[i - 1];
+    if (diff > 0)
+        maxProfit += diff;
+return maxProfit;
+```
+
+
+### [121. Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/)
+
+E, Array Dynamic Programming
+
+用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。
+如果只允许进行一次交易，也就是说只允许买一支股票并卖掉，求最大的收益。
+
+动态规划法。从前向后遍历数组，记录当前出现过的最低价格，作为买入价格，并计算以当天价格出售的收益，作为可能的最大收益，整个遍历过程中，出现过的最大收益就是所求。
+
+时间O(n)，空间O(1)
+
+状态转移方程，d(j)表示在j这一天出售股票的最大收益：
+```
+d(j) = Vj - Min(Vi, i in [0, j-1])
+```
+
+```
+int minPrice = Integer.MAX_VALUE;
+int maxPro = 0;
+for (int i = 0; i < prices.length; i++) {
+    minPrice = Math.min(minPrice, prices[i]);
+    maxPro = Math.max(prices[i] - minPrice, maxPro);
+}
+return maxPro;
+```
+
 ### [120. Triangle](https://leetcode.com/problems/triangle/)
 
 M,  Array Dynamic Programming
@@ -1862,6 +1982,25 @@ So, 2982(10base) = 4041000(!base)
 
 怎么把这个4041000还原回来看这个帖子吧，[点击此](http://leetcode.tgic.me/permutation-sequence/index.html)。
 
+
+### [55. Jump Game](https://leetcode.com/problems/jump-game/)
+
+M, Array Greedy
+
+经典的贪心算法，尽量往前跳，每个点的当前位置+它的跳跃力（i+nums[i]）就是它能reach的最远的点，记录这个点为max位置。
+
+遍历数组，直到某个位置大于max，证明了前面怎么跳肯定都跳不到这，自然就无解了。
+
+```
+int max = 0;
+for (int i = 0; i < nums.length; i++)
+    if (i > max)
+        return false;
+    max = Math.max(nums[i] + i, max);
+return true;
+```
+
+
 ### [54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
 
 M, Array
@@ -2228,6 +2367,33 @@ public void doPermuation(int[] nums, int m, int len) {
         }
     }
 }
+```
+
+### [45. Jump Game II](https://leetcode.com/problems/jump-game-ii/)
+
+H, Array Greedy
+
+参考[最小生成树的算法](http://www.geeksforgeeks.org/greedy-algorithms-set-5-prims-minimum-spanning-tree-mst-2/)
+的思想，其实就是贪心。每次就尽量找最远的点，最小生成树只找能加入集合V的最短的边E。
+
+首先要明确，联想JumpGame，在位置i，最大跳nums[i]步骤，那么就是说下次最大跳到i+nums[i]的索引位置， 每一步都保存这个最大值，那么如果遍历到某个位置，发现最大的max都比这个i小，自然表示肯定跳不到这了，这个问题就没有解。
+
+时间复杂度O(N)
+
+```
+max=nums[0]目前可以reach的最大索引位置
+last=0 上次reach的最大索引位置
+count=0
+for i in nums
+   count++
+   for idx in [last+1, max]  从max往上次能跳到的最大的max看这个区间里面下次能reach的最远索引位置,不能漏过每一个，例如如果有一个的跳跃步数是1000，那么就是非常大的跳跃，也许一下就到头了。
+       max = MAX(nums[i]+i, max)
+
+   if max <= i
+       return -1 原地不动了，调不到了。当然根据leetcode题目不可能出现，但是以防万一
+   last = i
+   i = max
+return count
 ```
 
 ### [44. Wildcard Matching](https://leetcode.com/problems/wildcard-matching/)

@@ -83,6 +83,8 @@
 
 [217. Contains Duplicate]() //
 
+[283. Move Zeroes]() //
+
 
 ##Hashtable
 [1. Two Sum](README.md#1-two-sum)
@@ -192,6 +194,8 @@
 [142. Linked List Cycle II](README.md#142-linked-list-cycle-ii)
 
 [234. Palindrome Linked List]() //
+
+[283. Move Zeroes]() //
 
 [344. Reverse String](README.md#344-reverse-string)
 

@@ -149,6 +149,57 @@ for(int i=0; i<n; ++i){  // 遍历
 }
 ```
 
+### [283. Move Zeroes](https://leetcode.com/problems/move-zeroes/)
+
+E, Array Two Pointers
+
+把0都挪到后面去，同时位置元素的相对位置，也就是说保持稳定。
+
+例如,
+```
+1, 0, 0, 3, 12
+1, 3, 12, 0, 0
+```
+方法1：遍历遇到0就和后面的第一个非0的元素交换。
+```
+int i = 0;
+while (i < nums.length) {
+    if (nums[i] == 0) {
+        int k = i + 1;
+        while (k < nums.length && nums[k] == 0) {
+            k++;
+        }
+        if (k < nums.length) {
+            swap(i, k, nums);
+        }
+        i++;
+    } else {
+        i++;
+    }
+}
+```
+方法2：原地不动，赋值，不交换，最后都赋0，这个和75题荷兰国旗差不多思想，同时还和26题数组去重差不多。
+```
+int idx = 0;
+for (int i = 0; i < nums.length; i++)
+    if (nums[i] != 0)
+        nums[idx++] = nums[i];
+for (int i = idx; i < nums.length; i++)
+    nums[i] = 0;
+```
+
+另外如果不要求稳定，那么解法如下：
+```
+int i = 0; int j = nums.length - 1;
+while (i < j)
+    if (nums[i] == 0)
+        swap(i, j, nums);
+        j--;
+    else
+        i++;
+```
+
+
 ### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
 
 M, Binary Search, Divide and Conquer

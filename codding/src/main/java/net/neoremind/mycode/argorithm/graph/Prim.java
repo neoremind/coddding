@@ -24,6 +24,8 @@ package net.neoremind.mycode.argorithm.graph;
  * 2）（v1，v2）权最小
  * 3）E = E + (v1, v2)
  * 4）V = V + v2
+ * <p>
+ * http://www.geeksforgeeks.org/greedy-algorithms-set-5-prims-minimum-spanning-tree-mst-2/
  *
  * @author zhangxu
  */

@@ -231,8 +231,6 @@
 
 ##Divide and Conquer
 
-Current done.
-
 [4. Median of Two Sorted Arrays](README.md#4-median-of-two-sorted-arrays)
 
 [23. Merge k Sorted Lists](README.md#23-merge-k-sorted-lists)

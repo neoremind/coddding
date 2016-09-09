@@ -1993,6 +1993,32 @@ So, 2982(10base) = 4041000(!base)
 
 怎么把这个4041000还原回来看这个帖子吧，[点击此](http://leetcode.tgic.me/permutation-sequence/index.html)。
 
+同时联想这个题它是取余数不断的缩小，那么将十进制的数字转成其他进制，比如二进制、八进制、十六进制，在纸上的计算学会了。
+
+一种通用的程序解法如下：
+```
+final static char[] digits = {'0', '1', '2', '3', '4', '5','6', '7', '8', '9', 'a', 'b','c', 'd', 'e', 'f', 'g', 'h','i', 'j', 'k', 'l', 'm', 'n','o', 'p', 'q', 'r', 's', 't','u', 'v', 'w', 'x', 'y', 'z'};
+
+public String ten2binary(int n)
+    return toUnsignedString(n, 1);
+
+public String ten2Octal(int n)
+    return toUnsignedString(n, 3);
+
+public String ten2hex(int n)
+    return toUnsignedString(n, 4);
+
+public String toUnsignedString(int n, int base)
+    char[] res = new char[32];
+    int idx = 32;
+    int mask = (1 << base) - 1;
+    do {
+        res[--idx] = digits[n & mask];
+        n >>>= base;
+    } while (n != 0);
+    return new String(res, idx, 32 - idx);
+```
+
 
 ### [55. Jump Game](https://leetcode.com/problems/jump-game/)
 
@@ -2871,6 +2897,39 @@ while (lo < hi) {
 return nums[lo] == target ? lo : -1;
 ```
 
+### [31. Next Permutation](https://leetcode.com/problems/next-permutation/)
+
+M, Array
+
+```
+1,2,3 → 1,3,2
+3,2,1 → 1,2,3
+1,1,5 → 1,5,1
+
+//1.找到最后一个升序位置pos
+int pos = -1;
+for (int i = num.length - 1; i > 0; i--)
+    if (num[i] > num[i - 1])
+        pos = i - 1;
+        break;
+
+//2.如果不存在升序，即这个数是最大的，那么反排这个数组
+if (pos < 0)
+    reverse(num, 0, num.length - 1);
+    return;
+
+//3.存在升序，那么找到pos之后最后一个比它大的位置
+for (int i = num.length - 1; i > pos; i--)
+    if (num[i] > num[pos]) {
+        int tmp = num[i];
+        num[i] = num[pos];
+        num[pos] = tmp;
+        break;
+
+//4.反排pos之后的数
+reverse(num, pos + 1, num.length - 1);
+```
+
 
 ### [29. Divide Two Integers](https://leetcode.com/problems/divide-two-integers/)
 
@@ -2968,6 +3027,22 @@ KMP算法的重点在于每次模式串不用回到匹配串的i+1的位置去�
 重点在于如何求这个N，是利用一个next数组的东西，需要提前计算好，可以利用递推式搞定。
 
 实际的KMP代码非常短小，这里暂时没有是实现。
+
+### [27. Remove Element](https://leetcode.com/problems/remove-element/)
+
+E, Array Two Pointers
+
+发现元素后，思路为直接从最后的tail补一个元素上来，一个指向tail的指针索引减1。
+
+```
+int currIndex = 0
+int tailIndex = nums.length - 1
+while (currIndex <= tailIndex)
+    if (nums[currIndex] == val)
+        nums[currIndex] = nums[tailIndex--];
+        continue;
+    currIndex++;
+```
 
 
 ### [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)

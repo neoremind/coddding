@@ -13,9 +13,9 @@
 
 [26. Remove Duplicates from Sorted Array](README.md#26-remove-duplicates-from-sorted-array)
 
-[27. Remove Element]() //
+[27. Remove Element](README.md#27-remove-element)
 
-[31. Next Permutation]() //
+[31. Next Permutation](README.md#31-next-permutation)
 
 [33. Search in Rotated Sorted Array](README.md#33-search-in-rotated-sorted-array)
 
@@ -56,6 +56,8 @@
 [78. Subsets](README.md#78-subsets)
 
 [79. Word Search](README.md#79-word-search)
+
+[88. Merge Sorted Array]() //
 
 [90. Subsets II](README.md#90-subsets-ii)
 
@@ -169,7 +171,7 @@
 
 [26. Remove Duplicates from Sorted Array](README.md#26-remove-duplicates-from-sorted-array)
 
-[27. Remove Element]() //
+[27. Remove Element](README.md#27-remove-element)
 
 [28. Implement strStr()](README.md#28-implement-strstr)
 
@@ -180,6 +182,8 @@
 [75. Sort Colors](README.md#75-sort-colors)
 
 [86. Partition List](README.md#86-partition-list)
+
+[88. Merge Sorted Array]() //
 
 [141. Linked List Cycle](README.md#141-linked-list-cycle)
 

@@ -1416,6 +1416,52 @@ return IntStream.range(0, (int) Math.pow(2, n))
         .collect(Collectors.toList());
 ```
 
+### [88. Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)
+
+E, Array Two Pointer
+
+一开始限于从前往后merge的思路里，需要nums1不断的交换和后面的元素，非常难于解决。如果从后往前走，那么将豁然开朗！
+
+```
+int i = m - 1;
+int j = n - 1;
+int k = m + n - 1;
+while (i >= 0 && j >= 0)
+    if (nums1[i] > nums2[j])
+        nums1[k--] = nums1[i--];
+    else
+        nums1[k--] = nums2[j--];
+while (j >= 0) //最后不能忘
+    nums1[k--] = nums2[j--];
+```
+
+举例：
+```
+nums1 = new int[] {3, 5, 7, 10, 11, 0, 0, 0, 0, 0};
+nums2 = new int[] {2, 4, 6, 8, 9};
+
+nums1[9] = nums1[4]
+[3, 5, 7, 10, 11, 0, 0, 0, 0, 11]
+nums1[8] = nums1[3]
+[3, 5, 7, 10, 11, 0, 0, 0, 10, 11]
+nums1[7] = nums2[4]
+[3, 5, 7, 10, 11, 0, 0, 9, 10, 11]
+nums1[6] = nums2[3]
+[3, 5, 7, 10, 11, 0, 8, 9, 10, 11]
+nums1[5] = nums1[2]
+[3, 5, 7, 10, 11, 7, 8, 9, 10, 11]
+nums1[4] = nums2[2]
+[3, 5, 7, 10, 6, 7, 8, 9, 10, 11]
+nums1[3] = nums1[1]
+[3, 5, 7, 5, 6, 7, 8, 9, 10, 11]
+nums1[2] = nums2[1]
+[3, 5, 4, 5, 6, 7, 8, 9, 10, 11]
+nums1[1] = nums1[0]
+[3, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+nums1[0] = nums2[0]
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+```
+
 ### [86. Partition List](https://leetcode.com/problems/partition-list/)
 
 M, Linked List Two Pointers

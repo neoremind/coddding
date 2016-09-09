@@ -582,6 +582,119 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 }
 ```
 
+### [209. Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)
+
+M, Array Two Pointers Binary Search
+
+方法1：暴力求解，会Time Limit Exceeded
+固定某个位置，从这个位置往后找最小的>=s的连续子序列，记录这个长度。遍历完数组，最短的那个长度就是解。
+```
+int minLen = Integer.MAX_VALUE;
+for (int i = 0; i < nums.length; i++)
+    int sub = 0;
+    for (int j = i; j < nums.length; j++)
+        sub += nums[j];
+        if (sub >= s)
+            minLen = Math.min(minLen, j - i + 1);
+            break;
+return minLen == Integer.MAX_VALUE ? 0 : minLen;
+```
+
+方法2：通用的模板解法。
+
+[参考链接1](https://discuss.leetcode.com/topic/30941/here-is-a-10-line-template-that-can-solve-most-substring-problems/2)
+
+[参考链接2](https://discuss.leetcode.com/topic/37844/o-n-template-for-minimum-size-subarray-sum-minimum-window-substring-longest-substring-without-repeating-characters)
+
+和以下题目的解法模板一样，follow the same pattern！一切都是套路：
+* [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
+* [76. Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+* [209. Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)
+
+模板就是：
+```
+int findSubstring(string s){
+    int[] map = new int[256];
+    int counter; // check whether the substring is valid
+    int begin=0, end=0; //two pointers, one point to tail and one  head
+    int d; //the length of substring
+
+    for() { /* initialize the hash map here */ }
+
+    while(end<s.size()){
+
+        if(map[s[end]] ?){  /* modify counter here */ }
+
+        map[s[end]]--
+        end++
+
+        while(/* counter condition */){
+
+             /* update d here if finding minimum*/
+
+            //increase begin to make it invalid/valid again
+
+            if(map[s[begin]] ?){ /*modify counter here*/ }
+
+            map[s[begin]]++
+            begin++;
+        }
+
+        /* update d here if finding maximum*/
+    }
+    return d;
+}
+```
+
+这道题目的思想就是滑动窗口的概念，
+* 1）start/end固定起点
+* 2）固定start，滑动end，维护一个刚好>=s的窗口，记录这个长度是一个解
+*3）把窗口的左边往前移动，维持一个刚好小于s的窗口，因为要给end向前走的可能，继续这个窗口。 （证明这个要想象为什么不会错过start，因为第二步是刚好>=s就停止的了窗口，所以错过的start绝对不可能是起点，因为有他们没有他们都一样）
+```
+start/end
+   2,      3,     1,      2,      4,     3
+
+start                    end
+  [2,      3,     1,      2,]     4,     3   是一个解，进入内部第二个循环, minLen=4
+
+        start            end
+   2,      3,     1,      2,      4,     3
+
+        start                    end
+   2,     [3,     1,      2,      4,]    3  是一个解，进入内部第二个循环,minLen=4
+
+                 start           end
+   2,      3,    [1,      2,      4,]    3  minLen=3
+
+                        start    end
+   2,      3,     1,      2,      4,     3
+
+                        start           end
+   2,      3,     1,     [2,      4,     3] 是一个解，进入内部第二个循环,minLen=3
+
+                                 start   end
+   2,      3,     1,      2,     [4,     3]   minLen=2
+
+                                       start/end
+   2,      3,     1,      2,      4,     3
+```
+
+```
+int start = 0, end = 0;
+int minLen = Integer.MAX_VALUE;
+int sum = 0;
+while (end < nums.length) {
+    if (sum < s)
+        sum += nums[end];
+    end++;
+    while (sum >= s)
+        if (end - start < minLen)
+            minLen = end - start;
+        sum -= nums[start];
+        start++;
+return minLen == Integer.MAX_VALUE ? 0 : minLen;
+```
+
 
 ### [208. Implement Trie (Prefix Tree)](https://leetcode.com/problems/implement-trie-prefix-tree/)
 
@@ -1895,6 +2008,78 @@ private void backtrack(int n, int k, int i, List<Integer> tempList, List<List<In
         }
     }
 }
+```
+
+### [76. Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+
+H,Hash Table Two Pointers String
+
+和以下题目的解法模板一样，follow the same pattern！一切都是套路：
+* [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
+* [76. Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+* [209. Minimum Size Subarray Sum，这道题更加典型](https://leetcode.com/problems/minimum-size-subarray-sum/)
+
+这道题相对来说较为难。思想还是维护滑动窗口的概念，举例来说，
+```
+s=ADOBECODEBANC
+t=ABC
+
+end=0, s.charAt(0)=A, a[A]=1
+end=0, s.charAt(0)=A, a[A]=0
+end=1, s.charAt(1)=D, a[D]=-1
+end=2, s.charAt(2)=O, a[O]=-1
+end=3, s.charAt(3)=B, a[B]=1
+end=3, s.charAt(3)=B, a[B]=0
+end=4, s.charAt(4)=E, a[E]=-1
+end=5, s.charAt(5)=C, a[C]=1
+end=5, s.charAt(5)=C, a[C]=0
+minStart=0, minLen=6, valid=ADOBEC //到这里就是发现了第一次匹配，最小的长度是6
+start=1, end=6, maybe_valid=DOBEC //不断的移动start，直到不构成条件
+end=6, s.charAt(6)=O, a[O]=-2
+end=7, s.charAt(7)=D, a[D]=-2
+end=8, s.charAt(8)=E, a[E]=-2
+end=9, s.charAt(9)=B, a[B]=-1
+end=10, s.charAt(10)=A, a[A]=1
+end=10, s.charAt(10)=A, a[A]=0
+start=2, end=11, maybe_valid=OBECODEBA //又满足条件了，长度不够小
+start=3, end=11, maybe_valid=BECODEBA
+start=4, end=11, maybe_valid=ECODEBA
+start=5, end=11, maybe_valid=CODEBA
+start=6, end=11, maybe_valid=ODEBA //不断的移动start，也就是去掉了c，直到不构成条件
+end=11, s.charAt(11)=N, a[N]=-1
+end=12, s.charAt(12)=C, a[C]=1
+end=12, s.charAt(12)=C, a[C]=0
+start=7, end=13, maybe_valid=DEBANC //又满足条件了，长度不够小
+start=8, end=13, maybe_valid=EBANC //不断的移动start，直到不构成条件
+minStart=8, minLen=5, valid=EBANC
+start=9, end=13, maybe_valid=BANC
+minStart=9, minLen=4, valid=BANC //移动的过程中不忘记更新minLen
+start=10, end=13, maybe_valid=ANC
+```
+
+```
+int start = 0, end = 0;
+int counter = t.length();
+int[] a = new int[256];
+for (char c : t.toCharArray()) {
+    a[c]++;
+}
+int minLen = Integer.MAX_VALUE;
+int minStart = 0;
+while (end < s.length()) {
+    if (a[s.charAt(end)] > 0)
+        counter--;
+    a[s.charAt(end)]--;
+    end++;
+    while (counter == 0)
+        if (minLen > end - start)
+            minStart = start;
+            minLen = end - start;
+        a[s.charAt(start)]++;
+        if (a[s.charAt(start)] > 0)
+            counter++;
+        start++;
+return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
 ```
 
 ### [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
@@ -3775,6 +3960,27 @@ foreach i in s
     while s[barrier .. i] contains charaters
         barrier = barrier + 1
     max = MAX(max, curr - barrier + 1)
+```
+
+和以下题目的解法模板一样，follow the same pattern！一切都是套路：
+* [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
+* [76. Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/)
+* [209. Minimum Size Subarray Sum，这道题更加典型](https://leetcode.com/problems/minimum-size-subarray-sum/)
+
+```
+if (s == null || s.length() == 0) { return 0; }
+int[] a = new int[256];
+int start = 0, end = 0;
+int minLen = Integer.MIN_VALUE;
+while (end < s.length())
+    if (a[s.charAt(end)] == 0) //还没有重复的，则增长minLen
+        minLen = Math.max(minLen, end - start + 1);
+    a[s.charAt(end)]++;  //记数
+    end++;
+    while (end < s.length() && a[s.charAt(end)] > 0)  //如果发现了重复，那么需要从start开始滑动窗口到重复的字符。
+        a[s.charAt(start)]--;
+        start++;
+return minLen == Integer.MAX_VALUE ? 0 : minLen;
 ```
 
 ### [2. Add Two Numbers](https://leetcode.com/problems/add-two-numbers/)

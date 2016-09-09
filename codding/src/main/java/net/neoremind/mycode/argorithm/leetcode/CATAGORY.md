@@ -79,6 +79,8 @@
 
 [189. Rotate Array](README.md#189-rotate-array)
 
+[209. Minimum Size Subarray Sum]() //
+
 [216. Combination Sum III](README.md#216-combination-sum-iii)
 
 [217. Contains Duplicate]() //
@@ -96,6 +98,8 @@
 [37. Sudoku Solver](README.md#37-sudoku-solver)
 
 [49. Group Anagrams](README.md#49-group-anagrams)
+
+[76. Minimum Window Substring]()  //
 
 [94. Binary Tree Inorder Traversal]()  //
 
@@ -185,6 +189,8 @@
 
 [75. Sort Colors](README.md#75-sort-colors)
 
+[76. Minimum Window Substring]()  //
+
 [86. Partition List](README.md#86-partition-list)
 
 [88. Merge Sorted Array]() //
@@ -194,6 +200,8 @@
 [141. Linked List Cycle](README.md#141-linked-list-cycle)
 
 [142. Linked List Cycle II](README.md#142-linked-list-cycle-ii)
+
+[209. Minimum Size Subarray Sum]() //
 
 [234. Palindrome Linked List]() //
 
@@ -232,6 +240,8 @@
 [49. Group Anagrams](README.md#49-group-anagrams)
 
 [72. Edit Distance](README.md#72-edit-distance)
+
+[76. Minimum Window Substring]()  //
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
 

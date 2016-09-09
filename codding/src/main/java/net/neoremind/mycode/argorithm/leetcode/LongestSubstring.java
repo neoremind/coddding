@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Given a string, find the length of the longest substring without repeating characters.
@@ -47,6 +48,27 @@ public class LongestSubstring {
             max = Math.max(max, curr - barrier + 1);
         }
         return max;
+    }
+
+    public static int lengthOfLongestSubstring3(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int[] a = new int[256];
+        int start = 0, end = 0;
+        int minLen = Integer.MIN_VALUE;
+        while (end < s.length()) {
+            if (a[s.charAt(end)] == 0) {
+                minLen = Math.max(minLen, end - start + 1);
+            }
+            a[s.charAt(end)]++;
+            end++;
+            while (end < s.length() && a[s.charAt(end)] > 0) {
+                a[s.charAt(start)]--;
+                start++;
+            }
+        }
+        return minLen == Integer.MAX_VALUE ? 0 : minLen;
     }
 
     public static int lengthOfLongestSubstring(String s) {
@@ -129,6 +151,11 @@ public class LongestSubstring {
         len = lengthOfLongestSubstring(s);
         System.out.println(len);
         assertThat(len, is(7));
+
+        s = "abcabcbb";
+        len = lengthOfLongestSubstring3(s);
+        System.out.println(len);
+        assertThat(len, is(3));
 
         long start = System.currentTimeMillis();
         s =

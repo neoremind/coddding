@@ -1145,6 +1145,29 @@ for (int i = 0; i < gas.length; i++)
 return start;
 ```
 
+### [125. Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)
+
+E,  Two Pointers String
+
+```
+if (s.isEmpty()) { return true;}
+int head = 0, tail = s.length() - 1;
+while(head <= tail) {
+    cHead = s.charAt(head);
+    cTail = s.charAt(tail);
+    if (!Character.isLetterOrDigit(cHead))
+        head++;
+    else if(!Character.isLetterOrDigit(cTail))
+        tail--;
+    else
+        if (Character.toLowerCase(cHead) != Character.toLowerCase(cTail))
+            return false;
+        head++;
+        tail--;
+return true;
+```
+
+
 ### [123. Best Time to Buy and Sell Stock III](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/)
 
 用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。最多交易两次，手上最多只能持有一支股票，求最大收益。

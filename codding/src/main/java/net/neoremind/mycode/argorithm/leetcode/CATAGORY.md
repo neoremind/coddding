@@ -189,6 +189,8 @@
 
 [88. Merge Sorted Array]() //
 
+[125. Valid Palindrome]() //
+
 [141. Linked List Cycle](README.md#141-linked-list-cycle)
 
 [142. Linked List Cycle II](README.md#142-linked-list-cycle-ii)
@@ -232,6 +234,8 @@
 [72. Edit Distance](README.md#72-edit-distance)
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
+
+[125. Valid Palindrome]() //
 
 [151. Reverse Words in a String](README.md#151-reverse-words-in-a-string)
 

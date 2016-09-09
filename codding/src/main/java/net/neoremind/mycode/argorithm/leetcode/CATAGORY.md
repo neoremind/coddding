@@ -99,7 +99,7 @@
 
 [49. Group Anagrams](README.md#49-group-anagrams)
 
-[76. Minimum Window Substring]()  //
+[76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
 [94. Binary Tree Inorder Traversal]()  //
 
@@ -189,7 +189,7 @@
 
 [75. Sort Colors](README.md#75-sort-colors)
 
-[76. Minimum Window Substring]()  //
+[76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
 [86. Partition List](README.md#86-partition-list)
 
@@ -241,7 +241,7 @@
 
 [72. Edit Distance](README.md#72-edit-distance)
 
-[76. Minimum Window Substring]()  //
+[76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
 

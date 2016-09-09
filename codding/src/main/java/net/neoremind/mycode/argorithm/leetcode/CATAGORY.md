@@ -101,6 +101,8 @@
 
 [217. Contains Duplicate]() //
 
+[349. Intersection of Two Arrays]() //
+
 
 ##Linked List
 
@@ -195,6 +197,7 @@
 
 [345. Reverse Vowels of a String](README.md#345-reverse-vowels-of-a-string)
 
+[349. Intersection of Two Arrays]() //
 
 ##String
 
@@ -275,6 +278,8 @@
 [240. Search a 2D Matrix II](README.md#240-search-a-2d-matrix-ii)
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
+
+[349. Intersection of Two Arrays]() //
 
 
 ##Dynamic Programming
@@ -385,6 +390,8 @@
 [75. Sort Colors](README.md#75-sort-colors)
 
 [179. Largest Number](README.md#179-largest-number)
+
+[349. Intersection of Two Arrays]() //
 
 
 ##Bit Manipulation

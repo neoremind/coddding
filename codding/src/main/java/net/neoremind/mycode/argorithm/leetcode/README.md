@@ -1,5 +1,44 @@
 # Leetcode records
 
+### [349. Intersection of Two Arrays](https://leetcode.com/problems/intersection-of-two-arrays/)
+
+E, Binary Search Hash Table Two Pointers Sort
+
+Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return [2].
+
+三种[java解法](https://discuss.leetcode.com/topic/45685/three-java-solutions)
+
+方法1：O(N)时间复杂度，但是空间大些，而且使用了java.util类库性能一般
+建两个集合set，nums1放入其中一个，然后用set的API做contains判断，如果存在则加入结果。
+
+方法2：O(NlogN)时间复杂度
+* 排序两个数组，Arrays.sort(..)
+* 用双指针：
+```
+while (i < nums1.length && j < nums2.length)
+    if (nums1[i] < nums2[j])
+        i++;
+    else if (nums1[i] > nums2[j])
+        j++;
+    else
+        set.add(nums1[i]);
+        i++;
+        j++;
+```
+
+方法3：O(NlogN)时间复杂度
+* 排序一个数组，Arrays.sort(..)
+* 使用二分查找
+```
+Arrays.sort(nums2);
+for (Integer num : nums1) {
+    if (binarySearch(nums2, num)) {
+        set.add(num);
+    }
+}
+```
+
+
 ### [345. Reverse Vowels of a String](https://leetcode.com/problems/reverse-vowels-of-a-string/)
 
 E, String, Two pointer

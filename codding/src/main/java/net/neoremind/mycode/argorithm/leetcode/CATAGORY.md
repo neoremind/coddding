@@ -57,7 +57,7 @@
 
 [79. Word Search](README.md#79-word-search)
 
-[88. Merge Sorted Array]() //
+[88. Merge Sorted Array](README.md#88-merge-sorted-array)
 
 [90. Subsets II](README.md#90-subsets-ii)
 
@@ -79,13 +79,13 @@
 
 [189. Rotate Array](README.md#189-rotate-array)
 
-[209. Minimum Size Subarray Sum]() //
+[209. Minimum Size Subarray Sum](README.md#209-minimum-size-subarray-sum)
 
 [216. Combination Sum III](README.md#216-combination-sum-iii)
 
 [217. Contains Duplicate]() //
 
-[283. Move Zeroes]() //
+[283. Move Zeroes](README.md#283-move-zeroes)
 
 
 ##Hashtable
@@ -107,7 +107,7 @@
 
 [217. Contains Duplicate]() //
 
-[349. Intersection of Two Arrays]() //
+[349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
 
 ##Linked List
@@ -193,25 +193,25 @@
 
 [86. Partition List](README.md#86-partition-list)
 
-[88. Merge Sorted Array]() //
+[88. Merge Sorted Array](README.md#88-merge-sorted-array)
 
-[125. Valid Palindrome]() //
+[125. Valid Palindrome](README.md#125-valid-palindrome)
 
 [141. Linked List Cycle](README.md#141-linked-list-cycle)
 
 [142. Linked List Cycle II](README.md#142-linked-list-cycle-ii)
 
-[209. Minimum Size Subarray Sum]() //
+[209. Minimum Size Subarray Sum](README.md#209-minimum-size-subarray-sum)
 
 [234. Palindrome Linked List]() //
 
-[283. Move Zeroes]() //
+[283. Move Zeroes](README.md#283-move-zeroes)
 
 [344. Reverse String](README.md#344-reverse-string)
 
 [345. Reverse Vowels of a String](README.md#345-reverse-vowels-of-a-string)
 
-[349. Intersection of Two Arrays]() //
+[349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
 ##String
 
@@ -245,7 +245,7 @@
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
 
-[125. Valid Palindrome]() //
+[125. Valid Palindrome](README.md#125-valid-palindrome)
 
 [151. Reverse Words in a String](README.md#151-reverse-words-in-a-string)
 
@@ -297,7 +297,7 @@
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
 
-[349. Intersection of Two Arrays]() //
+[349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
 
 ##Dynamic Programming
@@ -409,7 +409,7 @@
 
 [179. Largest Number](README.md#179-largest-number)
 
-[349. Intersection of Two Arrays]() //
+[349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
 
 ##Bit Manipulation

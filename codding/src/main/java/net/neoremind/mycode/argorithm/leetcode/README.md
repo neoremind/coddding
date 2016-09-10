@@ -1253,6 +1253,12 @@ public int hammingWeight2(int n) {
     }
     return res;
 }
+
+//方法3：bit位操作
+while (n != 0) {
+    n = n & (n - 1)
+    count++;
+return count;
 ```
 
 ### [189. Rotate Array](https://leetcode.com/problems/rotate-array/)

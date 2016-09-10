@@ -14,7 +14,7 @@ public class BasicBitTest {
 
     /**
      * 判断奇偶
-     * <p/>
+     * <p>
      * (num & 1) == 0就是偶数
      */
     @Test
@@ -27,12 +27,12 @@ public class BasicBitTest {
 
     /**
      * 交换
-     * <p/>
+     * <p>
      * 几个特性：
      * 1）^异或操作符：两个位相同为0，相异为1
      * 2）一个数异或本身恒等于0，如5^5恒等于0
      * 3）一个数异或0恒等于本身，如5^0恒等于5
-     * <p/>
+     * <p>
      * 满足交换律：
      * a = a^b
      * b = b^a = b^(a^b) = a^(b^b)=a^0=a
@@ -51,13 +51,13 @@ public class BasicBitTest {
 
     /**
      * 取反
-     * <p/>
+     * <p>
      * 十进制：-11
      * 二进制：11110101
      * 第一步：取反00001010
      * 第二步：加1 => 00001011
      * 结果就是11
-     * <p/>
+     * <p>
      * 原因是补码=反码+1，因此才有所谓的+1.
      * 使用补码, 一是为了防止0有2个编码，其次就是为了把减法运算用加法运算表示出来，
      * 以达到简化电路的作用（因为有了负数的概念，减法可以换算为加法） 而且还能够多表示一个最低数.
@@ -70,7 +70,7 @@ public class BasicBitTest {
 
     /**
      * 求绝对值
-     * <p/>
+     * <p>
      * 方法1：按照{@link #testReverse()}如果是负数就这么处理
      * 方法2：任何数，与0异或都会保持不变，即-1（0xFFFFFFFF）异或相当于取反，然后+1或者+0就是绝对值了
      */
@@ -84,6 +84,41 @@ public class BasicBitTest {
 
         // 优化版本
         assertThat((a ^ (a >> 31)) - (a >> 31), is(5));
+    }
+
+    /**
+     * 太tricky了
+     */
+    @Test
+    public void add() {
+        assertThat(getSum(4, 5), is(9));
+    }
+
+    int getSum(int a, int b) {
+        return b == 0 ? a : getSum(a ^ b, (a & b) << 1); //be careful about the terminating condition;
+    }
+
+    @Test
+    public void findNearestPowerOf2() {
+        assertThat(largestPower(62L), is(32L));
+        assertThat(largestPower(129), is(128L));
+        assertThat(Integer.highestOneBit(129), is(128));
+        assertThat(Integer.highestOneBit(255), is(128));
+        assertThat(Integer.highestOneBit(256), is(256));
+        assertThat(Integer.highestOneBit(257), is(256));
+    }
+
+    /**
+     * {@link Integer#highestOneBit(int)}思想一样
+     */
+    long largestPower(long N) {
+        //changing all right side bits to 1.
+        N = N | (N >> 1);
+        N = N | (N >> 2);
+        N = N | (N >> 4);
+        N = N | (N >> 8);
+        N = N | (N >> 16);
+        return (N + 1) >> 1;
     }
 
     @Test

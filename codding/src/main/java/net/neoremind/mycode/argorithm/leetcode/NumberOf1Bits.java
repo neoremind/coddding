@@ -44,18 +44,33 @@ public class NumberOf1Bits {
         return res;
     }
 
+    /**
+     * 会TLE
+     */
+    public int hammingWeight3(int n) {
+        int count = 0;
+        while (n != 0) {
+            n = n & (n - 1);
+            count++;
+        }
+        return count;
+    }
+
     @Test
     public void test() {
         int a = 0b10101010111;
         assertThat(hammingWeight(a), Matchers.is(7));
         assertThat(hammingWeight2(a), Matchers.is(7));
+        assertThat(hammingWeight3(a), Matchers.is(7));
         a = 0x7fffffff;
         assertThat(a, Matchers.is(Integer.MAX_VALUE));
         assertThat(hammingWeight(a), Matchers.is(31));
         assertThat(hammingWeight2(a), Matchers.is(31));
+        assertThat(hammingWeight3(a), Matchers.is(31));
         a = 0x80000000;
         assertThat(a, Matchers.is(Integer.MIN_VALUE));
         assertThat(hammingWeight(a), Matchers.is(1));
         assertThat(hammingWeight2(a), Matchers.is(1));
+        assertThat(hammingWeight3(a), Matchers.is(1));
     }
 }

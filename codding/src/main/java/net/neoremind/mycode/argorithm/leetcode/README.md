@@ -87,6 +87,37 @@ String right = s.substring(length / 2, length);
 return reverse(right) + reverse(left);
 ```
 
+### [342. Power of Four](https://leetcode.com/problems/power-of-four/)
+
+E, Bit Manipulation
+
+首先要是2的倍数，然后1都在奇数位上。所以有555这个东西。
+```
+(16 & 0x55555555) == 16
+0001 0000
+0101 0101
+---------
+0001 0000
+
+(8 & 0x55555555) == 0
+1000
+0101
+---- 0000
+```
+
+```
+return num > 0 && (num & (num - 1)) == 0 && (num & 0x55555555) != 0;
+```
+
+
+### [326. Power of Three](https://leetcode.com/problems/power-of-three/)
+
+E, Math
+
+```
+if (n <= 0) return false;
+return (n == 1) || (n % 3 == 0 && isPowerOfThree(n / 3));
+```
 
 ### [322. Coin Change](https://leetcode.com/problems/coin-change/)
 
@@ -199,6 +230,63 @@ while (i < j)
         i++;
 ```
 
+### [264. Ugly Number II](https://leetcode.com/problems/ugly-number-ii/)
+
+M, Dynamic Programming Heap Math
+
+方法1：暴力解法，利用题目263。
+
+方法2：使用类似DP的思想
+
+```
+(1) 1×2, 2×2, 3×2, 4×2, 5×2, …
+(2) 1×3, 2×3, 3×3, 4×3, 5×3, …
+(3) 1×5, 2×5, 3×5, 4×5, 5×5, …
+```
+所有的丑数就是在上面那个集合里面去选择数字，维护三个指针index2，index3，index5分别指向各自的起点，然后依次找下一个，
+三者比较Math.min(Math.min(factor2，factor3)，factor5)找最小的填在dp数组里面。
+
+```
+[1, 2, 3, 4, 5, 6, 8, 9, 10, 12]
+    ^
+    |
+    |
+    |
+ index2/index3/index5
+```
+
+```
+int[] ugly = new int[n];
+ugly[0] = 1;
+int index2 = 0, index3 = 0, index5 = 0;
+int factor2 = 2, factor3 = 3, factor5 = 5;
+for(int i=1;i<n;i++){
+    int min = Math.min(Math.min(factor2,factor3),factor5);
+    ugly[i] = min;
+    if(factor2 == min)
+        factor2 = 2*ugly[++index2];
+    if(factor3 == min)
+        factor3 = 3*ugly[++index3];
+    if(factor5 == min)
+        factor5 = 5*ugly[++index5];
+return ugly[n-1];
+```
+
+### [263. Ugly Number](https://leetcode.com/problems/ugly-number/)
+
+E, Math
+
+丑数的质因数只包含2, 3, 5，例如6, 8是丑数。14不是，因为7是因数。注意1是特殊的丑数。
+
+```
+if (num < 1) {return false;}
+if (num != 1)
+    while(num % 2 == 0) num = num / 2;
+    while(num % 3 == 0) num = num / 3;
+    while(num % 5 == 0) num = num / 5;
+return num == 1;
+```
+
 
 ### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
 
@@ -283,6 +371,16 @@ public int peek() {
 
 public boolean empty() { return input.empty() && output.empty(); }
 ```
+
+### [231. Power of Two](https://leetcode.com/problems/power-of-two/)
+
+E, Math Bit Manipulation
+
+```
+if (n < 1) {return false;}
+return (n & (n - 1)) == 0;
+```
+
 
 ### [230. Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/)
 
@@ -410,6 +508,47 @@ private void backtrack(List<List<Integer>> list, List<Integer> tempList, int k, 
         }
     }
 }
+```
+
+### [224. Basic Calculator](https://leetcode.com/problems/basic-calculator/)
+
+H, Stack  Math
+
+把计算只看做加法，运算符实际就是符号位，遇到了()那么把之前的计算结果以及符号压栈保存，计算后面的，直到)弹出符号，符号就是后面计算结果的sign，然后和栈里的值相加。
+
+```
+int len = s.length(), sign = 1, result = 0;
+for (int i = 0; i < len; i++)
+    if (Character.isDigit(s.charAt(i)))
+        int sum = s.charAt(i) - '0';
+        while (i + 1 < len && Character.isDigit(s.charAt(i + 1)))
+            sum = sum * 10 + s.charAt(i + 1) - '0';
+            i++;
+        result += sum * sign;
+    else if (s.charAt(i) == '+')
+        sign = 1;
+    else if (s.charAt(i) == '-')
+        sign = -1;
+    else if (s.charAt(i) == '(')
+        stack.push(result);
+        stack.push(sign);
+        result = 0;
+        sign = 1;
+    else if (s.charAt(i) == ')')
+        result = result * stack.pop() + stack.pop();
+return result;
+```
+
+### [223. Rectangle Area](https://leetcode.com/problems/rectangle-area/)
+
+E, Math
+
+```
+int area1 = (C - A) * (D - B);
+int area2 = (G - E) * (H - F);
+if(right > left && top > bottom) { //使用Math.min或者max计算边界的重合
+    overlap = (right - left) * (top - bottom);
+return area1 + area2 - overlap;
 ```
 
 ### [215. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
@@ -933,6 +1072,125 @@ public static ListNode doReverseListRecursiveLy(ListNode head, ListNode newHead)
 }
 ```
 
+### [204. Count Primes](https://leetcode.com/problems/count-primes/)
+
+E, Hash Table Math
+
+一道经典的数学题目，首先明确质数的概念，除了1和自己外没有别的约数。
+2是最小的质数，也是唯一的偶数质数。可以记住下100以内有25个质数。例如下面的都是质数。
+```
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149
+```
+
+按照常规的解法：
+```
+for i less than n
+    if i is prime
+        count++
+
+判断是否是质数的函数如下，这里已经是节省了计算了的，小于等于i的开平方，其实应该是到i的
+for (int k = 2; j <= Math.sqrt(n); k++)
+    if (n % k == 0)
+        isPrime = false;
+```
+
+但是这个解法会TLE。
+
+考虑更加好的方法，[参考链接](http://www.mkyong.com/java/how-to-determine-a-prime-number-in-java/)
+2 is prime... cross out it's multiples，需要删除掉4，6，8，10...
+
+
+```
+int[] notPrime = new int[n / 32 + 1];  //为了节省空间用bitmap存储，notPrime[0]表示0-31的质数，notPrime[1]表示31-63的质数，然后用位与位或
+for (int i = 2; i < n; i++) {
+    if (((notPrime[i / 32] >> i % 32) & 1) == 0) // 是质数
+        count++;
+        for (int j = i; j < n; j = j + i) {   //把当前质不断的*2加倍，存在非质数的数组里面
+            notPrime[j / 32] |= 1 << (j % 32);
+return count;
+```
+
+最后差个话题，求最大公约数GreatestCommonDivisor：
+* 分解质因数法
+* 短除法，得靠写在纸面上
+* 辗转相除法（欧几里德算法），可以实现为算法
+
+下面以辗转相除法演示，当除到reminder余数等于0的时候，那么n就是最大公约数
+```
+m  / n   =      reminder
+64 / 40  = 1 ... 24
+40 / 24  = 1 ... 16
+24 / 16  = 1 ... 8
+16 / 8   = 2 ... 0
+
+m  / n  =      reminder
+17 /  8  = 2 ... 1
+8  /  1  = 8 ... 0
+```
+
+```
+int gcd1(int m, int n) {   //方法一：循环法
+    int temp;
+    while (m % n != 0)
+        temp = n;
+        n = m % n;
+        m = temp;
+    return n;
+
+int gcd2(int m, int n)     //方法二：递归法
+    if (m % n == 0)
+        return n;
+    else
+        return gcd2(n, m % n);
+```
+
+求最小公倍数LowestCommonMultiple
+
+* 分解质因数法
+* 短除法
+* 公式法，两个数相乘除以最大公约数
+```
+int lcm(int m, int n) {
+    return m * n / gcd.gcd1(m, n);
+}
+```
+
+### [202. Happy Number](https://leetcode.com/problems/happy-number/)
+
+E, Hash Table Math
+
+```
+input 19
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1 //结果为1就是一个happy number
+```
+
+如果出现循环则证明不是一个happy number需要及时推出，理所当然的想到了使用set。
+
+根据JDK的HashSet#add的javadoc，如果已经存在了元素，则返回false。
+```
+Adds the specified element to this set if it is not already present.
+More formally, adds the specified element e to this set if this set contains no element e2 such that (e==null ? e2==null : e.equals(e2)).
+If this set already contains the element, the call leaves the set unchanged and returns false.
+```
+
+```
+Set<Integer> inLoop = new HashSet<Integer>();
+while (inLoop.add(n))  //还能加，没重复
+    while (n > 0)
+        remain = n % 10;
+        squareSum += remain * remain;
+        n /= 10;
+    if (squareSum == 1) {  //退出
+        return true;
+    else
+        n = squareSum;  //继续走下一个数
+return false;
+```
+
+
 ### [191. Number of 1 Bits](https://leetcode.com/problems/number-of-1-bits/)
 
 E, Bit Manipulation
@@ -1025,6 +1283,22 @@ Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
 
+### [171. Excel Sheet Column Number](https://leetcode.com/problems/excel-sheet-column-number/)
+
+E, Math
+
+相似题目[168. Excel Sheet Column Title](https://leetcode.com/problems/excel-sheet-column-title/)
+
+```
+int len = s.length();
+int res = 0;
+for (int i = 0; i < len; i++)
+    res *= 26;
+    res += (s.charAt(i) - '@');
+return res;
+```
+
+
 ### [169. Majority Element](https://leetcode.com/problems/majority-element/)
 
 E, Array Divide and Conquer Bit Manipulation
@@ -1068,6 +1342,24 @@ for (int i = 0; i < 32; i++) {
     ret += bit[i] * (1 << (31 - i));
 }
 return ret;
+```
+
+### [168. Excel Sheet Column Title](https://leetcode.com/problems/excel-sheet-column-title/)
+
+E, Math
+
+相似题目[171. Excel Sheet Column Number](https://leetcode.com/problems/excel-sheet-column-number/)
+
+思路和[60-permutation-sequence](README.md#60-permutation-sequence)
+的一样，其实就是根据base做进制的转换，参考通用的模板，一般都是用低位处理（取低位用%），然后处理高位（用除法或者>>>）
+
+```
+StringBuilder result = new StringBuilder();
+while(n > 0)
+    n--;  //这里很重要，否则需要处理小于26的情况，这里做test cases要考虑三种情况1）小于1，2）[1,26]，3）大于26
+    result.insert(0, (char)('A' + n % 26));
+    n /= 26;
+return result.toString();
 ```
 
 ### [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
@@ -2226,6 +2518,44 @@ while (left <= right) {
 }
 return ans;
 ```
+
+### [67. Add Binary](https://leetcode.com/problems/add-binary/)
+
+E, Math String
+
+```
+//任意一个为空返回另外一个
+StringBuilder sb = new StringBuilder();
+while (i >= 0 && j >= 0)
+    int value = (a.charAt(i--) - '0') + (b.charAt(j--) - '0') + carry;
+    sb.append(value % 2);
+    carry = value / 2;
+while (j >= 0) 参考上面的流程
+while (i >= 0) 参考上面的流程
+if (carry != 0) sb.append(carry);
+return sb.reverse().toString(); //需要反转下，让低位在后面
+```
+
+### [66. Plus One](https://leetcode.com/problems/plus-one/)
+
+E,  Array Math
+
+```
+//判断空返回0
+int i = digits.length - 1;
+while (i >= 0)
+    if (digits[i] == 9) //遇到9就进位
+        digits[i] = 0;
+    else
+        digits[i] = digits[i] + 1; //否则直接+1返回
+        return digits;
+    i--;
+if (digits[0] == 0)   //处理99999+1的情况，需要补充高位表位100000
+    int[] ret = new int[digits.length + 1];
+    ret[0] = 1;
+    return ret;
+```
+
 
 ### [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
 
@@ -3809,6 +4139,24 @@ Note: no extra space here means do not convert the integer to string, since stri
 
 计算高位和低位是不是一样的数组，用/和%运算符即可。
 
+```
+//negative numbers are not palindrome
+if (x < 0) {return false;}
+
+// initialize how many zeros
+int div = 1;
+while (x / div >= 10)
+    div *= 10;
+
+while (x != 0)
+    int left = x / div;int right = x % 10;
+    if (left != right) return false;
+    x = (x % div) / 10;
+    div /= 100;
+
+return true;
+```
+
 ### [8. String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi/)
 
 E, Math,String
@@ -3985,10 +4333,32 @@ return minLen == Integer.MAX_VALUE ? 0 : minLen;
 
 ### [2. Add Two Numbers](https://leetcode.com/problems/add-two-numbers/)
 ```
+低位在前逆序的
 Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
 Output: 7 -> 0 -> 8
 ```
 M, Linked list, Math
+
+```
+ListNode r = new ListNode(0); ListNode head = r; ListNode beforeEnd = r;
+while (l1 != null && l2 != null)
+    int value = r.val;
+    value += l1.val + l2.val;
+    r.next = new ListNode(value / 10);
+    r.val = value % 10;
+    beforeEnd = r;r = r.next;l1 = l1.next;l2 = l2.next;
+
+ListNode left;if (l1 == null) left = l2;else left = l1;
+while (left != null)
+    int value = r.val;
+    value += left.val;
+    r.next = new ListNode(value / 10);
+    r.val = value % 10;
+    beforeEnd = r;r = r.next;left = left.next;
+
+if (beforeEnd.next != null && beforeEnd.next.val == 0) {beforeEnd.next = null;}
+return head;
+```
 
 O(N)，two pointers分别齐头并进的在两个list中从后向前，利用/计算进位，利用%就算余数，知道一个list耗尽，把剩下的list按照刚刚相同的操作继续，最后需要注意如果进位为0，那么需要把最后一个ListNode删除。
 

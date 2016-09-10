@@ -6,12 +6,29 @@ import com.google.common.primitives.Ints;
 
 /**
  * 筛1-100的素数，
- * <p/>
+ * <p>
  * 可以按照这个规则来：每个素数的倍数肯定不是素数
+ * <p>
+ * 2是最小的质数，也是唯一的偶数质数
+ * <pre>
+ *     2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149
+ * </pre>
  *
  * @author zhangxu
  */
 public class PrimeNumberTest {
+
+    public boolean isPrime(int n) {
+        if (n <= 1) {
+            return false;
+        }
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Test
     public void testPrintAllPrimeNumbers() {

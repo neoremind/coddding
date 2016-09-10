@@ -105,6 +105,10 @@
 
 [136. Single Number]() //
 
+[202. Happy Number]() //
+
+[204. Count Primes]() //
+
 [217. Contains Duplicate]() //
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
@@ -163,7 +167,29 @@
 
 [66. Plus One]() //
 
+[67. Add Binary]() //
+
 [69. Sqrt(x)](README.md#69-sqrtx)
+
+[168. Excel Sheet Column Title]() //
+
+[171. Excel Sheet Column Number]() //
+
+[202. Happy Number]() //
+
+[204. Count Primes]() //
+
+[223. Rectangle Area]() //
+
+[224. Basic Calculator]() //
+
+[231. Power of Two]() //
+
+[264. Ugly Number]() //
+
+[264. Ugly Number II]() //
+
+[326. Power of Three]() //
 
 
 ##Two Pointers
@@ -238,6 +264,8 @@
 [44. Wildcard Matching](README.md#44-wildcard-matching)
 
 [49. Group Anagrams](README.md#49-group-anagrams)
+
+[67. Add Binary]() //
 
 [72. Edit Distance](README.md#72-edit-distance)
 
@@ -324,6 +352,8 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
+[264. Ugly Number II]() //
+
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
 
 
@@ -378,6 +408,8 @@
 
 [145. Binary Tree Postorder Traversal]()  //
 
+[224. Basic Calculator]() //
+
 [225. Implement Stack using Queues](README.md#225-implement-stack-using-queues)
 
 [232. Implement Queue using Stacks](README.md#232-implement-queue-using-stacks)
@@ -421,6 +453,8 @@
 [169. Majority Element](README.md#169-majority-element)
 
 [191. Number of 1 Bits](README.md#191-number-of-1-bits)
+
+[231. Power of Two]() //
 
 [342. Power of Four]() //
 

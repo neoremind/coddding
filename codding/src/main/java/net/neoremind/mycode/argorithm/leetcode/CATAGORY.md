@@ -83,11 +83,9 @@
 
 [216. Combination Sum III](README.md#216-combination-sum-iii)
 
-[217. Contains Duplicate]() //
+[217. Contains Duplicate](README.md#217-contains-duplicate)
 
-[219. Contains Duplicate II]() //
-
-[]
+[219. Contains Duplicate II](README.md#219-contains-duplicate-ii)
 
 [283. Move Zeroes](README.md#283-move-zeroes)
 
@@ -113,9 +111,9 @@
 
 [204. Count Primes](README.md#204-count-primes)
 
-[217. Contains Duplicate]() //
+[217. Contains Duplicate](README.md#217-contains-duplicate)
 
-[219. Contains Duplicate II]() //
+[219. Contains Duplicate II](README.md#219-contains-duplicate-ii)
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
@@ -568,7 +566,7 @@
 
 ##Binary Search Tree
 
-[220. Contains Duplicate III]() //SORT / TODO
+[220. Contains Duplicate III](README.md#220-contains-duplicate-iii) //SORT / TODO
 
 ##Recursion
 

@@ -47,7 +47,7 @@
 
 [64. Minimum Path Sum](README.md#64-minimum-path-sum)
 
-[66. Plus One]() //
+[66. Plus One](README.md#66-plus-one)
 
 [74. Search a 2D Matrix](README.md#74-search-a-2d-matrix)
 
@@ -105,9 +105,9 @@
 
 [136. Single Number]() //
 
-[202. Happy Number]() //
+[202. Happy Number](README.md#202-happy-number)
 
-[204. Count Primes]() //
+[204. Count Primes](README.md#204-count-primes)
 
 [217. Contains Duplicate]() //
 
@@ -165,31 +165,31 @@
 
 [60. Permutation Sequence](README.md#60-permutation-sequence)
 
-[66. Plus One]() //
+[66. Plus One](README.md#66-plus-one)
 
-[67. Add Binary]() //
+[67. Add Binary](README.md#67-add-binary)
 
 [69. Sqrt(x)](README.md#69-sqrtx)
 
-[168. Excel Sheet Column Title]() //
+[168. Excel Sheet Column Title](README.md#168-excel-sheet-column-title)
 
-[171. Excel Sheet Column Number]() //
+[171. Excel Sheet Column Number](README.md#171-excel-sheet-column-number)
 
-[202. Happy Number]() //
+[202. Happy Number](README.md#202-happy-number)
 
-[204. Count Primes]() //
+[204. Count Primes](README.md#204-count-primes)
 
-[223. Rectangle Area]() //
+[223. Rectangle Area](README.md#223-rectangle-area)
 
-[224. Basic Calculator]() //
+[224. Basic Calculator](README.md#224-basic-calculator)
 
-[231. Power of Two]() //
+[231. Power of Two](README.md#231-power-of-two)
 
-[264. Ugly Number]() //
+[264. Ugly Number](README.md#263-ugly-number)
 
-[264. Ugly Number II]() //
+[264. Ugly Number II](README.md#264-ugly-number-ii)
 
-[326. Power of Three]() //
+[326. Power of Three](README.md#326-power-of-three)
 
 
 ##Two Pointers
@@ -265,7 +265,7 @@
 
 [49. Group Anagrams](README.md#49-group-anagrams)
 
-[67. Add Binary]() //
+[67. Add Binary](README.md#67-add-binary)
 
 [72. Edit Distance](README.md#72-edit-distance)
 
@@ -352,7 +352,7 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
-[264. Ugly Number II]() //
+[264. Ugly Number II](README.md#264-ugly-number-ii)
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
 
@@ -454,9 +454,9 @@
 
 [191. Number of 1 Bits](README.md#191-number-of-1-bits)
 
-[231. Power of Two]() //
+[231. Power of Two](README.md#231-power-of-two)
 
-[342. Power of Four]() //
+[342. Power of Four](README.md#342-power-of-four)
 
 
 ##Tree

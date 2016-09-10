@@ -471,6 +471,33 @@ public int top() { return queue.peek(); }
 public boolean empty() { return queue.isEmpty(); }
 ```
 
+### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
+
+M, Binary Search Tree
+
+//TODO
+
+### [219. Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/)
+
+E, Array Hash table
+
+```
+for (int i = 0; i < nums.length; i++)
+    if (map.containsKey(nums[i]))
+        if (Math.abs(map.get(nums[i]) - i) <= k) return true;
+    map.put(nums[i], i);
+return false;
+```
+
+### [217. Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)
+
+E, Array Hash table
+
+方法1：使用set
+
+方法2：排序之后，比较i和i-1
+
+
 ### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
 
 M, Backtracking, Array

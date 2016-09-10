@@ -85,6 +85,10 @@
 
 [217. Contains Duplicate]() //
 
+[219. Contains Duplicate II]() //
+
+[]
+
 [283. Move Zeroes](README.md#283-move-zeroes)
 
 
@@ -110,6 +114,8 @@
 [204. Count Primes](README.md#204-count-primes)
 
 [217. Contains Duplicate]() //
+
+[219. Contains Duplicate II]() //
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
@@ -408,7 +414,7 @@
 
 [145. Binary Tree Postorder Traversal]()  //
 
-[224. Basic Calculator]() //
+[224. Basic Calculator](README.md#224-basic-calculator)
 
 [225. Implement Stack using Queues](README.md#225-implement-stack-using-queues)
 
@@ -561,6 +567,8 @@
 ##Segment Tree
 
 ##Binary Search Tree
+
+[220. Contains Duplicate III]() //SORT / TODO
 
 ##Recursion
 

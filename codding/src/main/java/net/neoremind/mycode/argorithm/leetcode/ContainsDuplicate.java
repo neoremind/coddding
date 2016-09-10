@@ -3,6 +3,7 @@ package net.neoremind.mycode.argorithm.leetcode;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,16 @@ public class ContainsDuplicate {
                 return true;
             }
             set.add(num);
+        }
+        return false;
+    }
+
+    public boolean containsDuplicate2(int[] nums) {
+        Arrays.sort(nums);
+        for (int ind = 1; ind < nums.length; ind++) {
+            if (nums[ind] == nums[ind - 1]) {
+                return true;
+            }
         }
         return false;
     }

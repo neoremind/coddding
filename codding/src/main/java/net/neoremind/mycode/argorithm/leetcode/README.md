@@ -230,6 +230,32 @@ while (i < j)
         i++;
 ```
 
+### [268. Missing Number](https://leetcode.com/problems/missing-number/)
+
+M,Array Math Bit Manipulation
+
+```
+index : 0   1   2   3   4
+value   0   4   1   2
+-XOR----------------------
+      0-0  1-1 2-2
+      剩下3和4，那么要得到3就是再次做XOR4也就是长度，去掉4即可。
+
+index : 0   1   2   3   4
+value   0   3   1   2
+-XOR----------------------
+      0-0  1-1 2-2  3-3
+      剩下0，那么要得到0就是再次做XOR4也就是长度，4^0=4。
+```
+
+```
+int res = 0;
+for (int i = 0; i < nums.length; i++)
+    res ^= i;
+    res ^= nums[i];
+return res ^ nums.length;
+```
+
 ### [264. Ugly Number II](https://leetcode.com/problems/ugly-number-ii/)
 
 M, Dynamic Programming Heap Math
@@ -1261,6 +1287,21 @@ while (n != 0) {
 return count;
 ```
 
+### [190. Reverse Bits](https://leetcode.com/problems/reverse-bits/)
+
+E, Bit Manipulation
+
+```
+00000010100101000001111010011100
+as
+00111001011110000010100101000000
+```
+想清楚就行，都通通挪到最低位，然后和1与，然后左移动到合适的位置，+=也可以是|=。这里使用的无符号右移。
+```
+for (int i = 0; i < 32; i++)
+    res += ((n >>> (31 - i)) & 1) << i;
+```
+
 ### [189. Rotate Array](https://leetcode.com/problems/rotate-array/)
 
 E, Array
@@ -1302,6 +1343,27 @@ step1: [1,2,3,4,5,6,7]
 step2: [3,2,1,4,5,6,7]  reverse(nums, 0, nums.length - k - 1)
 step3: [3,2,1,7,6,5,4]  reverse(nums, nums.length - k, nums.length - 1)
 step4: [4,5,6,7,1,2,3]  reverse(0, nums.length - 1)
+```
+
+### [187. Repeated DNA Sequences](https://leetcode.com/problems/repeated-dna-sequences/)
+
+M, Hash Table Bit Manipulation
+
+伪代码如下，关键在于获取10个字符的签名算法，由于都是由字母构成，所以最大是26，小于1<<5，也就是需要6个bit的空间，6*10<64也就是long的存储空间，因此用一个long可以存储下来签名。
+```
+for (int i = 0; i <= str.length - 10; i++)
+    get sign of str[i..i+10]
+    if exist in hashmap than incr count
+        if count > 1 then add to a set for distinction
+    else put (sign, count=1) to the map
+
+long getSign(char[] str, int start)
+    long sign = 0;
+    for (int i = start; i < start + 10; i++) {
+        sign |= (str[i] - 'A');
+        sign <<= 6;
+    }
+    return sign;
 ```
 
 ### [179. Largest Number](https://leetcode.com/problems/largest-number/)
@@ -1504,6 +1566,44 @@ while (runner.next != null && runner.next.next != null) {
         return true;
 }
 return false;
+```
+
+### [137. Single Number II](https://leetcode.com/problems/single-number-ii/)
+
+M, Bit Manipulation
+
+和136题的模板一样，针对这种题目*一个数组，里面每一个元素都出现了N次，只有一个是一次，求这一个*。这个N就是用来去模的。
+
+另外[260. Single Number III](https://leetcode.com/problems/single-number-iii/)将仅出现的次数变成了两次，题目又难了一些。注意这个题目可以使用如下的JAVA API：
+```
+diff = Integer.highestOneBit(diff);  //求最近的Power of 2
+Arrays.fill(result,0);
+```
+
+### [136. Single Number](https://leetcode.com/problems/single-number/)
+
+M, Hash Table Bit Manipulation
+
+```
+int[] digits = new int[32];
+for (int i = 0; i < 32; i++)
+    for (int num : nums)
+        digits[i] += (num >> i) & 1;
+    digits[i] %= 2;
+
+int res = 0;
+for (int i = 0; i < 32; i++)
+    res += digits[i] << i;
+
+return res;
+```
+还有一种更加巧妙的方式，利用XOR的性质，XOR自己等于0，XOR 0等于自己。相当于消除。
+
+```
+int res = nums[0];
+for (int i = 1; i < nums.length; i++)
+    res ^= nums[i];
+return res;
 ```
 
 ### [127. Word Ladder](https://leetcode.com/problems/word-ladder/)

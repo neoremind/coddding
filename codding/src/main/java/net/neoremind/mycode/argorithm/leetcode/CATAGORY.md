@@ -87,6 +87,8 @@
 
 [219. Contains Duplicate II](README.md#219-contains-duplicate-ii)
 
+[268. Missing Number](README.md#268-missing-number)
+
 [283. Move Zeroes](README.md#283-move-zeroes)
 
 
@@ -105,7 +107,9 @@
 
 [94. Binary Tree Inorder Traversal]()  //
 
-[136. Single Number]() //
+[136. Single Number](README.md#136-single-number)
+
+[187. Repeated DNA Sequences](README.md#187-repeated-dna-sequences)
 
 [202. Happy Number](README.md#202-happy-number)
 
@@ -189,9 +193,11 @@
 
 [231. Power of Two](README.md#231-power-of-two)
 
-[264. Ugly Number](README.md#263-ugly-number)
+[263. Ugly Number](README.md#263-ugly-number)
 
 [264. Ugly Number II](README.md#264-ugly-number-ii)
+
+[268. Missing Number](README.md#268-missing-number)
 
 [326. Power of Three](README.md#326-power-of-three)
 
@@ -452,11 +458,19 @@
 
 [78. Subsets](README.md#78-subsets)
 
-[136. Single Number]() //
+[136. Single Number](README.md#136-single-number)
+
+[137. Single Number II](README.md#137-single-number-ii)
 
 [169. Majority Element](README.md#169-majority-element)
 
+[187. Repeated DNA Sequences](README.md#187-repeated-dna-sequences)
+
+[190. Reverse Bits](README.md#190-reverse-bits)
+
 [191. Number of 1 Bits](README.md#191-number-of-1-bits)
+
+[268. Missing Number](README.md#268-missing-number)
 
 [231. Power of Two](README.md#231-power-of-two)
 

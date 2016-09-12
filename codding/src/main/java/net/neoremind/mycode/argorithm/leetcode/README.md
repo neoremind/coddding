@@ -1,5 +1,18 @@
 # Leetcode records
 
+### [371. Sum of Two Integers](https://leetcode.com/problems/sum-of-two-integers/)
+
+E, Bit Manipulation
+
+0+0进位为0,1+0进位为0,0+1进位为0，1+1进位为1，该操作与位运算的&操作相似。
+先考虑相加的结果，然后再考虑进位。
+```
+int getSum(int a, int b) {
+    return b==0? a:getSum(a^b, (a&b)<<1);
+}
+```
+一连串bitwise的操作见evernote笔记。
+
 ### [349. Intersection of Two Arrays](https://leetcode.com/problems/intersection-of-two-arrays/)
 
 E, Binary Search Hash Table Two Pointers Sort

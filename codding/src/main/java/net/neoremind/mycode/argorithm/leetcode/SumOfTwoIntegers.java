@@ -16,6 +16,9 @@ import org.junit.Test;
  */
 public class SumOfTwoIntegers {
 
+    /**
+     * only works for positive number and is trivail
+     */
     public int getSum(int a, int b) {
         String m = toBinary(a);
         String n = toBinary(b);
@@ -64,9 +67,16 @@ public class SumOfTwoIntegers {
         return sb.toString();
     }
 
+    public int getSum2(int a, int b) {
+        return b == 0 ? a : getSum2(a ^ b, (a & b) << 1);
+    }
+
     @Test
     public void test() {
         assertThat(getSum(56, 43), Matchers.is(99));
+        assertThat(getSum2(56, 43), Matchers.is(99));
+        assertThat(getSum2(56, -43), Matchers.is(13));
+        assertThat(getSum2(-56, 43), Matchers.is(-13));
     }
 
 }

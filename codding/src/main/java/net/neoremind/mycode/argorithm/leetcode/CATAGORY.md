@@ -476,6 +476,8 @@
 
 [342. Power of Four](README.md#342-power-of-four)
 
+[371. Sum of Two Integers]()
+
 
 ##Tree
 

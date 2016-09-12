@@ -132,7 +132,7 @@ public class BasicBitTest {
         System.out.println(1 << -1);
 
         // Long.MAX_VALUE
-        System.out.println(((long) 1 << 127) - 1);
+        System.out.println(((long) 1 << 63) - 1);
         System.out.println(Long.MAX_VALUE);
 
         // 乘以2

@@ -1917,14 +1917,19 @@ public boolean isSymmetric1(TreeNode root) {
     return root == null || helper(root.left, root.right);
 }
 
-public boolean helper(TreeNode node1, TreeNode node2) {
-    if (node1 == null && node2 == null) {
+public boolean helper(TreeNode node1, TreeNode node2)
+    if (node1 == null && node2 == null)
         return true;
-    } else if (node1 != null && node2 != null) {
+    else if (node1 != null && node2 != null)
         return node1.val == node2.val && helper(node1.left, node2.right) && helper(node1.right, node2.left);
-    } else {
+    else
         return false;
-}
+
+另外helper也能这么写：
+if (p == null || q == null)
+    return p == q;
+else
+    return p.val == q.val && helper(p.left, q.right) && helper(p.right, q.left);
 ```
 
 BFS用queue一层一层的对比：
@@ -1955,13 +1960,18 @@ E, Tree Depth-first Search
 
 DFS用递归。
 ```
-if (p != null && q != null) {
+if (p != null && q != null)
     return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
-} else if (p == null && q == null) {
+else if (p == null && q == null)
     return true;
-} else {
+else
     return false;
-}
+```
+
+```
+if (p == null || q == null)
+     return p == q;
+else return p.val == q.val && isSameTree(p.left, q.left)&& isSameTree(p.right, q.right);
 ```
 
 

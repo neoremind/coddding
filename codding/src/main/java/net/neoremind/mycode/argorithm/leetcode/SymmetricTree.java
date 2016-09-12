@@ -55,6 +55,15 @@ public class SymmetricTree {
         }
     }
 
+    public boolean helper2(TreeNode p, TreeNode q) {
+        if (p == null || q == null) {
+            return p == q;
+        } else {
+            return p.val == q.val && helper(p.left, q.right)
+                    && helper(p.right, q.left);
+        }
+    }
+
     /**
      * Non-recursive(use Stack)
      */

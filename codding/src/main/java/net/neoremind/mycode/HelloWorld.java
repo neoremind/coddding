@@ -18,6 +18,13 @@ public class HelloWorld {
         System.out.println((start + end) / 2);
         System.out.println((start + end) >>> 1);
         System.out.println((start + end) << 1);
+
+        System.out.println((Integer.MAX_VALUE + 1) & (1 << 31)); //-2147483648
+        System.out.println((Integer.MAX_VALUE) & (1 << 31)); //0
+        System.out.println((Integer.MIN_VALUE >> 31) & 1); //1
+        System.out.println((Integer.MIN_VALUE >> 32) & 1); //0
+        System.out.println((Integer.MIN_VALUE >>> 31) & 1); //1
+        System.out.println((Integer.MIN_VALUE >>> 32) & 1); //0
     }
 
 }

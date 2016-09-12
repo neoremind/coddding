@@ -8,9 +8,9 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
  * Given two binary trees, write a function to check if they are equal or not.
- * <p/>
+ * <p>
  * Two binary trees are considered equal if they are structurally identical and the nodes have the same value.
- * <p/>
+ * <p>
  * Tag:  Depth-first Search 递归
  */
 public class SameTree {
@@ -24,6 +24,15 @@ public class SameTree {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static boolean isSameTree2(TreeNode p, TreeNode q) {
+        if (p == null || q == null) {
+            return p == q;
+        } else {
+            return p.val == q.val && isSameTree(p.left, q.left)
+                    && isSameTree(p.right, q.right);
         }
     }
 

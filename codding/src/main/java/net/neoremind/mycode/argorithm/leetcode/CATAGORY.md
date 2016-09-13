@@ -105,7 +105,7 @@
 
 [76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
-[94. Binary Tree Inorder Traversal]()  //
+[94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
 
 [136. Single Number](README.md#136-single-number)
 
@@ -354,6 +354,10 @@
 
 [72. Edit Distance](README.md#72-edit-distance)
 
+[95. Unique Binary Search Trees II](README.md#95-unique-binary-search-trees-ii)
+
+[96. Unique Binary Search Trees](README.md#96-unique-binary-search-trees)
+
 [120. Triangle](README.md#120-triangle)
 
 [121. Best Time to Buy and Sell Stock](README.md#121-best-time-to-buy-and-sell-stock)
@@ -412,11 +416,13 @@
 
 [42. Trapping Rain Water](README.md#42-trapping-rain-water)
 
-[94. Binary Tree Inorder Traversal]()  //
+[94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
 
-[144. Binary Tree Preorder Traversal]() //
+[144. Binary Tree Preorder Traversal](README.md#144-binary-tree-preorder-traversal)
 
-[145. Binary Tree Postorder Traversal]()  //
+[145. Binary Tree Postorder Traversal](README.md#145-binary-tree-postorder-traversal)
+
+[173. Binary Search Tree Iterator](README.md#173-binary-search-tree-iterator)
 
 [224. Basic Calculator](README.md#224-basic-calculator)
 
@@ -481,64 +487,123 @@
 
 ##Tree
 
-[94. Binary Tree Inorder Traversal]()  //
+[94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
+
+[95. Unique Binary Search Trees II](README.md#95-unique-binary-search-trees-ii)
+
+[96. Unique Binary Search Trees](README.md#96-unique-binary-search-trees)
+
+[98. Validate Binary Search Tree](README.md#98-validate-binary-search-tree)
 
 [100. Same Tree](README.md#100-same-tree)
 
 [101. Symmetric Tree](README.md#101-symmetric-tree)
 
-[102. Binary Tree Level Order Traversal]() //
+[102. Binary Tree Level Order Traversal](README.md#102-binary-tree-level-order-traversal)
 
-[104. Maximum Depth of Binary Tree]()  //
+[104. Maximum Depth of Binary Tree](README.md#104-maximum-depth-of-binary-tree)
 
 [105. Construct Binary Tree from Preorder and Inorder Traversal](README.md#105-construct-binary-tree-from-preorder-and-inorder-traversal)
 
 [106. Construct Binary Tree from Inorder and Postorder Traversal](README.md#106-construct-binary-tree-from-inorder-and-postorder-traversal)
 
-[107. Binary Tree Level Order Traversal II]()  //
+[107. Binary Tree Level Order Traversal II](README.md#107-binary-tree-level-order-traversal-ii)
 
-[110. Balanced Binary Tree]()  //
+[108. Convert Sorted Array to Binary Search Tree](README.md#108-convert-sorted-array-to-binary-search-tree)
 
-[112. Path Sum]()  //
+[110. Balanced Binary Tree](README.md#110-balanced-binary-tree)
 
-[144. Binary Tree Preorder Traversal]() //
+[111. Minimum Depth of Binary Tree](README.md#111-minimum-depth-of-binary-tree)
 
-[145. Binary Tree Postorder Traversal]()  //
+[112. Path Sum](README.md#112-path-sum)
 
-[226. Invert Binary Tree]() //
+[113. Path Sum II](README.md#113-path-sum-ii)
+
+[114. Flatten Binary Tree to Linked List](README.md#114-flatten-binary-tree-to-linked-list)
+
+[116. Populating Next Right Pointers in Each Node](README.md#116-populating-next-right-pointers-in-each-node)
+
+[117. Populating Next Right Pointers in Each Node II](README.md#117-populating-next-right-pointers-in-each-node-ii)
+
+[124. Binary Tree Maximum Path Sum](README.md#124-binary-tree-maximum-path-sum)
+
+[129. Sum Root to Leaf Numbers](README.md#129-sum-root-to-leaf-numbers)
+
+[144. Binary Tree Preorder Traversal](README.md#144-binary-tree-preorder-traversal)
+
+[145. Binary Tree Postorder Traversal](README.md#145-binary-tree-postorder-traversal)
+
+[173. Binary Search Tree Iterator](README.md#173-binary-search-tree-iterator)
+
+[199. Binary Tree Right Side View](README.md#199-binary-tree-right-side-view)
+
+[222. Count Complete Tree Nodes](README.md#222-count-complete-tree-nodes)
+
+[226. Invert Binary Tree](README.md#226-invert-binary-tree)
 
 [230. Kth Smallest Element in a BST](README.md#230-kth-smallest-element-in-a-bst)
 
+[235. Lowest Common Ancestor of a Binary Search Tree](README.md#235-lowest-common-ancestor-of-a-binary-search-tree)
+
+[236. Lowest Common Ancestor of a Binary Tree](README.md#236-lowest-common-ancestor-of-a-binary-tree)
+
+[257. Binary Tree Paths](README.md#257-binary-tree-paths)
 
 ##Depth-first Search
+
+[98. Validate Binary Search Tree](README.md#98-validate-binary-search-tree)
 
 [100. Same Tree](README.md#100-same-tree)
 
 [101. Symmetric Tree](README.md#101-symmetric-tree)
 
-[104. Maximum Depth of Binary Tree]()  //
+[104. Maximum Depth of Binary Tree](README.md#104-maximum-depth-of-binary-tree)
 
 [105. Construct Binary Tree from Preorder and Inorder Traversal](README.md#105-construct-binary-tree-from-preorder-and-inorder-traversal)
 
 [106. Construct Binary Tree from Inorder and Postorder Traversal](README.md#106-construct-binary-tree-from-inorder-and-postorder-traversal)
 
-[110. Balanced Binary Tree]()  //
+[108. Convert Sorted Array to Binary Search Tree](README.md#108-convert-sorted-array-to-binary-search-tree)
 
-[112. Path Sum]()  //
+[110. Balanced Binary Tree](README.md#110-balanced-binary-tree)
+
+[111. Minimum Depth of Binary Tree](README.md#111-minimum-depth-of-binary-tree)
+
+[112. Path Sum](README.md#112-path-sum)
+
+[113. Path Sum II](README.md#113-path-sum-ii)
+
+[114. Flatten Binary Tree to Linked List](README.md#114-flatten-binary-tree-to-linked-list)
+
+[116. Populating Next Right Pointers in Each Node](README.md#116-populating-next-right-pointers-in-each-node)
+
+[117. Populating Next Right Pointers in Each Node II](README.md#117-populating-next-right-pointers-in-each-node-ii)
+
+[124. Binary Tree Maximum Path Sum](README.md#124-binary-tree-maximum-path-sum)
+
+[129. Sum Root to Leaf Numbers](README.md#129-sum-root-to-leaf-numbers)
+
+[130. Surrounded Regions](README.md#130-surrounded-regions)
 
 [133. Clone Graph]() //
+
+[199. Binary Tree Right Side View](README.md#199-binary-tree-right-side-view)
+
+[200. Number of Islands](README.md#200-number-of-islands)
 
 [207. Course Schedule](README.md#207-course-schedule)
 
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
+[257. Binary Tree Paths](README.md#257-binary-tree-paths)
+
 ##Breadth-first Search
 
 [101. Symmetric Tree](README.md#101-symmetric-tree)
 
-[102. Binary Tree Level Order Traversal]() //
+[102. Binary Tree Level Order Traversal](README.md#102-binary-tree-level-order-traversal)
 
-[107. Binary Tree Level Order Traversal II]()  //
+[107. Binary Tree Level Order Traversal II](README.md#107-binary-tree-level-order-traversal-ii)
 
 [133. Clone Graph]() //
 
@@ -549,6 +614,9 @@
 
 
 ##Union Find
+[200. Number of Islands](README.md#200-number-of-islands) //TODO
+
+[130. Surrounded Regions](README.md#130-surrounded-regions)
 
 ##Graph
 
@@ -559,6 +627,8 @@
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
 ##Design
+
+[173. Binary Search Tree Iterator](README.md#173-binary-search-tree-iterator)
 
 [208. Implement Trie (Prefix Tree)](README.md#208-implement-trie-prefix-tree)
 

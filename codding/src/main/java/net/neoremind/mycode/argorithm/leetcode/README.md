@@ -1466,7 +1466,8 @@ void dfs(char[][] grid, boolean[][] visited, int i, int j, int rows, int cols)
     dfs(grid, visited, i, j + 1, rows, cols);
     dfs(grid, visited, i - 1, j, rows, cols);
     dfs(grid, visited, i, j - 1, rows, cols);
-}```
+}
+```
 
 
 ### [199. Binary Tree Right Side View](https://leetcode.com/problems/binary-tree-right-side-view/)

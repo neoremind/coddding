@@ -20,7 +20,6 @@ public class BST<T extends Comparable<T>> {
     public int depth(Node node) {
         int depthLeft = 0;
         int depthRight = 0;
-        int depth = 0;
 
         // 左子树的深度
         if (node.getLeft() != null) {
@@ -31,12 +30,7 @@ public class BST<T extends Comparable<T>> {
         if (node.getRight() != null) {
             depthRight = depth(node.getRight()) + 1;
         }
-        if (depthLeft >= depthRight) {
-            depth = depthLeft;
-        } else {
-            depth = depthRight;
-        }
-        return depth;
+        return Math.max(depthLeft, depthRight);
     }
 
     public void insert(T[] arr) {
@@ -72,7 +66,7 @@ public class BST<T extends Comparable<T>> {
         return node;
     }
 
-    public Node insertRecursively(T t) {
+    public Node insertInteratively(T t) {
         if (t == null) {
             throw new IllegalArgumentException();
         }
@@ -126,7 +120,7 @@ public class BST<T extends Comparable<T>> {
 
     public static void main(String[] args) throws IOException {
         BST<Integer> bst = new BST<Integer>();
-        bst.insert(new Integer[] { 12, 76, 35, 22, 16, 48, 90, 46, 9, 40 });
+        bst.insert(new Integer[] {12, 76, 35, 22, 16, 48, 90, 46, 9, 40});
         bst.preOrder(bst.getRoot());
         System.out.println();
         bst.inOrder(bst.getRoot());
@@ -166,7 +160,7 @@ public class BST<T extends Comparable<T>> {
 
         /**
          * Creates a new instance of Node.
-         * 
+         *
          * @param value
          */
         public Node(T value) {

@@ -1,0 +1,190 @@
+package net.neoremind.mycode.argorithm.leetcode;
+
+import static org.junit.Assert.assertThat;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
+/**
+ * Given a 2D board containing 'X' and 'O' (the letter O), capture all regions surrounded by 'X'.
+ * <p>
+ * A region is captured by flipping all 'O's into 'X's in that surrounded region.
+ * <p>
+ * For example,
+ * X X X X
+ * X O O X
+ * X X O X
+ * X O X X
+ * After running your function, the board should be:
+ * <p>
+ * X X X X
+ * X X X X
+ * X X X X
+ * X O X X
+ *
+ * @author zhangxu
+ * @see https://leetcode.com/problems/surrounded-regions/
+ */
+public class SurroundedRegions {
+
+    public void solve(char[][] board) {
+        if (board == null) {
+            return;
+        }
+        int rows = board.length;
+        if (rows == 0) { //corner case
+            return;
+        }
+        int cols = board[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (board[i][j] == 'O' && !visited[i][j]) {
+                    dfsIsReachBoundary(board, visited, i, j, rows, cols);
+                }
+            }
+        }
+    }
+
+    boolean dfsIsReachBoundary(char[][] board, boolean[][] visited, int i, int j, int rows, int cols) {
+        if (i < 0 || j < 0 || i >= rows || j >= cols) {
+            return true;
+        }
+        if (board[i][j] == 'X' || visited[i][j]) {
+            return false;
+        }
+        board[i][j] = 'X';
+        visited[i][j] = true;
+        boolean isReachBoundary = dfsIsReachBoundary(board, visited, i + 1, j, rows, cols) ||
+                dfsIsReachBoundary(board, visited, i, j + 1, rows, cols) ||
+                dfsIsReachBoundary(board, visited, i - 1, j, rows, cols) ||
+                dfsIsReachBoundary(board, visited, i, j - 1, rows, cols);
+        if (isReachBoundary) {
+            board[i][j] = 'O';
+        }
+        return isReachBoundary;
+    }
+
+    public void solve2(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (i == 0 || i == board.length - 1 || j == 0 || j == board[0].length - 1) {
+                    if (board[i][j] == 'O') {
+                        dfs(i, j, board);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == '*') {
+                    board[i][j] = 'O';
+                } else {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+        return;
+    }
+
+    private void dfs(int i, int j, char[][] board) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) {
+            return;
+        }
+        if (board[i][j] == 'X' || board[i][j] == '*') {
+            return;
+        }
+        board[i][j] = '*';
+        if (i + 1 < board.length) {
+            dfs(i + 1, j, board);
+        }
+        if (i - 1 > 0) {
+            dfs(i - 1, j, board);
+        }
+        if (j + 1 < board[0].length) {
+            dfs(i, j + 1, board);
+        }
+        if (j - 1 > 0) {
+            dfs(i, j - 1, board);
+        }
+    }
+
+    public void solve3(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+        int rows = board.length, columns = board[0].length;
+        int[][] direction = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if ((i == 0 || i == rows - 1 || j == 0 || j == columns - 1) && board[i][j] == 'O') {
+                    Queue<Point> queue = new LinkedList<>();
+                    board[i][j] = 'B';
+                    queue.offer(new Point(i, j));
+                    while (!queue.isEmpty()) {
+                        Point point = queue.poll();
+                        for (int k = 0; k < 4; k++) {
+                            int x = direction[k][0] + point.x;
+                            int y = direction[k][1] + point.y;
+                            if (x >= 0 && x < rows && y >= 0 && y < columns && board[x][y] == 'O') {
+                                board[x][y] = 'B';
+                                queue.offer(new Point(x, y));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (board[i][j] == 'B') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    class Point {
+        int x;
+        int y;
+
+        Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    @Test
+    public void test() {
+        char[][] board = new char[][] {
+                {'X', 'X', 'X', 'X'},
+                {'X', 'O', 'O', 'X'},
+                {'X', 'X', 'O', 'X'},
+                {'X', 'O', 'X', 'X'}
+        };
+        solve(board);
+        Arrays.asList(board).stream().forEach(e -> System.out.println(ArrayUtils.toString(e)));
+
+        board = new char[][] {
+                {'X', 'X', 'X', 'X'},
+                {'X', 'O', 'O', 'X'},
+                {'X', 'X', 'O', 'X'},
+                {'X', 'O', 'X', 'X'}
+        };
+        solve2(board);
+        Arrays.asList(board).stream().forEach(e -> System.out.println(ArrayUtils.toString(e)));
+
+    }
+
+}

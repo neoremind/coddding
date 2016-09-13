@@ -2069,7 +2069,7 @@ X X X X
 X X X X
 X O X X
 ```
-从边界找O然后，把边界内的O标记为*，然后里面的O自然就都变为X。
+从边界找O然后，把边界内的O标记为*，然后里面的O自然就都变为X。如果从里面找就会TLE。
 ```
 public void solve2(char[][] board)
     if (board == null || board.length == 0) {return;}

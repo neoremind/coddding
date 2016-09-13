@@ -33,6 +33,11 @@ import org.junit.Test;
  */
 public class SurroundedRegions {
 
+    /**
+     * 这种从里面找的DFS会TLE，需要从边界找
+     *
+     * @param board
+     */
     public void solve(char[][] board) {
         if (board == null) {
             return;

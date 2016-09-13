@@ -1418,6 +1418,57 @@ while (inLoop.add(n))  //还能加，没重复
 return false;
 ```
 
+### [200. Number of Islands](https://leetcode.com/problems/number-of-islands/)
+
+M, Depth-first Search Breadth-first Search Union Find
+
+```
+Example 1:
+
+11110
+11010
+11000
+00000
+Answer: 1
+
+Example 2:
+
+11000
+11000
+00100
+00011
+Answer: 3
+```
+并查集//TODO
+
+DFS解法如下，其实也是backtrack：
+```
+public int numIslands(char[][] grid) {
+    if (grid == null) return 0;
+    int count = 0;
+    int rows = grid.length;
+    if (rows == 0) return 0; //必须有
+    int cols = grid[0].length;
+    boolean[][] visited = new boolean[rows][cols];
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (grid[i][j] == '1' && !visited[i][j])
+                dfs(grid, visited, i, j, rows, cols);
+                count++;
+    return count;
+}
+
+void dfs(char[][] grid, boolean[][] visited, int i, int j, int rows, int cols)
+    if (i < 0 || j < 0 || i >= rows || j >= cols || grid[i][j] == '0' || visited[i][j])
+        return;
+    visited[i][j] = true;
+    dfs(grid, visited, i + 1, j, rows, cols);
+    dfs(grid, visited, i, j + 1, rows, cols);
+    dfs(grid, visited, i - 1, j, rows, cols);
+    dfs(grid, visited, i, j - 1, rows, cols);
+}```
+
+
 ### [199. Binary Tree Right Side View](https://leetcode.com/problems/binary-tree-right-side-view/)
 
 M, Tree Depth-first Search Breadth-first Search
@@ -2000,6 +2051,81 @@ for (int i = 0; i < gas.length; i++)
         accumulate += curGain;
 return start;
 ```
+
+### [130. Surrounded Regions](https://leetcode.com/problems/surrounded-regions/)
+
+M, Breadth-first Search Union Find
+
+```
+For example,
+X X X X
+X O O X
+X X O X
+X O X X
+After running your function, the board should be:
+
+X X X X
+X X X X
+X X X X
+X O X X
+```
+从边界找O然后，把边界内的O标记为*，然后里面的O自然就都变为X。
+```
+public void solve2(char[][] board)
+    if (board == null || board.length == 0) {return;}
+    for (int i = 0; i < board.length; i++)
+        for (int j = 0; j < board[0].length; j++)
+            if (i == 0 || i == board.length - 1 || j == 0 || j == board[0].length - 1)
+                if (board[i][j] == 'O')
+                    dfs(i, j, board);
+
+    for (int i = 0; i < board.length; i++)
+        for (int j = 0; j < board[0].length; j++)
+            if (board[i][j] == '*') {
+                board[i][j] = 'O';
+            else
+                board[i][j] = 'X';
+    return;
+
+private void dfs(int i, int j, char[][] board)
+    if (i < 0 || i >= board.length || j < 0 || j >= board[0].length)
+        return;
+    if (board[i][j] == 'X' || board[i][j] == '*')
+        return;
+    board[i][j] = '*';
+    if (i + 1 < board.length) dfs(i + 1, j, board);
+    if (i - 1 > 0) dfs(i - 1, j, board);
+    if (j + 1 < board[0].length) dfs(i, j + 1, board);
+    if (j - 1 > 0) dfs(i, j - 1, board);
+```
+
+另外使用BFS就得用Queue,把肯定是边界O的标记为B。
+```
+if (board == null || board.length == 0) return;
+int rows = board.length, columns = board[0].length;
+int[][] direction = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++)
+        if ((i == 0 || i == rows - 1 || j == 0 || j == columns - 1) && board[i][j] == 'O')
+            Queue<Point> queue = new LinkedList<>();
+            board[i][j] = 'B';
+            queue.offer(new Point(i, j));
+            while (!queue.isEmpty()) {
+                Point point = queue.poll();
+                for (int k = 0; k < 4; k++) {
+                    int x = direction[k][0] + point.x;
+                    int y = direction[k][1] + point.y;
+                    if (x >= 0 && x < rows && y >= 0 && y < columns && board[x][y] == 'O') {
+                        board[x][y] = 'B';
+                        queue.offer(new Point(x, y));
+for (int i = 0; i < rows; i++)
+    for (int j = 0; j < columns; j++)
+        if (board[i][j] == 'B')
+            board[i][j] = 'O';
+        else if (board[i][j] == 'O')
+            board[i][j] = 'X';
+```
+
 
 ### [129. Sum Root to Leaf Numbers](https://leetcode.com/problems/sum-root-to-leaf-numbers/)
 

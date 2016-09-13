@@ -2391,7 +2391,7 @@ M, Tree Depth-first Search
 
 For example,
 Given
-``
+```
          1
         / \
        2   5

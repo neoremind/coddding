@@ -326,6 +326,34 @@ if (num != 1)
 return num == 1;
 ```
 
+### [257. Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/)
+
+E, Tree Depth-first Search
+
+类似NQueens问题的回溯DFS。
+```
+public List<String> binaryTreePaths(TreeNode root) {
+    List<String> result = new ArrayList<>();
+    backtrack(root, result, new ArrayList<>());
+    return result;
+}
+
+void backtrack(TreeNode root, List<String> result, List<Integer> tempList) {
+    if (root == null) {
+        return;
+    } else if (root.left == null && root.right == null) {
+        tempList.add(root.val);
+        result.add(toPathString(tempList));
+        tempList.remove(tempList.size() - 1);
+    } else {
+        tempList.add(root.val);
+        backtrack(root.left, result, tempList);
+        backtrack(root.right, result, tempList);
+        tempList.remove(tempList.size() - 1);
+    }
+}
+```
+
 
 ### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
 
@@ -384,6 +412,101 @@ boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int 
 
 return searchMatrixDAC(matrix, 0, 0, matrix.length, matrix[0].length, target);
 ```
+
+### [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+M, Tree
+
+[LCA问题]
+(https://www.hrwhisper.me/algorithm-lowest-common-ancestor-of-a-binary-tree/)
+
+[JULY的LCA]
+(https://github.com/julycoding/The-Art-Of-Programming-By-July/blob/master/ebook/zh/03.03.md)
+
+1. 普通玩法：
+BST
+很简单的思路就是看两个值在root的哪边：
+两个值都在左边，则LCA在左边
+两个值都在右边，则LCA在右边
+一个在左一个在右，则说明LCA就是当前的root节点。
+
+2. 普通二叉树：
+* 带有父节点信息的二叉树：转换为链表求交点问题
+* 一个简单的思路，对p和q向上走，用hashtable记录访问过的节点，如果某个节点已经被访问过了，那么返回该节点。
+
+A Top-Down Approach (Worst case O(n2) ): Let’s try the top-down approach where we traverse the nodes from the top to the bottom. First, if the current node is one of the two nodes, it must be the LCA of the two nodes. If not, we count the number of nodes that matches either p or q in the left subtree (which we call totalMatches). If totalMatches equals 1, then we know the right subtree will contain the other node. Therefore, the current node must be the LCA. If totalMatches equals 2, we know that both nodes are contained in the left subtree, so we traverse to its left child. Similar with the case where totalMatches equals 0 where we traverse to its right child.
+```
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || p == null || q == null) {
+        return null;
+    }
+    if (root == p || root == q) {
+        return root;
+    }
+    int totalMatches = countMatches(root.left, p, q);
+    if (totalMatches == 1) {
+        return root;
+    } else if (totalMatches == 2) {
+        return lowestCommonAncestor(root.left, p, q);
+    } else {  //totalMatches = 0
+        return lowestCommonAncestor(root.right, p, q);
+    }
+}
+
+int countMatches(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null) {
+        return 0;
+    }
+    int matches = countMatches(root.left, p, q) + countMatches(root.right, p, q);
+    if (root == p || root == q) {
+        return 1 + matches;
+    } else {
+        return matches;
+    }
+}
+```
+
+A Bottom-up Approach (Worst case O(n) ): Using a bottom-up approach, we can improve over the top-down approach by avoiding traversing the same nodes over and over again.
+We traverse from the bottom, and once we reach a node which matches one of the two nodes, we pass it up to its parent. The parent would then test its left and right subtree if each contain one of the two nodes. If yes, then the parent must be the LCA and we pass its parent up to the root. If not, we pass the lower node which contains either one of the two nodes (if the left or right subtree contains either p or q), or NULL (if both the left and right subtree does not contain either p or q) up.
+```
+public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) {
+        return root;
+    }
+    TreeNode left = lowestCommonAncestor2(root.left, p, q);
+    TreeNode right = lowestCommonAncestor2(root.right, p, q);
+    if (left != null && right != null) {
+        return root;
+    } else {
+        return left != null ? left : right;
+    }
+}
+```
+
+3. 高级玩法：
+* 多次查询，离线算法Tarjan，利用并查集优越的时空复杂度，可以实现O(n+q)的算法，q是查询次数。
+* 在线算法RMQ（Sparse table）一个O(nlog2n)的预处理，O(1)的查询。
+* 线段树（segement tree）
+
+
+### [235. Lowest Common Ancestor of a Binary Search Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+
+E, Tree
+
+很简单的思路就是看两个值在root的哪边：
+* 两个值都在左边，则LCA在左边
+* 两个值都在右边，则LCA在右边
+* 一个在左一个在右，则说明LCA就是当前的root节点。
+
+```
+if (p.val < root.val && q.val < root.val)
+    return lowestCommonAncestor(root.left, p, q);
+else if (p.val > root.val && q.val > root.val)
+    return lowestCommonAncestor(root.right, p, q);
+else
+    return root;
+```
+
 
 ### [232. Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/)
 
@@ -484,6 +607,21 @@ while (cur != null || !stack.empty()) {
 return -1;
 ```
 
+### [226. Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/)
+
+E, Tree
+
+```
+public TreeNode invertTree(TreeNode root)
+    if (root == null)
+        return null;
+    TreeNode temp = root.right;
+    root.right = root.left;
+    root.left = temp;
+    invertTree(root.left);
+    invertTree(root.right);
+    return root;
+```
 
 ### [225. Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)
 
@@ -508,6 +646,30 @@ public void push(int x) {
 public void pop() { queue.poll(); }
 public int top() { return queue.peek(); }
 public boolean empty() { return queue.isEmpty(); }
+```
+
+### [222. Count Complete Tree Nodes](https://leetcode.com/problems/count-complete-tree-nodes/)
+
+M, Tree Binary Search
+
+完全二叉树的数量=2^N-1，否则就单独计算左右子树+1.
+```
+public int countNodes(TreeNode root)
+    int rightDepth = rightDepth(root);
+    int leftDepth = leftDepth(root);
+    if (leftDepth == rightDepth)
+        return (1 << leftDepth) - 1;
+    else
+        return 1 + countNodes(root.left) + countNodes(root.right);
+
+int rightDepth(TreeNode root)
+    int res = 0;
+    while (root != null) {
+        res++;
+        root = root.right;
+    return res;
+
+//left same as right
 ```
 
 ### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
@@ -1256,6 +1418,39 @@ while (inLoop.add(n))  //还能加，没重复
 return false;
 ```
 
+### [199. Binary Tree Right Side View](https://leetcode.com/problems/binary-tree-right-side-view/)
+
+M, Tree Depth-first Search Breadth-first Search
+
+仿佛站在右边能看到的节点list。还是DFS的backtrack。
+```
+   1            <---
+ /   \
+2     3         <---
+ \     \
+  5     4       <---
+```
+
+```
+public List<Integer> rightSideView(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    dfs(root, result, 0);
+    return result;
+}
+
+void dfs(TreeNode root, List<Integer> result, int depth) {
+    if (root == null) {
+        return;
+    } else {
+        if (result.size() == depth) {  //太巧妙了！！
+            result.add(root.val);
+        }
+        dfs(root.right, result, depth + 1);//先右边
+        dfs(root.left, result, depth + 1);
+    }
+}
+```
+
 
 ### [191. Number of 1 Bits](https://leetcode.com/problems/number-of-1-bits/)
 
@@ -1391,6 +1586,41 @@ Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
 ```
 
+### [173. Binary Search Tree Iterator](https://leetcode.com/problems/binary-search-tree-iterator/)
+
+M, Tree Stack Design
+
+实现一个Tree的iterator模式。
+
+又是一个标准的in-order遍历模板。
+```
+private Stack<TreeNode> stack;
+private TreeNode curr;
+public BSTIterator(TreeNode root) {
+    stack = new Stack<>();
+    curr = root;
+}
+public boolean hasNext() {
+    return curr != null || !stack.isEmpty();
+}
+public int next() {
+    while (curr != null || !stack.isEmpty()) {
+        if (curr != null) {
+            stack.push(curr);
+            curr = curr.left;
+        } else {
+            TreeNode node = stack.pop();
+            //... visit
+            curr = node.right;
+            return node.val;
+        }
+    }
+    throw new RuntimeException("no next left");
+}
+```
+
+
+
 ### [171. Excel Sheet Column Number](https://leetcode.com/problems/excel-sheet-column-number/)
 
 E, Math
@@ -1520,6 +1750,81 @@ M, String
 * 5. reverse each word
 * 6. reverse the last word
 * 7. return new String(str, 0, barrier);
+```
+
+### [145. Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)
+
+H, Tree Stack
+
+Recursively:
+```
+public List<Integer> traverse(TreeNode root)
+    List<Integer> result = new ArrayList<>();
+    doPostorder(root, result);
+    return result;
+
+private void doPostorder(TreeNode root, List<Integer> result)
+    if (root != null)
+        doPostorder(root.left, result);
+        doPostorder(root.right, result);
+        result.add(root.val);
+```
+
+Iteratively:
+非常的巧妙，leetcode上排名靠前的都是这个解法，考虑使用一个链表，先安排最后的节点，也就是根和右节点.
+```
+LinkedList<Integer> result = new LinkedList<>();
+Stack<TreeNode> stack = new Stack<>();
+if (root == null) { // 必须处理
+    return result;
+}
+
+stack.push(root);
+while (!stack.isEmpty()) {
+    TreeNode cur = stack.pop();
+    result.addFirst(cur.val);
+    if (cur.left != null) {
+        stack.push(cur.left);
+    }
+    if (cur.right != null) {
+        stack.push(cur.right);
+    }
+}
+return result;
+```
+
+### [144. Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal/)
+
+M, Tree Stack
+
+Recursively:
+```
+public List<Integer> traverse(TreeNode root)
+    List<Integer> result = new ArrayList<>();
+    doPreorder(root, result);
+    return result;
+
+private void doPreorder(TreeNode root, List<Integer> result)
+    if (root != null)
+        result.add(root.val);
+        doPreorder(root.left, result);
+        doPreorder(root.right, result);
+```
+
+Iteratively:
+```
+List<Integer> result = new ArrayList<>();
+Stack<TreeNode> stack = new Stack<>();
+stack.push(root);
+while (!stack.isEmpty()) {
+    TreeNode top = stack.pop();
+    if (top != null) { // 要判空
+        result.add(top.val);
+        stack.push(top.right);
+        stack.push(top.left);
+    }
+}
+return result;
 ```
 
 ### [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)
@@ -1696,6 +2001,35 @@ for (int i = 0; i < gas.length; i++)
 return start;
 ```
 
+### [129. Sum Root to Leaf Numbers](https://leetcode.com/problems/sum-root-to-leaf-numbers/)
+
+M,Tree Depth-first Search
+
+直接就是一个NQueens经典的回溯DFS。
+
+```
+public int sumNumbers(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    helper(root, new ArrayList<>(), result);
+    return result.stream().reduce(0, (a, b) -> a + b);
+}
+
+void helper(TreeNode root, List<Integer> tempList, List<Integer> result) {
+    if (root == null) {
+        return;
+    } else if (root.left == null && root.right == null) {
+        tempList.add(root.val);
+        result.add(toInt(tempList));
+        tempList.remove(tempList.size() - 1);
+    } else {
+        tempList.add(root.val);
+        helper(root.left, tempList, result);
+        helper(root.right, tempList, result);
+        tempList.remove(tempList.size() - 1);
+    }
+}
+```
+
 ### [125. Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)
 
 E,  Two Pointers String
@@ -1717,6 +2051,30 @@ while(head <= tail) {
         tail--;
 return true;
 ```
+
+### [124. Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/)
+
+H, Tree Depth-first Search
+
+返回树中任意两点路径的最大值。只要两点间有路径联通就可以。有点难理解。//TODO
+```
+int max;
+
+public int maxPathSum(TreeNode root) {
+    max = Integer.MIN_VALUE;
+    maxPathDown(root);
+    return max;
+}
+
+private int maxPathDown(TreeNode node) {
+    if (node == null) return 0;
+    int left = Math.max(0, maxPathDown(node.left));//？
+    int right = Math.max(0, maxPathDown(node.right));
+    max = Math.max(max, left + right + node.val);
+    return Math.max(left, right) + node.val;
+}
+```
+
 
 
 ### [123. Best Time to Buy and Sell Stock III](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/)
@@ -1846,6 +2204,260 @@ for (int i = 0; i < height; i++) {
 return min in s[height - 1]
 ```
 
+### [117. Populating Next Right Pointers in Each Node II](https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/)
+
+M, Tree Depth-first Search
+```
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \    \
+    4-> 5 -> 7 -> NULL
+```
+
+利用上一层已经是linkedlist的特性，不用level order traversal。下面的代码一次性写对的。
+```
+public void connect(TreeLinkNode root) {
+    TreeLinkNode head = root;
+    TreeLinkNode prev = null;
+    while (head != null) {
+        TreeLinkNode curr = head;
+        TreeLinkNode nextLevelHead = null;
+        while (curr != null) {
+            if (curr.left != null) {
+                if (prev == null) {
+                    prev = curr.left;
+                    nextLevelHead = prev;
+                } else {
+                    prev.next = curr.left;
+                    prev = prev.next;
+                }
+            }
+            if (curr.right != null) {
+                if (prev == null) {
+                    prev = curr.right;
+                    nextLevelHead = prev;
+                } else {
+                    prev.next = curr.right;
+                    prev = prev.next;
+                }
+            }
+            curr = curr.next;
+        }
+        prev = null;
+        head = nextLevelHead;
+    }
+}
+```
+
+### [116. Populating Next Right Pointers in Each Node](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+
+M, Tree Depth-first Search
+
+完全二叉树perfect binary tree是普通二叉树的特例。和题目117的解法一样。
+
+
+
+### [114. Flatten Binary Tree to Linked List](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/)
+
+M, Tree Depth-first Search
+
+For example,
+Given
+``
+         1
+        / \
+       2   5
+      / \   \
+     3   4   6
+```
+The flattened tree should look like:
+```
+   1
+    \
+     2
+      \
+       3
+        \
+         4
+          \
+           5
+            \
+             6
+```
+
+```
+public void flatten(TreeNode root) {
+    if (root == null) return;
+
+    TreeNode left = root.left;
+    TreeNode right = root.right;
+
+    flatten(left);
+    flatten(right);
+
+    root.right = left;
+    root.left = null; //别忘了
+    TreeNode curr = root;
+    while (curr.right != null) { //顺序找到"接口"
+        curr = curr.right;
+    }
+
+    curr.right = right;
+}
+```
+
+### [113. Path Sum II](https://leetcode.com/problems/path-sum-ii/)
+
+M, Tree Depth-first Search
+
+在题目112的基础上要输出所有的路径。
+
+完全就是N-Queens的backtrack的模板。
+```
+public List<List<Integer>> pathSum(TreeNode root, int sum) {
+    List<List<Integer>> result = new ArrayList<>();
+    helper(root, sum, new ArrayList<>(), result);
+    return result;
+}
+
+private void helper(TreeNode node, int sum, List<Integer> tempList, List<List<Integer>> result) {
+    if (node == null) {
+        return;
+    }
+
+    if (node.left == null && node.right == null && sum - node.val == 0) {
+        tempList.add(node.val);
+        result.add(new ArrayList<>(tempList));
+        tempList.remove(tempList.size() - 1);
+        return;
+    }
+
+    tempList.add(node.val);
+    helper(node.left, sum - node.val, tempList, result);
+    helper(node.right, sum - node.val, tempList, result);
+    tempList.remove(tempList.size() - 1);
+}
+```
+
+### [112. Path Sum](https://leetcode.com/problems/path-sum/)
+
+E, Tree Depth-first Search
+
+只判断是否从root到leaf有一个路径和等于给定值。
+
+```
+public boolean hasPathSum(TreeNode root, int sum) {
+    if (root == null) {
+        return false;
+    }
+    if (root.left == null && root.right == null && root.val == sum) {
+        return true;
+    }
+    return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+}
+```
+
+
+### [111. Minimum Depth of Binary Tree](https://leetcode.com/problems/minimum-depth-of-binary-tree/)
+
+E, Tree Depth-first Search Breadth-first Search
+
+```
+public int minDepth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    if (root.left == null || root.right == null) { //很重要，处理不平衡用的
+        return 1 + Math.max(minDepth(root.left), minDepth(root.right));
+    }
+    return 1 + Math.min(minDepth(root.left), minDepth(root.right));
+}
+```
+
+
+### [110. Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree/)
+
+E, Tree Depth-first Search
+
+给定一棵二叉树，判定它是否为平衡二叉树。
+
+算法分析：
+平衡二叉树（Balanced Binary Tree）又被称为AVL树（有别于AVL算法），且具有以下性质：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
+
+下面的代码就完全按照定义，首先得到节点左右子树的高度（递归），然后判断左右子树是否为平衡二叉树，利用递归完成整棵树的判断。完全满足条件，就返回true.
+```
+public static boolean isBalanced(TreeNode root)
+    if (root == null) return true;
+    if (getHeight(root) == -1) return false;
+    return true;
+
+/** 不符合条件就返回-1 */
+public static int getHeight(TreeNode root) {
+    if (root == null) return 0;
+    int left = getHeight(root.left);
+    int right = getHeight(root.right);
+    if (left == -1 || right == -1)
+        return -1;
+    if (Math.abs(left - right) > 1)
+        return -1;
+    return Math.max(left, right) + 1;
+```
+
+
+### [108. Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/)
+
+M, Tree Depth-first Search
+
+二分查找的思想
+```
+return helper(nums, 0, nums.length - 1);
+
+TreeNode helper(int[] nums, int start, int end) {
+    if (start > end) { return null;}
+    int mid = (start + end) >> 1;
+    TreeNode node = new TreeNode(nums[mid]);
+    node.left = helper(nums, start, mid - 1);
+    node.right = helper(nums, mid + 1, end);
+    return node;
+}
+```
+
+### [107. Binary Tree Level Order Traversal II](https://leetcode.com/problems/binary-tree-level-order-traversal-ii/)
+
+E, Tree Breadth-first Search
+
+bottom-up level，和题目102类似，需要做一次backtrack的思想，把add操作放在DFS递归的后面。
+
+```
+public List<List<Integer>> traverse(TreeNode root) {
+    if (root == null) return new ArrayList<>(0);
+    List<List<Integer>> result = new ArrayList<>();
+    List<TreeNode> level = new ArrayList<>(1);
+    level.add(root);
+    levelOrderBottom(level, result);
+    return result;
+}
+
+private static void levelOrderBottom(List<TreeNode> level, List<List<Integer>> result) {
+    List<TreeNode> newLevel = new ArrayList<>(level.size() << 1);
+    List<Integer> levelValues = new ArrayList<>(level.size());
+    for (TreeNode treeNode : level) {
+        levelValues.add(treeNode.val);
+        if (treeNode.left != null) {
+            newLevel.add(treeNode.left);
+        }
+        if (treeNode.right != null) {
+            newLevel.add(treeNode.right);
+        }
+    }
+    if (!newLevel.isEmpty()) {
+        levelOrderBottom(newLevel, result);
+    }
+    result.add(levelValues);
+}
+```
+
 ### [106. Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 和105类似，只不过postorder遍历尾巴是根节点。不再赘述。
@@ -1896,6 +2508,48 @@ TreeNode doBuildTree(int[] preorder, int preStart, int preEnd, int[] inorder, in
     node.right = doBuildTree(preorder, preStart + leftChildrenLen + 1, preEnd, inorder,nodeIndex + 1, inEnd);
     return node;
 }
+```
+
+### [104. Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/)
+
+E, Tree Depth-first Search
+
+max depth is the longest path from the root node down to the farthest leaf node.
+
+```
+public int maxDepth(TreeNode root)
+    if (root == null)
+        return 0;
+    return 1 + Math.max(maxDepth(root.left),maxDepth(root.right));
+```
+
+### [102. Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/)
+
+E, Tree Breadth-first Search
+
+层序遍历。
+
+```
+if (root == null) return new ArrayList<>(0);
+List<List<Integer>> result = new ArrayList<>();
+List<TreeNode> level = new ArrayList<>(1);
+level.add(root);
+List<TreeNode> newLevel;
+List<Integer> levelValues;
+while (true) {
+    temp = new list
+    newLevel = new list
+    add temp to result
+    for each i in level
+        add i to temp
+        add i.left to newLevel
+        add i.right to newLevel
+    level = newLevel;
+    if (level is empty) {
+        break;
+    }
+}
+return result;
 ```
 
 ### [101. Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)
@@ -1972,6 +2626,173 @@ else
 if (p == null || q == null)
      return p == q;
 else return p.val == q.val && isSameTree(p.left, q.left)&& isSameTree(p.right, q.right);
+```
+
+### [98. Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/)
+
+M, Tree Depth-first Search
+
+模拟in-order遍历的算法过程。中间visit的过程换成比较prev和node的小大。
+
+```
+Stack<TreeNode> stack = new Stack<>();
+TreeNode curr = root;
+TreeNode prev = null;
+while (curr != null || !stack.isEmpty()) {
+    if (curr != null) {
+        stack.push(curr);
+        curr = curr.left;
+    } else {
+        TreeNode node = stack.pop();
+        if (prev != null && node.val < prev.val) {
+            return false;
+        }
+        prev = node;
+        curr = node.right;
+    }
+}
+return true;
+```
+
+另外递归的算法如下，但是[1,1]OJ过不了：
+```
+TreeNode prev = null;
+return helper2(root, prev);
+
+boolean helper2(TreeNode node, TreeNode prev) {
+    if (node == null)
+        return true;
+    if (!helper2(node.left, prev))
+        return false;
+    if (prev != null && prev.val >= node.val)
+        return false;
+    prev = node;
+    return helper2(node.right, prev);
+```
+
+### [96. Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/)
+
+M, Tree Dynamic Programming
+
+Given n, how many structurally unique BST's (binary search trees) that store values 1...n?
+
+For example,
+Given n = 3, there are a total of 5 unique BST's.
+```
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+```
+[参考链接1](https://discuss.leetcode.com/topic/37310/fantastic-clean-java-dp-solution-with-detail-explaination)
+[参考链接2](https://discuss.leetcode.com/topic/5673/dp-problem-10-lines-with-comments)
+
+不懂问题的时候就画图，然后总结
+```
+n=1
+1
+
+n=2
+  1     2
+ /       \
+2         1
+
+n=3
+左边一个没有，j=1
+ 1      1
+  \      \
+   2      3
+    \    /
+     3  2
+
+左边有一个，j=2
+  2
+ / \
+1   3
+左边有两个，j=3，和j=1的情况一样，对称了！
+    3     3
+   /     /
+  2     1
+ /      \
+1        2
+```
+所以总结出递推公式，可以用动态规划来解决。
+Taking 1~n as root respectively:
+1 as root: # of trees = F(0) * F(n-1) // F(0) == 1
+2 as root: # of trees = F(1) * F(n-2)
+3 as root: # of trees = F(2) * F(n-3)
+...
+n-1 as root: # of trees = F(n-2) * F(1)
+n as root: # of trees = F(n-1) * F(0)
+
+So, the formulation is: F(n) = F(0) * F(n-1) + F(1) * F(n-2) + F(2) * F(n-3) + ... + F(n-2) * F(1) + F(n-1) * F(0)
+
+```
+F(0) = 1
+F(1) = 1
+F(2) = F(0)*F(1) + F(1)*F(0) = 1*1 + 1*1 = 2
+F(3) = F(0)*F(2) + F(1)*F(1) + F(2)*F(0) = 1*2 + 1*1 + 1*2 = 5
+F(4) = F(0)*F(3) + F(1)*F(2) + F(2)*F(1) + F(0)*F(3) = 1*5 + 1*2 + 2*1 + 5*1 = 14
+F(5) = F(0)*F(4) + F(1)*F(3) + F(2)*F(2) + F(3)*F(1) + F(4)*F(0) = 1*14 + 1*5 + 2*2 + 5*1 * 14*1 = 42
+```
+
+算法如下：
+```
+int[] dp = new int[n + 1];
+dp[0] = dp[1] = 1;
+for (int i = 2; i <= n; i++) {
+    dp[i] = 0;
+    for (int j = 1; j <= i; j++) {
+        dp[i] += dp[j - 1] * dp[i - j];
+    }
+}
+return dp[n];
+```
+
+### [95. Unique Binary Search Trees II](https://leetcode.com/problems/unique-binary-search-trees-ii/)
+
+M, Tree Dynamic Programming
+
+思路和unique-binary-search-tree一样，只不过稍微复杂需要输出所有的树.
+
+根据动态规划的结果可以绘制出树的形状，然后按照in-order遍历填入数字即可，[参考链接](https://discuss.leetcode.com/topic/2940/java-solution-with-dp/2)
+
+
+### [94. Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/)
+
+M, Tree Hash Table Stack
+
+Recursively:
+```
+public List<Integer> traverse(TreeNode root)
+    List<Integer> result = new ArrayList<>();
+    doInorder(root, result);
+    return result;
+
+private void doInorder(TreeNode root, List<Integer> result)
+    if (root != null)
+        doInorder(root.left, result);
+        result.add(root.val);
+        doInorder(root.right, result);
+```
+
+Iteratively:
+```
+List<Integer> result = new ArrayList<Integer>();
+Stack<TreeNode> stack = new Stack<TreeNode>();
+TreeNode cur = root;
+while (cur != null || !stack.empty()) {
+    if (cur != null) {
+        stack.push(cur);
+        cur = cur.left;
+    } else {
+        TreeNode node = stack.pop();
+        result.add(node.val);  // Add after all left children
+        cur = node.right;
+    }
+}
+return result;
 ```
 
 

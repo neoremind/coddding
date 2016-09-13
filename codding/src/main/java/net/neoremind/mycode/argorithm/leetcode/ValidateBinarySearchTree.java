@@ -3,12 +3,9 @@ package net.neoremind.mycode.argorithm.leetcode;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
 import java.util.Stack;
 
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
 
 import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
 import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;

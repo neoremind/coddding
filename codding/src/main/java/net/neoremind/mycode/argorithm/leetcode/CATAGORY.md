@@ -57,7 +57,7 @@
 
 [79. Word Search](README.md#79-word-search)
 
-[84. Largest Rectangle in Histogram]() //
+[84. Largest Rectangle in Histogram](README.md#84-largest-rectangle-in-histogram)
 
 [88. Merge Sorted Array](README.md#88-merge-sorted-array)
 
@@ -121,7 +121,7 @@
 
 [219. Contains Duplicate II](README.md#219-contains-duplicate-ii)
 
-[347. Top K Frequent Elements]() //
+[347. Top K Frequent Elements](README.md#347-top-k-frequent-elements)
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
@@ -420,7 +420,7 @@
 
 [42. Trapping Rain Water](README.md#42-trapping-rain-water)
 
-[84. Largest Rectangle in Histogram]() //
+[84. Largest Rectangle in Histogram](README.md#84-largest-rectangle-in-histogram)
 
 [94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
 
@@ -442,7 +442,7 @@
 
 [215. Kth Largest Element in an Array](README.md#215-kth-largest-element-in-an-array)
 
-[347. Top K Frequent Elements]() //
+[347. Top K Frequent Elements](README.md#347-top-k-frequent-elements)
 
 ##Greedy
 

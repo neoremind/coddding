@@ -51,6 +51,28 @@ for (Integer num : nums1) {
 }
 ```
 
+### [347. Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)
+
+M, Hash Table Heap
+
+[参考链接](https://discuss.leetcode.com/topic/48158/3-java-solution-using-array-maxheap-treemap)
+
+方法1：保存一个num->freq的map，然后针对这个map做一个类似倒排索引的List<Int>[]数组，数组的长度就是nums数组的长度，因为如果所有的数字相同，那么
+List<Int>[]数组的最后一个位置存储的就是这个数字，所以不用类似bitset就能解决。中间可能会有空洞浪费空间，但是无所谓。
+
+最后逆序遍历这个List<Int>[]数组，只取K个即可。
+
+注意这里可以使用map.put(n, map.getOrDefault(n,0)+1);方法
+
+方法2：使用大顶堆
+```
+PriorityQueue<Map.Entry<Integer, Integer>> maxHeap =
+                 new PriorityQueue<>((a,b)->(b.getValue()-a.getValue()));
+for(Map.Entry<Integer,Integer> entry: map.entrySet()){
+    maxHeap.add(entry);
+}
+```
+然后依次poll出来。
 
 ### [345. Reverse Vowels of a String](https://leetcode.com/problems/reverse-vowels-of-a-string/)
 
@@ -3106,6 +3128,70 @@ curr2.next = null;          //important! avoid cycle in linked list. otherwise u
 curr1.next = dummy2.next;
 return dummy1.next;
 ```
+
+### [84. Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/)
+
+H, Array Stack
+
+直方图求最大长方形面积。
+
+方法1：brute force，从0..len-1计算每一个以i开头的最大的长方形的面积，这个面积取决于i之后的那个最小的高度。
+
+```
+int max = 0;
+for (int i = 0; i < heights.length; i++) {
+    int minHeight = Integer.MAX_VALUE;
+    for (int j = i; j < heights.length; j++) {
+        if (heights[j] < minHeight) {
+            minHeight = heights[j];
+        }
+        max = Math.max(max, minHeight * (j - i + 1));
+    }
+}
+return max;
+```
+
+方法2：类似动态规划的思想。
+
+使用动态规划，用left[i]表示第i个柱子可以最多向左延伸至第left[i]个柱子，形成一个矩形，right[i]则表示向右延伸。遍历两次，分别计算出这两个数组。
+
+再遍历一次，即可求出所有的柱子可以形成的最大的矩形面积。
+
+这里面helper函数就是计算left和right数组的。如果i=1的左右两边都大于i，那么left[i]=0，right[i]
+=1，这就可以看做延展性，如不能延展自然就是自己的长度了。
+
+```
+∏ ∏
+∏∏∏
+∏∏∏
+012
+```
+
+```
+int max = 0;
+int[] left = new int[len];
+int[] right = new int[len];
+helper(heights, left, right);
+for (int i = 0; i < len; i++)
+    max = Math.max(max, (right[i] - left[i] + 1) * heights[i]);
+return max;
+
+void helper(int[] heights, int[] left, int[] right)
+    for (int i = 0; i < heights.length; i++)
+        int k = i;
+        while (k > 0 && heights[i] <= heights[k - 1]) //找最有可能的左边界
+            k = left[k - 1];
+        left[i] = k;
+
+    for (int i = heights.length - 1; i >= 0; i--)
+        int k = i;
+        while (k < heights.length - 1 && heights[i] <= heights[k + 1])
+            k = right[k + 1];
+        right[i] = k;
+```
+
+方法3：[利用stack](https://discuss.leetcode.com/topic/7599/o-n-stack-based-java-solution) //TODO
+
 
 ### [83. Remove Duplicates from Sorted List](https://leetcode.com/problems/remove-duplicates-from-sorted-list/)
 

@@ -37,9 +37,11 @@
 
 [53. Maximum Subarray](README.md#53-maximum-subarray)
 
+[54. Spiral Matrix](README.md#54-spiral-matrix)
+
 [55. Jump Game](README.md#55-jump-game)
 
-[54. Spiral Matrix](README.md#54-spiral-matrix)
+[56. Merge Intervals]() //
 
 [62. Unique Paths](README.md#62-unique-paths)
 
@@ -459,6 +461,8 @@
 
 
 ##Sort
+
+[56. Merge Intervals]() //
 
 [75. Sort Colors](README.md#75-sort-colors)
 

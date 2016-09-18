@@ -9,7 +9,9 @@ public class ContactFilter extends AbstractFilter {
 
     @Override
     public String execute(Order order) {
+        System.out.println("enter" + this.getClass().getName());
         String result = super.execute(order);
+        System.out.println("super done " + this.getClass().getName());
         if (order.getContactNumber() == null
                 || order.getContactNumber().isEmpty()
                 || order.getContactNumber().matches(".*[^\\d]+.*")

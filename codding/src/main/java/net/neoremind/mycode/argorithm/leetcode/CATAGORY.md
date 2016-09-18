@@ -319,9 +319,9 @@
 
 [29. Divide Two Integers](README.md#29-divide-two-integers)
 
-[33. Search in Rotated Sorted Array]()
+[33. Search in Rotated Sorted Array](README.md#33-search-in-rotated-sorted-array)
 
-[34. Search for a Range](README.md#33-search-in-rotated-sorted-array)
+[34. Search for a Range](README.md#34-search-for-a-range)
 
 [35. Search Insert Position](README.md#35-search-insert-position)
 

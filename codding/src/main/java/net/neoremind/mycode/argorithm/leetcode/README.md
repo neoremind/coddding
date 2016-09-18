@@ -3963,7 +3963,7 @@ while (rowBegin <= rowEnd && colBegin <= colEnd) {
 
 M,  Array, Dynamic Programming, Divide and Conquer
 
-非常经典的动态规划问题
+非常经典的动态规划问题，题目要求是contiguous subarray
 
 4种解法:
 

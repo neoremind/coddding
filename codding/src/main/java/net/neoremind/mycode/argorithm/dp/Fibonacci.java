@@ -52,6 +52,20 @@ public class Fibonacci {
         return recursiveFibonacci(n - 1) + recursiveFibonacci(n - 2);
     }
 
+    public int nonRecursiveFibonacci2(int n) {
+        if (n < 2) {
+            return n;
+        }
+        int dp[] = new int[] {0, 1, 1};
+        for (int i = 2; i <= n; i++) {
+            dp[2] = dp[0] + dp[1];
+            dp[0] = dp[1];
+            dp[1] = dp[2];
+        }
+
+        return dp[2];
+    }
+
     @Test
     public void test() {
         assertThat(recursiveFibonacci(1), Matchers.is(1));
@@ -64,8 +78,10 @@ public class Fibonacci {
         assertThat(recursiveFibonacci(8), Matchers.is(21));
         assertThat(recursiveFibonacci(9), Matchers.is(34));
         assertThat(recursiveFibonacci(10), Matchers.is(55));
+        assertThat(nonRecursiveFibonacci2(11), Matchers.is(89));
 
         assertThat(nonRecursiveFibonacci(10), Matchers.is(55));
+        assertThat(nonRecursiveFibonacci2(10), Matchers.is(55));
         assertThat(fibonacciWithDP(10), Matchers.is(55));
     }
 }

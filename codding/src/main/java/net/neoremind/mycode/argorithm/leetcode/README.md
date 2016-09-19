@@ -3648,11 +3648,45 @@ d[i][j] = min(d[i-1][j-1] + 1, d[i-1][j] + 1, d[i][j-1] + 1)
 
 E, DP
 
+这里注意Fabonacci是下面的解，和爬楼梯还不太一样，初始的值不一样
+```
+        0, n=0
+        1, n=1
+f(n) =  1, n=2
+        f(n-1) + f(n-2), n>=3
+
+if (n < 2)
+    return n;
+int dp[] = new int[] {0, 1, 1};
+for (int i = 2; i <= n; i++)
+    dp[2] = dp[0] + dp[1];
+    dp[0] = dp[1];
+    dp[1] = dp[2];
+
+return dp[2];
+
+assertThat(recursiveFibonacci(1), Matchers.is(1));
+assertThat(recursiveFibonacci(2), Matchers.is(1));
+assertThat(recursiveFibonacci(3), Matchers.is(2));
+assertThat(recursiveFibonacci(4), Matchers.is(3));
+assertThat(recursiveFibonacci(5), Matchers.is(5));
+```
+
 类似Fabonacci，先写递推式和初始条件：
 ```
+        1, n=0
         1, n=1
 f(n) =  2, n=2
-        f(n-1) + f(n-2), n>=2
+        f(n-1) + f(n-2), n>=3
+
+if (n < 2)
+    return n;
+int dp[] = new int[] {1, 1, 2};
+for (int i = 2; i <= n; i++)
+    dp[2] = dp[0] + dp[1];
+    dp[0] = dp[1];
+    dp[1] = dp[2];
+return dp[2];
 ```
 
 递归解：

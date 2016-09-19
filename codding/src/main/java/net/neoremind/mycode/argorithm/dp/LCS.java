@@ -8,9 +8,11 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Longest Common Subsequence, LCS, 最长公共子序列
+ * Longest Common Subsequence, LCS, 最长公共子序列，不要求连续。
  * <p>
  * 和0/1背包问题非常相似，同时找子序列还用到了回溯法backtrack
+ *
+ *
  *
  * @author zhangxu
  * @see https://en.wikipedia.org/wiki/Longest_common_subsequence_problem
@@ -118,6 +120,18 @@ public class LCS {
      * f[0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 4, 4, 4]
      * g[0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 4, 5, 5]
      * </pre>
+     * <p>
+     * <pre>
+     *     [M, Z, J, A, W, X, U]
+     *  [0, 0, 0, 0, 0, 0, 0, 0]
+     * X[0, 0, 0, 0, 0, 0, 1, 1]
+     * M[0, 1, 1, 1, 1, 1, 1, 1]
+     * J[0, 1, 1, 2, 2, 2, 2, 2]
+     * Y[0, 1, 1, 2, 2, 2, 2, 2]
+     * A[0, 1, 1, 2, 3, 3, 3, 3]
+     * U[0, 1, 1, 2, 3, 3, 3, 4]
+     * Z[0, 1, 2, 2, 3, 3, 3, 4]
+     * </pre>
      */
     @Test
     public void test() {
@@ -126,6 +140,10 @@ public class LCS {
         assertThat(longestCommonSubsequenceDP(a, b), Matchers.is(5)); //acefg
         a = "cnblogs";
         b = "belong";
+        assertThat(longestCommonSubsequenceDP(a, b), Matchers.is(4)); //blog
+
+        a = "XMJYAUZ";
+        b = "MZJAWXU";
         assertThat(longestCommonSubsequenceDP(a, b), Matchers.is(4)); //blog
     }
 

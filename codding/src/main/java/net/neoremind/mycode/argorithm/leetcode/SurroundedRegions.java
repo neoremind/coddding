@@ -3,8 +3,10 @@ package net.neoremind.mycode.argorithm.leetcode;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -102,9 +104,6 @@ public class SurroundedRegions {
     }
 
     private void dfs(int i, int j, char[][] board) {
-        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) {
-            return;
-        }
         if (board[i][j] == 'X' || board[i][j] == '*') {
             return;
         }
@@ -170,6 +169,93 @@ public class SurroundedRegions {
         }
     }
 
+    /**
+     * union-find
+     */
+    public void solve4(char[][] board) {
+        if (board == null) {
+            return;
+        }
+        int m = board.length;
+        int n = board[0].length;
+        UF uf = new UF(m * n);
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                tryUnion(i, j, i - 1, j, m, n, board, uf);
+                tryUnion(i, j, i + 1, j, m, n, board, uf);
+                tryUnion(i, j, i, j - 1, m, n, board, uf);
+                tryUnion(i, j, i, j + 1, m, n, board, uf);
+            }
+        }
+        Set<Integer> out = new HashSet<Integer>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0 || i == m - 1 || j == n - 1) {
+                    if (board[i][j] == 'O') {
+                        out.add(uf.find(i * n + j));
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i < m - 1; i++) {
+            for (int j = 1; j < n - 1; j++) {
+                if (!out.contains(uf.find(i * n + j))) {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+
+    void tryUnion(int i, int j, int x, int y, int m, int n, char[][] board, UF uf) {
+        if (x < 0 || x >= m || y < 0 || y >= n) {
+            return;
+        }
+        if (board[x][y] == board[i][j]) {
+            uf.union(x * n + y, i * n + j);
+        }
+    }
+
+    class UF {
+        int[] s;
+        int[] w;
+        int count;
+
+        UF(int size) {
+            s = new int[size];
+            w = new int[size];
+            for (int i = 0; i < size; i++) {
+                s[i] = i;
+                w[i] = 1;
+            }
+            count = size;
+        }
+
+        int find(int p) {
+            while (p != s[p]) {
+                p = s[p];
+            }
+            return p;
+        }
+
+        void union(int p, int q) {
+            int rootP = find(p);
+            int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            if (w[rootP] < w[rootQ]) {
+                s[rootP] = rootQ;
+                w[rootQ] += w[rootP];
+            } else {
+                s[rootQ] = rootP;
+                w[rootP] += w[rootQ];
+            }
+            count--;
+        }
+
+    }
+
     @Test
     public void test() {
         char[][] board = new char[][] {
@@ -188,6 +274,15 @@ public class SurroundedRegions {
                 {'X', 'O', 'X', 'X'}
         };
         solve2(board);
+        Arrays.asList(board).stream().forEach(e -> System.out.println(ArrayUtils.toString(e)));
+
+        board = new char[][] {
+                {'X', 'X', 'X', 'X'},
+                {'X', 'O', 'O', 'X'},
+                {'X', 'X', 'O', 'X'},
+                {'X', 'O', 'X', 'X'}
+        };
+        solve4(board);
         Arrays.asList(board).stream().forEach(e -> System.out.println(ArrayUtils.toString(e)));
 
     }

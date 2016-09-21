@@ -904,6 +904,13 @@ private int quickSelect(int[] nums, int low, int high) {
 }
 ```
 
+### [213. House Robber II](https://leetcode.com/problems/house-robber-ii/)
+
+M, Dynamic Programming
+
+和题目198类似，这道题就是在上一题的基础上加了一个条件，变成了环，所以如果抢了第一家，就不能抢最后一家。所以我们可以分别计算抢了从第二家到最后一家与抢从第一家到倒数第二家的最大值，取两个值中更大的那个就是结果。
+
+
 ### [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
 
 M,  Depth-first Search Breadth-first Search Graph Topological Sort
@@ -1461,9 +1468,81 @@ Example 2:
 00011
 Answer: 3
 ```
-并查集//TODO
 
-DFS解法如下，其实也是backtrack：
+方法1：并查集
+
+```
+//验证逻辑同dfs
+UF uf = new UF(rows * cols);
+for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++)
+        if (grid[i][j] == '1')
+            tryUnion(i, j, i + 1, j, rows, cols, uf, grid);
+            tryUnion(i, j, i - 1, j, rows, cols, uf, grid);
+            tryUnion(i, j, i, j + 1, rows, cols, uf, grid);
+            tryUnion(i, j, i, j - 1, rows, cols, uf, grid);
+
+Set<Integer> res = new HashSet<>();
+for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++)
+        if (grid[i][j] == '1')
+            res.add(uf.find(i * cols + j));  //find unique 1
+
+return res.size();
+
+// 这就是模板，tryUnion精妙！
+void tryUnion(int i, int j, int x, int y, int rows, int cols, UF uf, char[][] grid) {
+    if (i < 0 || i >= rows || j < 0 || j >= cols ||
+        x < 0 || x >= rows || y < 0 || y >= cols)
+        return;
+    if (grid[x][y] == '0')
+        return;
+    uf.union(i * cols + j, x * cols + y);
+}
+
+// 同128. Longest Consecutive Sequence一样的weighted-quick-union并查集
+class UF {
+    int s[];
+    int w[];
+    int count;
+
+    public UF(int size) {
+        s = new int[size];
+        w = new int[size];
+        for (int i = 0; i < size; i++) {
+            s[i] = i;
+            w[i] = 1;
+        }
+        count = size;
+    }
+
+    int find(int p) {
+        while (p != s[p]) {
+            p = s[p];
+        }
+        return p;
+    }
+
+    void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ) {
+            return;
+        }
+        if (w[rootP] < w[rootQ]) {
+            s[rootP] = rootQ;
+            w[rootQ] += w[rootP];
+        } else {
+            s[rootQ] = rootP;
+            w[rootP] += w[rootQ];
+        }
+        count--;
+    }
+}
+```
+
+
+方法2：DFS解法如下，其实也是backtrack：
 ```
 public int numIslands(char[][] grid) {
     if (grid == null) return 0;
@@ -1523,6 +1602,37 @@ void dfs(TreeNode root, List<Integer> result, int depth) {
         dfs(root.left, result, depth + 1);
     }
 }
+```
+
+### [198. House Robber](https://leetcode.com/problems/house-robber/)
+
+E, Dynamic Programming
+
+两个房子同时rob就会触发报警，如何获取最大收益？
+
+动态规划，设置maxV[i]表示到第i个房子位置，最大收益。
+
+递推关系为maxV[i] = max(maxV[i-2]+num[i], maxV[i-1])
+
+```
+int[] dp = new int[nums.length];
+dp[0] = nums[0];
+dp[1] = Math.max(nums[0], nums[1]);
+for (int i = 2; i < nums.length; i++) {
+    dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+}
+
+return dp[nums.length - 1];
+
+另外一种不太好理解，但是和上面的思想是一样的。
+int notTake = 0;
+int take = 0;
+int max = 0;
+for (int i = 0; i < nums.length; i++)
+    take = notTake + nums[i];
+    notTake = max;
+    max = Math.max(take, notTake);
+return max;
 ```
 
 
@@ -1802,6 +1912,28 @@ while (start < end) {
 return nums[start];
 ```
 
+### [152. Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/)
+
+M, Array Dynamic Programming
+
+最大连续子数组的乘积
+
+任何时候都可能会创造新的最大和最小，比如-2*-3直接就是6了，反而非常大，所以不能漏掉。
+
+max * newnumber, min*newnumber, newnumber这三个肯定会出现max和min就得判断下。
+
+```
+int res = nums[0];
+int max = nums[0];
+int min = nums[0];
+for (int i = 1; i < nums.length; i++)
+    int tempMax = max;  //留存
+    max = Math.max(Math.max(max * nums[i], min * nums[i]), nums[i]);
+    min = Math.min(Math.min(tempMax * nums[i], min * nums[i]), nums[i]);
+    res = Math.max(max, res);
+
+return res;
+```
 
 ### [151. Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)
 
@@ -2092,6 +2224,8 @@ X X X X
 X X X X
 X O X X
 ```
+
+方法1：DFS
 从边界找O然后，把边界内的O标记为*，然后里面的O自然就都变为X。如果从里面找就会TLE。
 ```
 public void solve2(char[][] board)
@@ -2122,7 +2256,7 @@ private void dfs(int i, int j, char[][] board)
     if (j - 1 > 0) dfs(i, j - 1, board);
 ```
 
-另外使用BFS就得用Queue,把肯定是边界O的标记为B。
+方法2：另外使用BFS就得用Queue,把肯定是边界O的标记为B。
 ```
 if (board == null || board.length == 0) return;
 int rows = board.length, columns = board[0].length;
@@ -2147,6 +2281,40 @@ for (int i = 0; i < rows; i++)
             board[i][j] = 'O';
         else if (board[i][j] == 'O')
             board[i][j] = 'X';
+```
+
+方法3：并查集
+```
+UF uf = new UF(m * n);
+for (int i = 0; i < m; i++)
+    for (int j = 0; j < n; j++)
+        tryUnion(i, j, i - 1, j, m, n, board, uf);
+        tryUnion(i, j, i + 1, j, m, n, board, uf);
+        tryUnion(i, j, i, j - 1, m, n, board, uf);
+        tryUnion(i, j, i, j + 1, m, n, board, uf);
+
+Set<Integer> out = new HashSet<Integer>();
+for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+        if (i == 0 || j == 0 || i == m - 1 || j == n - 1)
+            if (board[i][j] == 'O') {
+                out.add(uf.find(i * n + j));  //把边界的O全找出来
+
+for (int i = 1; i < m - 1; i++) {
+    for (int j = 1; j < n - 1; j++) {
+        if (!out.contains(uf.find(i * n + j)))    //里面不跟边界有交集的就置为X
+            board[i][j] = 'X';
+
+
+void tryUnion(int i, int j, int x, int y, int m, int n, char[][] board, UF uf) {
+    if (x < 0 || x >= m || y < 0 || y >= n)
+        return;
+    if (board[x][y] == board[i][j]) {
+        uf.union(x * n + y, i * n + j);
+    }
+}
+
+可以参考题目200 Number of Islands的weigted-quick-union的并查集。
 ```
 
 
@@ -2175,6 +2343,110 @@ void helper(TreeNode root, List<Integer> tempList, List<Integer> result) {
         helper(root.left, tempList, result);
         helper(root.right, tempList, result);
         tempList.remove(tempList.size() - 1);
+    }
+}
+```
+
+### [128. Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/)
+
+H, Array Union Find
+
+这和动态规划的两个LCS问题（Longest Common Subsequence不连续）和（Longest Common Substring连续）不是一个LCS问题。
+
+方法1：排序后遍历，lc可以接受，O(NlogN)
+```
+if (nums == null || nums.length == 0)
+    return 0;
+if (nums.length == 1)
+    return 1;
+Arrays.sort(nums);  // use Arrays, not Collections
+int maxLen = 1;
+int len = 1;
+for (int i = 1; i < nums.length; i++)
+    if (nums[i] == nums[i - 1]) {  // handle duplications like 0,1,1,2
+        continue;
+    } else if (nums[i] == nums[i - 1] + 1) {
+        len++;
+    } else {
+        maxLen = Math.max(maxLen, len);
+        len = 1;  //put this line after Math.max(..)
+    }
+return Math.max(maxLen, len);
+```
+
+方法2：并查集（union-find set），也叫作不想交集（disjoint set）。
+
+下面的并查集类UF使用的是weighted-quick-union并查集算法，可以限制树的高度为O（logN），因为每次查询的事件复杂度也是O（logN）。
+如果加上路径压缩（path compression）那么会非常近似等于1.
+
+这里有个技巧是做映射， 因为并查集必须是0-N连续的，而题目给的数字不是，那么就可以利用一个hashmap，key为值，value就是index位置，做一个映射即可。
+实际并的是这个index位置。
+
+```
+public int longestConsecutive2(int[] nums) {
+if (nums == null || nums.length == 0)
+    return 0;
+UF uf = new UF(nums.length);
+Map<Integer, Integer> map = new HashMap<>();
+for (int i = 0; i < nums.length; i++) {
+    int num = nums[i];
+    if (map.containsKey(num)) {
+        continue;
+    }
+    if (map.containsKey(num + 1)) {
+        uf.union(i, map.get(num + 1));
+    }
+    if (map.containsKey(num - 1)) {
+        uf.union(i, map.get(num - 1));
+    }
+    map.put(num, i);
+
+return uf.maxWeight();
+
+class UF {
+    int[] s;
+    int[] weight;
+    int count;
+
+    UF(int size) {
+        s = new int[size];
+        weight = new int[size];
+        count = size;
+        for (int i = 0; i < size; i++) {
+            s[i] = i;
+            weight[i] = 1;
+        }
+    }
+
+    int find(int p) {
+        while (p != s[p]) {
+            p = s[p];
+        }
+        return p;
+    }
+
+    void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ) {
+            return;
+        }
+        if (weight[rootP] < weight[rootQ]) {
+            s[rootP] = rootQ;
+            weight[rootQ] += weight[rootP];
+        } else {
+            s[rootQ] = rootP;
+            weight[rootP] += weight[rootQ];
+        }
+        count--;
+    }
+
+    int maxWeight() {
+        int max = 1;
+        for (int w : weight) {
+            max = Math.max(w, max);
+        }
+        return max;
     }
 }
 ```
@@ -3947,6 +4219,76 @@ for (Interval interval : intervals)
 result.add(new Interval(start, end));
 return result;
 ```
+
+### [58. Length of Last Word](https://leetcode.com/problems/length-of-last-word/)
+
+E, String
+
+熟悉String的API。
+
+```
+s = s.trim();
+return s.substring(s.lastIndexOf(" ") + 1, s.length()).length();
+```
+
+### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
+
+H, Array Sort
+
+```
+List<Interval> result = new ArrayList<Interval>();
+// 技巧就是用interval做一个pivot为null到时候就不断的添加，这是做尾巴
+// 如果是i.end < newInterval.start就是头，也不断添加
+// 遇到overlap的时候就不断的扩张
+// 走到不能扩张的时候i.start > newInterval.end，就加进去，并且把interval=null
+for (Interval i : intervals)
+    if (newInterval == null || i.end < newInterval.start) {
+        result.add(i);
+    } else if (i.start > newInterval.end) {
+        result.add(newInterval);
+        result.add(i);
+        newInterval = null;
+    } else {
+        newInterval.start = Math.min(newInterval.start, i.start);
+        newInterval.end = Math.max(newInterval.end, i.end);
+    }
+
+if (newInterval != null)
+    result.add(newInterval);
+return result;
+```
+
+
+### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+
+H, Array Sort
+
+非常经典的一道题目，已经要记住解法！
+
+```
+if (intervals.size() <= 1) return intervals;
+
+// Sort by ascending starting point using an anonymous Comparator
+Collections.sort(intervals, (i1, i2) -> Integer.compare(i1.start, i2.start));
+
+List<Interval> result = new LinkedList<>();
+int start = intervals.get(0).start;
+int end = intervals.get(0).end;
+
+for (Interval interval : intervals)
+    if (interval.start <= end) { // Overlapping intervals, move the end if needed
+        end = Math.max(end, interval.end);
+    } else {                     // Disjoint intervals, add the previous one and reset bounds
+        result.add(new Interval(start, end));
+        start = interval.start;
+        end = interval.end;
+    }
+
+// Add the last interval
+result.add(new Interval(start, end));
+return result;
+```
+
 
 ### [55. Jump Game](https://leetcode.com/problems/jump-game/)
 

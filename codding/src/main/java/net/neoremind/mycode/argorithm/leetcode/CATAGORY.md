@@ -43,6 +43,8 @@
 
 [56. Merge Intervals]() //
 
+[57. Insert Interval]() //
+
 [62. Unique Paths](README.md#62-unique-paths)
 
 [63. Unique Paths II](README.md#63-unique-paths-ii)
@@ -74,6 +76,10 @@
 [121. Best Time to Buy and Sell Stock](README.md#121-best-time-to-buy-and-sell-stock)
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
+
+[128. Longest Consecutive Sequence]() //
+
+[152. Maximum Product Subarray]() //
 
 [153. Find Minimum in Rotated Sorted Array](README.md#153-find-minimum-in-rotated-sorted-array)
 
@@ -255,6 +261,7 @@
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
+
 ##String
 
 [3. Longest Substring Without Repeating Characters](README.md#3-longest-substring-without-repeating-characters)
@@ -280,6 +287,8 @@
 [44. Wildcard Matching](README.md#44-wildcard-matching)
 
 [49. Group Anagrams](README.md#49-group-anagrams)
+
+[58. Length of Last Word]() //
 
 [67. Add Binary](README.md#67-add-binary)
 
@@ -372,6 +381,12 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
+[152. Maximum Product Subarray]()  //
+
+[198. House Robber]() //
+
+[213. House Robber II]() //
+
 [264. Ugly Number II](README.md#264-ugly-number-ii)
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
@@ -463,6 +478,8 @@
 ##Sort
 
 [56. Merge Intervals]() //
+
+[57. Insert Interval]() //
 
 [75. Sort Colors](README.md#75-sort-colors)
 
@@ -625,7 +642,9 @@
 
 
 ##Union Find
-[200. Number of Islands](README.md#200-number-of-islands) //TODO
+[128. Longest Consecutive Sequence]() //
+
+[200. Number of Islands](README.md#200-number-of-islands)
 
 [130. Surrounded Regions](README.md#130-surrounded-regions)
 

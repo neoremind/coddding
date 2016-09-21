@@ -2,6 +2,9 @@ package net.neoremind.mycode.argorithm.leetcode;
 
 import static org.junit.Assert.assertThat;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -31,6 +34,13 @@ import org.junit.Test;
  */
 public class NumberOfIslands {
 
+    // dfs solution
+
+    /**
+     * 从左上角开始发现了1就用DFS扩张自己的零度，标记为visited，直到DFS退出，其实就是回溯。
+     * <p>
+     * 然后往下走，如果已经是visited或者是0就不管，遇到新的1证明有了新的领地。
+     */
     public int numIslands(char[][] grid) {
         if (grid == null) {
             return 0;
@@ -64,6 +74,96 @@ public class NumberOfIslands {
         dfs(grid, visited, i, j - 1, rows, cols);
     }
 
+    // union find solution
+
+    /**
+     * union find solution
+     * <p>
+     * 时间复杂度：O(2NlogN)
+     * 空间复杂度：O(N)
+     */
+    public int numIslands2(char[][] grid) {
+        if (grid == null) {
+            return 0;
+        }
+        int rows = grid.length;
+        if (rows == 0) {
+            return 0;
+        }
+        int cols = grid[0].length;
+        UF uf = new UF(rows * cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == '1') {
+                    tryUnion(i, j, i + 1, j, rows, cols, uf, grid);
+                    tryUnion(i, j, i - 1, j, rows, cols, uf, grid);
+                    tryUnion(i, j, i, j + 1, rows, cols, uf, grid);
+                    tryUnion(i, j, i, j - 1, rows, cols, uf, grid);
+                }
+            }
+        }
+
+        Set<Integer> res = new HashSet<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == '1') {
+                    res.add(uf.find(i * cols + j));
+                }
+            }
+        }
+        return res.size();
+    }
+
+    void tryUnion(int i, int j, int x, int y, int rows, int cols, UF uf, char[][] grid) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols ||
+                x < 0 || x >= rows || y < 0 || y >= cols) {
+            return;
+        }
+        if (grid[x][y] == '0') {
+            return;
+        }
+        uf.union(i * cols + j, x * cols + y);
+    }
+
+    class UF {
+        int s[];
+        int w[];
+        int count;
+
+        public UF(int size) {
+            s = new int[size];
+            w = new int[size];
+            for (int i = 0; i < size; i++) {
+                s[i] = i;
+                w[i] = 1;
+            }
+            count = size;
+        }
+
+        int find(int p) {
+            while (p != s[p]) {
+                p = s[p];
+            }
+            return p;
+        }
+
+        void union(int p, int q) {
+            int rootP = find(p);
+            int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            if (w[rootP] < w[rootQ]) {
+                s[rootP] = rootQ;
+                w[rootQ] += w[rootP];
+            } else {
+                s[rootQ] = rootP;
+                w[rootP] += w[rootQ];
+            }
+            count--;
+        }
+    }
+
     @Test
     public void test() {
         char[][] grid = new char[][] {
@@ -73,6 +173,7 @@ public class NumberOfIslands {
                 {'0', '0', '0', '1', '1'}
         };
         assertThat(numIslands(grid), Matchers.is(3));
+        assertThat(numIslands2(grid), Matchers.is(3));
 
         grid = new char[][] {
                 {'1', '1', '1', '1', '0'},

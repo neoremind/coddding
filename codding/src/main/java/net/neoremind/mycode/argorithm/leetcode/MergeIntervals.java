@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
+import net.neoremind.mycode.argorithm.leetcode.support.Interval;
 import net.neoremind.mycode.argorithm.leetcode.support.ListNode;
 import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
 
@@ -52,18 +55,11 @@ public class MergeIntervals {
         return result;
     }
 
-    public class Interval {
-        int start;
-        int end;
-
-        Interval() {
-            start = 0;
-            end = 0;
-        }
-
-        Interval(int s, int e) {
-            start = s;
-            end = e;
-        }
+    @Test
+    public void test() {
+        List<Interval> intervals =
+                Lists.newArrayList(Interval.of(1, 3), Interval.of(2, 6), Interval.of(8, 10), Interval.of(15, 18));
+        assertThat(merge(intervals).size(), is(3));
     }
+
 }

@@ -91,7 +91,24 @@ public class QuickUnionUF {
         if (rootP == rootQ) {
             return;
         }
-        parent[rootP] = rootQ;
+        parent[rootQ] = rootP;
         count--;
+    }
+
+    public void dump() {
+        System.out.println("<========= UF =========>");
+        System.out.println("count=" + count);
+        for (int i = 0; i < parent.length; i++) {
+            StringBuilder sb = new StringBuilder();
+            int temp = i;
+            while (temp != parent[temp]) {
+                sb.append(temp);
+                sb.append("-<");
+                temp = parent[temp];
+            }
+            sb.append(temp);
+            System.out.println(sb.reverse().toString());
+        }
+        System.out.println();
     }
 }

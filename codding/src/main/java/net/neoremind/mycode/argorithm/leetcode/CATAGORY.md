@@ -41,9 +41,9 @@
 
 [55. Jump Game](README.md#55-jump-game)
 
-[56. Merge Intervals]() //
+[56. Merge Intervals](README.md#56-merge-intervals)
 
-[57. Insert Interval]() //
+[57. Insert Interval](README.md#57-insert-interval)
 
 [62. Unique Paths](README.md#62-unique-paths)
 
@@ -77,9 +77,9 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
-[128. Longest Consecutive Sequence]() //
+[128. Longest Consecutive Sequence](README.md#128-longest-consecutive-sequence)
 
-[152. Maximum Product Subarray]() //
+[152. Maximum Product Subarray](README.md#152-maximum-product-subarray)
 
 [153. Find Minimum in Rotated Sorted Array](README.md#153-find-minimum-in-rotated-sorted-array)
 
@@ -288,7 +288,7 @@
 
 [49. Group Anagrams](README.md#49-group-anagrams)
 
-[58. Length of Last Word]() //
+[58. Length of Last Word](README.md#58-length-of-last-word)
 
 [67. Add Binary](README.md#67-add-binary)
 
@@ -381,11 +381,11 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
-[152. Maximum Product Subarray]()  //
+[152. Maximum Product Subarray](README.md#152-maximum-product-subarray)
 
-[198. House Robber]() //
+[198. House Robber](README.md#198-house-robber)
 
-[213. House Robber II]() //
+[213. House Robber II](README.md#213-house-robber-ii)
 
 [264. Ugly Number II](README.md#264-ugly-number-ii)
 
@@ -477,9 +477,9 @@
 
 ##Sort
 
-[56. Merge Intervals]() //
+[56. Merge Intervals](README.md#56-merge-intervals)
 
-[57. Insert Interval]() //
+[57. Insert Interval](README.md#57-insert-interval)
 
 [75. Sort Colors](README.md#75-sort-colors)
 
@@ -642,7 +642,7 @@
 
 
 ##Union Find
-[128. Longest Consecutive Sequence]() //
+[128. Longest Consecutive Sequence](README.md#128-longest-consecutive-sequence)
 
 [200. Number of Islands](README.md#200-number-of-islands)
 

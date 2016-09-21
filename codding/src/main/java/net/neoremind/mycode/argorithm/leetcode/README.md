@@ -4189,36 +4189,7 @@ public String toUnsignedString(int n, int base)
     return new String(res, idx, 32 - idx);
 ```
 
-### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
 
-H, Array Sort
-```
-Given [1,3],[2,6],[8,10],[15,18],
-return [1,6],[8,10],[15,18].
-```
-算法如下，和这个类似的题目还有 (H)Insert Interval, (E) Meeting Rooms, (M) Meeting Rooms II
-
-```
-if (intervals.size() <= 1) return intervals;
-//使用JDK8的lambda排序
-Collections.sort(intervals, (i1, i2) -> Integer.compare(i1.start, i2.start));
-
-List<Interval> result = new LinkedList<>();
-int start = intervals.get(0).start;
-int end = intervals.get(0).end;
-
-for (Interval interval : intervals)
-    if (interval.start <= end) // Overlapping intervals, move the end if needed
-        end = Math.max(end, interval.end);
-    else                     // Disjoint intervals, add the previous one and reset bounds
-        result.add(new Interval(start, end));
-        start = interval.start;
-        end = interval.end;
-
-// Add the last interval
-result.add(new Interval(start, end));
-return result;
-```
 
 ### [58. Length of Last Word](https://leetcode.com/problems/length-of-last-word/)
 
@@ -4262,13 +4233,15 @@ return result;
 ### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
 
 H, Array Sort
-
-非常经典的一道题目，已经要记住解法！
+```
+Given [1,3],[2,6],[8,10],[15,18],
+return [1,6],[8,10],[15,18].
+```
+算法如下，和这个类似的题目还有 (H)Insert Interval, (E) Meeting Rooms, (M) Meeting Rooms II
 
 ```
 if (intervals.size() <= 1) return intervals;
-
-// Sort by ascending starting point using an anonymous Comparator
+//使用JDK8的lambda排序
 Collections.sort(intervals, (i1, i2) -> Integer.compare(i1.start, i2.start));
 
 List<Interval> result = new LinkedList<>();
@@ -4276,13 +4249,12 @@ int start = intervals.get(0).start;
 int end = intervals.get(0).end;
 
 for (Interval interval : intervals)
-    if (interval.start <= end) { // Overlapping intervals, move the end if needed
+    if (interval.start <= end) // Overlapping intervals, move the end if needed
         end = Math.max(end, interval.end);
-    } else {                     // Disjoint intervals, add the previous one and reset bounds
+    else                     // Disjoint intervals, add the previous one and reset bounds
         result.add(new Interval(start, end));
         start = interval.start;
         end = interval.end;
-    }
 
 // Add the last interval
 result.add(new Interval(start, end));

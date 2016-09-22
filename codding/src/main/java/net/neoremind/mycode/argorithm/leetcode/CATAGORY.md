@@ -679,9 +679,13 @@
 
 ##Binary Indexed Tree
 
+[307. Range Sum Query - Mutable]() //
+
 [315. Count of Smaller Numbers After Self]() //
 
 ##Segment Tree
+
+[307. Range Sum Query - Mutable]() //
 
 [315. Count of Smaller Numbers After Self]() //
 

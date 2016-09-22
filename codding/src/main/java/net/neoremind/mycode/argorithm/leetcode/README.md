@@ -188,6 +188,250 @@ if (dp[amount] == Integer.MAX_VALUE) {
 
 H, Divide and Conquer, Binary Indexed Tree, Segment Tree, Binary Search Tree
 
+比较难的一道题目，求数组的后继元素比自己小的个数。
+
+一开始的错误思路：
+
+使用DP的思想，类似LongestIncreasingSubsequence，从后往前看，写出递推式：
+```
+dp[i] = dp[j] + 1, j is the first num[j] < num[i]
+```
+发现结果完全不对，比如`9 5 3 7`，dp[0] = dp[1] + 1，而实际会漏掉7，完全不行。
+
+看了看leetcode提示，有多种方法可以解决，也算是开了眼界。
+
+方法1：BST（二分查找树） 树节点TreeNode记录下列信息：
+
+[参考链接](https://discuss.leetcode.com/topic/31405/9ms-short-java-bst-solution-get-answer-when-building-bst)
+
+构造BST
+```
+元素值：val
+小于该节点的元素个数：leftCnt
+节点自身的元素个数：cnt
+左孩子：left
+右孩子：right
+```
+
+方法2：DAC 归并排序merge sort
+
+[参考链接](https://discuss.leetcode.com/topic/31554/11ms-java-solution-using-merge-sort-with-explanation)
+//TODO目前只能记下来merge sort，但是一些扩展应用还不太会灵活应用。
+
+方法3：排序后二分查找binary search left-most insertion position
+
+这个方法是自己写出来的实现。套用二分查找search insert position的模板。
+
+```
+Integer[] res = new Integer[nums.length];
+List<Integer> sorted = new ArrayList<>(nums.length);
+for (int i = nums.length - 1; i >= 0; i--)
+    int idx = findIndex(nums[i], sorted);  //每次都找在有序数组中的位置，那么就是小于它的元素就是这个索引位置值。
+    sorted.add(idx, nums[i]);
+    res[i] = idx;
+
+return Arrays.asList(res);
+
+//下面的是模板，必须记住！
+int findIndex(int target, List<Integer> sorted) {
+    if (sorted.size() == 0) return 0;
+    int start = 0;
+    int end = sorted.size() - 1;
+    if (sorted.get(end) < target) {  //判断一下边界更好些
+        return end + 1;
+    }
+    if (sorted.get(start) >= target) {
+        return 0;
+    }
+    while (start <= end) {
+        int mid = start + ((end - start) >> 1);
+        int midVal = sorted.get(mid);
+        if (target < midVal) {
+            end = mid - 1;
+        } else if (target > midVal) {
+            start = mid + 1;
+        } else {
+            int idx = mid; //这里非常重要！！！否则结果又的总会比预期的大一点，要处理相同，找到最前面的那个位置，比如3，3，6，6，7，7，7，应该是要返回第一个6的位置，而不是第二个
+            while (idx - 1 >= start && sorted.get(idx - 1) == target) {
+                idx--;
+            }
+            return idx;  //否则直接返回mid即可
+        }
+    }
+    return start;
+}
+```
+
+方法4：树状数组 （Binary Indexed Tree / Fenwick Tree）
+
+非常巧妙和简单。详细的BIT的使用见题目307. Range Sum Query - Mutable
+
+[top coder对于BIT的学习，非常值得一看](https://www.topcoder.com/community/data-science/data-science-tutorials/binary-indexed-trees/)
+
+[leetcode讨论](https://discuss.leetcode.com/topic/39656/short-java-binary-index-tree-beat-97-33-with-detailed-explanation/2)
+
+
+### [307. Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/)
+
+M, Segment Tree Binary Indexed Tree
+
+非常经典的题目，通过这套题要理解BIT和Segament Tree。
+
+方法1：BIT
+
+```
+class NumArray {
+    int[] nums;
+    int[] BIT;
+    int n;
+
+    public NumArray(int[] nums) {
+        this.nums = nums;
+
+        n = nums.length;
+        BIT = new int[n + 1];  //BIT从1-N
+        for (int i = 0; i < n; i++) {
+            init(i, nums[i]);
+        }
+    }
+
+    public void init(int i, int val) {
+        i++;
+        while (i < BIT.length) {   //初始化就从0到N-1
+            BIT[i] += val;
+            i += (i & -i);
+        }
+    }
+
+    void update(int i, int val) {
+        int diff = val - nums[i];
+        nums[i] = val;
+        init(i, diff);
+    }
+
+    public int getSum(int i) {  //计算就从M到0
+        int sum = 0;
+        i++;
+        while (i > 0) {
+            sum += BIT[i];
+            i -= (i & -i);
+        }
+        return sum;
+    }
+
+    public int sumRange(int i, int j) {
+        return getSum(j) - getSum(i - 1);
+    }
+}
+```
+
+方法2：Segament Tree
+
+```
+class SegmentTreeNode {
+    int start, end;
+    SegmentTreeNode left, right;
+    int sum;
+}
+
+SegmentTreeNode root = null;
+
+public NumArray(int[] nums) {
+    root = buildTree(nums, 0, nums.length - 1);
+}
+
+private SegmentTreeNode buildTree(int[] nums, int start, int end) {
+    if (start > end) {
+        return null;
+    } else {
+        SegmentTreeNode ret = new SegmentTreeNode(start, end);
+        if (start == end) {
+            ret.sum = nums[start];
+        } else {
+            int mid = start + (end - start) / 2;
+            ret.left = buildTree(nums, start, mid);
+            ret.right = buildTree(nums, mid + 1, end);
+            ret.sum = ret.left.sum + ret.right.sum;
+        }
+        return ret;
+    }
+}
+
+void update(int i, int val) {
+    update(root, i, val);
+}
+
+void update(SegmentTreeNode root, int pos, int val) {
+    if (root.start == root.end) {
+        root.sum = val;
+    } else {
+        int mid = root.start + (root.end - root.start) / 2;
+        if (pos <= mid) {
+            update(root.left, pos, val);
+        } else {
+            update(root.right, pos, val);
+        }
+        root.sum = root.left.sum + root.right.sum;
+    }
+}
+
+public int sumRange(int i, int j) {
+    return sumRange(root, i, j);
+}
+
+public int sumRange(SegmentTreeNode root, int start, int end) {
+    if (root.end == end && root.start == start) {
+        return root.sum;
+    } else {
+        int mid = root.start + (root.end - root.start) / 2;
+        if (end <= mid) {
+            return sumRange(root.left, start, end);
+        } else if (start >= mid + 1) {
+            return sumRange(root.right, start, end);
+        } else {
+            return sumRange(root.right, mid + 1, end) + sumRange(root.left, start, mid);
+        }
+    }
+}
+```
+
+另外线段树的一个经典题目是光束求阴影面积，在coddding代码里也有，这里可以看下应用线段树的通用模板。
+
+```
+class SegmentTreeNode {
+    int start, end;
+    SegmentTreeNode left, right;
+    // 一个想利用的值
+}
+
+private SegmentTreeNode buildTree(int start, int end) {
+    if (一些退出条件，例如start>end等) {
+        //初始化的一些操作
+    } else {
+        int mid = start + (end - start) / 2;
+        // 递归的分左右子树的初始化
+        ret.left = buildTree(nums, start, mid);
+        ret.right = buildTree(nums, mid + 1, end);
+        ret.sum = ret.left.sum + ret.right.sum;
+    }
+}
+
+public int getResult(SegmentTreeNode root, int start, int end) {
+    if (root.end == end && root.start == start) {
+        return root.sum;
+    } else {
+        int mid = root.start + (root.end - root.start) / 2;
+        // 递归的来
+        if (end <= mid) {
+            return sumRange(root.left, start, end);
+        } else if (start >= mid + 1) {
+            return sumRange(root.right, start, end);
+        } else {
+            return sumRange(root.right, mid + 1, end) + sumRange(root.left, start, mid);
+        }
+    }
+}
+```
 
 
 

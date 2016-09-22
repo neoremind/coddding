@@ -118,7 +118,7 @@ public class BasicBitTest {
         N = N | (N >> 4);
         N = N | (N >> 8);
         N = N | (N >> 16);
-        return (N + 1) >> 1;
+        return N - (N >>> 1);
     }
 
     @Test
@@ -163,6 +163,10 @@ public class BasicBitTest {
         // 从低位到高位，将n的第m个位置置为0
         n &= ~(1 << m);
         System.out.println(n);
+
+        n = 3;
+        System.out.println(Integer.toBinaryString(n));
+        System.out.println(Integer.toBinaryString(-n));
     }
 
 }

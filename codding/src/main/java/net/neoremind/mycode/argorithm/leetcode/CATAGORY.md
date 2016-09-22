@@ -321,7 +321,7 @@
 
 [240. Search a 2D Matrix II](README.md#240-search-a-2d-matrix-ii)
 
-[315. Count of Smaller Numbers After Self]() //
+[315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
 ##Binary Search
 
@@ -673,27 +673,31 @@
 
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
+
 ##Trie
 
 [208. Implement Trie (Prefix Tree)](README.md#208-implement-trie-prefix-tree)
 
+
 ##Binary Indexed Tree
 
-[307. Range Sum Query - Mutable]() //
+[307. Range Sum Query - Mutable](README.md#307-range-sum-query---mutable)
 
-[315. Count of Smaller Numbers After Self]() //
+[315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
+
 
 ##Segment Tree
 
-[307. Range Sum Query - Mutable]() //
+[307. Range Sum Query - Mutable](README.md#307-range-sum-query---mutable)
 
-[315. Count of Smaller Numbers After Self]() //
+[315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
+
 
 ##Binary Search Tree
 
 [220. Contains Duplicate III](README.md#220-contains-duplicate-iii) //SORT / TODO
 
-[315. Count of Smaller Numbers After Self]() //
+[315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
 ##Recursion
 

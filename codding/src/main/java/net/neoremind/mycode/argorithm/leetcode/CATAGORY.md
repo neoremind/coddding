@@ -321,6 +321,7 @@
 
 [240. Search a 2D Matrix II](README.md#240-search-a-2d-matrix-ii)
 
+[315. Count of Smaller Numbers After Self]() //
 
 ##Binary Search
 
@@ -678,11 +679,17 @@
 
 ##Binary Indexed Tree
 
+[315. Count of Smaller Numbers After Self]() //
+
 ##Segment Tree
+
+[315. Count of Smaller Numbers After Self]() //
 
 ##Binary Search Tree
 
 [220. Contains Duplicate III](README.md#220-contains-duplicate-iii) //SORT / TODO
+
+[315. Count of Smaller Numbers After Self]() //
 
 ##Recursion
 

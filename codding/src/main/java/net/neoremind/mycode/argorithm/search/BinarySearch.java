@@ -5,7 +5,9 @@ import static org.junit.Assert.assertThat;
 
 /**
  * ClassName: BinarySearch </br> Function: 二分查找
- * 
+ * <p>
+ * http://algs4.cs.princeton.edu/11model/BinarySearch.java.html
+ *
  * @author Zhang Xu
  */
 public class BinarySearch {
@@ -19,10 +21,11 @@ public class BinarySearch {
 
     /**
      * 假设数组有序，查找入口,没有查找到返回-1
-     * 
+     *
      * @param arr
      * @param target
      * @param method
+     *
      * @return
      */
     public int search(int[] arr, int target, SearchMethod method) {
@@ -39,11 +42,12 @@ public class BinarySearch {
 
     /**
      * 递归查找
-     * 
+     *
      * @param arr
      * @param start
      * @param end
      * @param target
+     *
      * @return
      */
     private int searchRecursive(int[] arr, int start, int end, int target) {
@@ -62,11 +66,12 @@ public class BinarySearch {
 
     /**
      * 循环查找，参考<code>Arrays.binarySearch(arr, 4);</code>实现
-     * 
+     *
      * @param arr
      * @param start
      * @param end
      * @param target
+     *
      * @return
      */
     private int searchLoop(int[] arr, int start, int end, int target) {
@@ -114,7 +119,7 @@ public class BinarySearch {
         assertThat((start + end) / 2, is((start + end) >>> 1));
 
         BinarySearch bs = new BinarySearch();
-        int[] arr = new int[] { 1, 3, 5, 6, 9, 11, 20 };
+        int[] arr = new int[] {1, 3, 5, 6, 9, 11, 20};
         int index = bs.search(arr, 4, SearchMethod.RECURSIVE);
         System.out.println(index);
         assertThat(index, is(-1));

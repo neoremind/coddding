@@ -184,6 +184,13 @@ if (dp[amount] == Integer.MAX_VALUE) {
 }
 ```
 
+### [315. Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)
+
+H, Divide and Conquer, Binary Indexed Tree, Segment Tree, Binary Search Tree
+
+
+
+
 ### [300. Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
 
 M, Dynamic Programming, Binary Search
@@ -5047,10 +5054,28 @@ int searchLoop(int[] arr, int start, int end, int target) {
 }
 ```
 
-这道题解法就是判断找不到的时候返回end+1即可。
+这道题解法就是判断找不到的时候返回end+1(也就是start)即可。
 ```
-if (start > end)
-    return end + 1
+int start = 0;
+int end = nums.length - 1;
+if (nums[end] < target) {  //判断一下边界更好些
+    return end + 1;
+}
+if (nums[start] > target) {
+    return 0;
+}
+while (start <= end) {
+    int mid = start + ((end - start) >> 1);
+    int midVal = nums[mid];
+    if (target < midVal) {
+        end = mid - 1;
+    } else if (target > midVal) {
+        start = mid + 1;
+    } else {
+        return mid;
+    }
+}
+return start;
 ```
 
 ### [34. Search for a Range](https://leetcode.com/problems/search-for-a-range/)

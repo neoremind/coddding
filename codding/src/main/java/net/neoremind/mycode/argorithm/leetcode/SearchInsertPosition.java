@@ -34,8 +34,12 @@ public class SearchInsertPosition {
         assertThat(searchInsert(nums, 5), is(2));
         assertThat(searchInsert(nums, 6), is(3));
         assertThat(searchInsert(nums, 7), is(4));
+        assertThat(searchInsert2(nums, 7), is(4));
     }
 
+    /**
+     * 慢一些
+     */
     public int searchInsert(int[] nums, int target) {
         return search(nums, 0, nums.length - 1, target);
     }
@@ -52,5 +56,31 @@ public class SearchInsertPosition {
         } else {
             return mid;
         }
+    }
+
+    /**
+     * 稍微快一点，非递归
+     */
+    public int searchInsert2(int[] nums, int target) {
+        int start = 0;
+        int end = nums.length - 1;
+        if (nums[end] < target) {  //判断一下边界更好些
+            return end + 1;
+        }
+        if (nums[start] > target) {
+            return 0;
+        }
+        while (start <= end) {
+            int mid = start + ((end - start) >> 1);
+            int midVal = nums[mid];
+            if (target < midVal) {
+                end = mid - 1;
+            } else if (target > midVal) {
+                start = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+        return start;
     }
 }

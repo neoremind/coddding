@@ -23,8 +23,8 @@ import com.google.common.collect.Lists;
  * 和{@link net.neoremind.mycode.argorithm.leetcode.LongestIncreasingSubsequence}思想类似的DP
  *
  * @author zhangxu
+ * @see net.neoremind.mycode.argorithm.leetcode.CountOfSmallerNumbersAfterSelf 这才是正确的解法
  */
-//TODO
 @Deprecated
 public class SmallerNumber {
 

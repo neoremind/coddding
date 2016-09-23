@@ -2257,6 +2257,94 @@ M, String
 * 7. return new String(str, 0, barrier);
 ```
 
+### [146. LRU Cache](https://leetcode.com/problems/lru-cache/)
+
+H, Design
+
+一次性写的框架差不多，有一些边界条件还需要处理好。
+
+```
+public class LRUCache {
+    Node head = null;
+    Node tail = null;
+    int capacity = 0;
+    Map<Integer, Node> map;
+    int size = 0;
+
+    public LRUCache(int capacity) {
+        // assume capacity > 0
+        this.capacity = capacity;
+        map = new HashMap<>(capacity / 3 * 4);
+    }
+
+    public int get(int key) {
+        Node target = map.get(key);
+        if (target == null)
+            return -1;
+        moveAhead(target);
+        return target.value;
+    }
+
+    public void set(int key, int value) {
+        if (map.containsKey(key)) {
+            Node node = map.get(key);
+            node.value = value;
+            moveAhead(node);
+        } else {
+            Node node = new Node(key, value);
+            map.put(key, node);
+            size++;
+            if (head == null && tail == null) {
+                head = node;
+                tail = node;
+                tail.next = head;
+                head.prev = tail;
+                head.next = tail;
+                tail.prev = head;
+            } else {
+                node.prev = tail;
+                node.next = head;
+                tail.next = node;
+                head.prev = node;
+                head = node;
+                if (size > capacity)
+                    deleteLRU();
+            }
+        }
+    }
+
+    void moveAhead(Node target) {
+        if (target == head)
+            return;
+        if (tail == target)
+            tail = target.prev;
+        target.prev.next = target.next;
+        target.next.prev = target.prev;
+        tail.next = target;
+        target.prev = tail;
+        head.prev = target;
+        target.next = head;
+        head = target;
+    }
+
+    void deleteLRU() {
+        Node t = tail;
+        t.prev.next = head;
+        head.prev = t.prev;
+        tail = t.prev;
+        size--;
+        map.remove(t.key);
+    }
+
+    class Node {
+        int key;
+        int value;
+        Node prev;
+        Node next;
+    }
+}
+```
+
 ### [145. Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal/)
 
 H, Tree Stack

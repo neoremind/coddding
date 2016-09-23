@@ -626,6 +626,8 @@
 
 [257. Binary Tree Paths](README.md#257-binary-tree-paths)
 
+[329. Longest Increasing Path in a Matrix]() //
+
 ##Breadth-first Search
 
 [101. Symmetric Tree](README.md#101-symmetric-tree)
@@ -673,6 +675,8 @@
 
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
+[329. Longest Increasing Path in a Matrix]()
+
 
 ##Trie
 
@@ -704,6 +708,8 @@
 ##Brainteaser
 
 ##Memoization
+
+[329. Longest Increasing Path in a Matrix]()//
 
 ##Queue
 

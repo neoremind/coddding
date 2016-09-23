@@ -144,6 +144,45 @@ E, Bit Manipulation
 return num > 0 && (num & (num - 1)) == 0 && (num & 0x55555555) != 0;
 ```
 
+### [329. Longest Increasing Path in a Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)
+
+H, Depth-first Search Topological Sort Memoization
+
+做过了那么多backtrack的题目，这种DFS非常的easy可以解决。
+
+```
+// some preconditions…
+int res = 1;
+int[][] records = new int[m][n]; //by default every element is 0
+// for each [i, j] in matrix, res = max(res, dfs(matrix, records));
+for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+        res = Math.max(dfs(i, j, m, n, matrix, records), res);
+    }
+}
+return res;
+
+
+int dfs(int i, int j, int m, int n, int[][] matrix, int[][] records) {
+    if (records[i][j] != 0)
+        return records[i][j];   // 这点很重要！类似动态规划的记忆式搜索，like a greedy snake, memorize the result
+    int res = 1;
+    int[] d1 = new int[] {1, 0, -1, 0};
+    int[] d2 = new int[] {0, 1, 0, -1};
+    for (int x = 0; x < 4; x++) {
+        int nextI = i + d1[x];
+        int nextJ = j + d2[x];
+        if (nextI >= 0 && nextI < m && nextJ >= 0 && nextJ < n &&
+                matrix[nextI][nextJ] > matrix[i][j]) {
+            // 是+1不是+res这点刚开始写错了！！！脑子一定要清楚！
+            res = Math.max(dfs(nextI, nextJ, m, n, matrix, records) + 1, res);
+        }
+    }
+    records[i][j] = res;
+    return res;
+}
+```
+
 
 ### [326. Power of Three](https://leetcode.com/problems/power-of-three/)
 

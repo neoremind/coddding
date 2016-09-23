@@ -223,6 +223,15 @@ if (dp[amount] == Integer.MAX_VALUE) {
 }
 ```
 
+### [324. Wiggle Sort II](https://leetcode.com/problems/wiggle-sort-ii/)
+
+M, sort
+
+//TODO
+
+quick select思想，中位数在中间，左边全是比他小的，右边全是比他大的。然后依次交换。
+
+
 ### [315. Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)
 
 H, Divide and Conquer, Binary Indexed Tree, Segment Tree, Binary Search Tree

@@ -90,6 +90,8 @@ Only one thread at a time can own an object's monitor.
 
 
 
+# 第一部分 基础知识
+
 ## 第一章 简介
 
 ### 1.1 并发简史
@@ -1522,18 +1524,687 @@ public class Memoizer <A, V> implements Computable<A, V> {
 }
 ```
 
-
-
 ## 前五章的小节
 
-* 可变状态是至关重要的，所有的并发问题都归结为如何协调对并发状态的访问。可变状态越少，就越容易确保线程安全性。
-* 尽量将域声明为final类型，除非他们是可变的。
-* 不可变对象一定是线程安全的。不可变对象极大的降低了并发编程的复杂度，简单安全，可以任意共享而无需使用加锁或者保护性复制等机制，例如guava。
-* 封装有利于管理复杂度。
-* 用锁来保护每个可变变量。
-* 当保护同一个不变性条件中的所有变量时，要使用同一个锁。
-* 在执行复合操作期间，要持有锁。
-* 如果从多个线程中访问同一个可变变量时没有同步机制，那么程序就会出现问题。
+- 可变状态是至关重要的，所有的并发问题都归结为如何协调对并发状态的访问。可变状态越少，就越容易确保线程安全性。
+- 尽量将域声明为final类型，除非他们是可变的。
+- 不可变对象一定是线程安全的。不可变对象极大的降低了并发编程的复杂度，简单安全，可以任意共享而无需使用加锁或者保护性复制等机制，例如guava。
+- 封装有利于管理复杂度。
+- 用锁来保护每个可变变量。
+- 当保护同一个不变性条件中的所有变量时，要使用同一个锁。
+- 在执行复合操作期间，要持有锁。
+- 如果从多个线程中访问同一个可变变量时没有同步机制，那么程序就会出现问题。
+
+
+
+# 第二部分 结构化并发应用程序
+
+## 第6章 任务执行
+
+### 6.1 在线程中执行任务
+
+#### 6.1.1 串行的执行任务
+
+这是最经典的一个最简单的Socket server的例子，服务器的资源利用率非常低，因为单线程在等待I/O操作完成时，CPU处于空闲状态。从而阻塞了当前请求的延迟，还彻底阻止了其他等待中的请求被处理。
+
+```
+public class SingleThreadWebServer {
+    public static void main(String[] args) throws IOException {
+        ServerSocket socket = new ServerSocket(80);
+        while (true) {
+            Socket connection = socket.accept();
+            handleRequest(connection);
+        }
+    }
+ 
+    private static void handleRequest(Socket connection) {
+        // request-handling logic here
+    }
+}
+```
+
+#### 6.1.2 显式地为任务创建线程
+
+任务处理从主线程中分离出来，主循环可以快速等待下一个连接，提高响应性。同时任务可以并行处理了，吞吐量也提高了。
+
+```
+public class ThreadPerTaskWebServer {
+    public static void main(String[] args) throws IOException {
+        ServerSocket socket = new ServerSocket(80);
+        while (true) {
+            final Socket connection = socket.accept();
+            Runnable task = new Runnable() {
+                public void run() {
+                    handleRequest(connection);
+                }
+            };
+            new Thread(task).start();
+        }
+    }
+ 
+    private static void handleRequest(Socket connection) {
+        // request-handling logic here
+    }
+}
+```
+
+#### 6.1.3 无限制创建线程的不足
+
+* 线程的生命周期开销非常高
+* 资源消耗。大量的空闲线程占用内存，给GC带来压力，同时线程数量过多，竞争CPU资源开销太大。
+* 稳定性。容易引起GC问题，甚至OOM。
+
+### 6.2 Executor框架
+
+任务就是一组逻辑工作单元（unit of work），而线程就是使任务异步执行的机制。J.U.C提供了Executor接口，它是代替Thread来做异步执行的入口，这个接口简单，却是非常灵活强大的异步任务执行框架提供了基础。提供了一种标准的方法将
+
+* 任务的提交
+* 任务的执行
+
+解耦开来，并用Runnable（无返回时）或者Callable（有返回值）表示任务。
+
+Executor基础生产者-消费者模式。
+
+上面改造后的例子如下：
+
+```
+public class TaskExecutionWebServer {
+    private static final int NTHREADS = 100;
+    private static final Executor exec
+            = Executors.newFixedThreadPool(NTHREADS);
+ 
+    public static void main(String[] args) throws IOException {
+        ServerSocket socket = new ServerSocket(80);
+        while (true) {
+            final Socket connection = socket.accept();
+            Runnable task = new Runnable() {
+                public void run() {
+                    handleRequest(connection);
+                }
+            };
+            exec.execute(task);
+        }
+    }
+ 
+    private static void handleRequest(Socket connection) {
+        // request-handling logic here
+    }
+}
+```
+
+#### 6.2.2 执行策略
+
+这一节主要介绍做一个Executor框架需要靠那些点？
+
+* 在什么线程中执行任务？
+* 任务按照什么顺序执行？FIFO/LIFO/优先级
+* 有多少个任务可以并发执行？
+* 队列中允许多少个任务等待？
+* 如果系统过载了要拒绝一个任务，那么选择拒绝哪一个？如何通知客户端任务被拒绝了？
+* 在执行任务过程中能不能有些别的动作before/after或者回调？
+
+各种执行策略都是一种资源管理工具，最佳的策略取决于可用的计算资源以及对服务质量的要求。
+
+因此每当看到
+
+```
+new Thread(runnable).start();
+```
+
+并且希望有一种灵活的执行策略的时候，请考虑使用Executor来代替Thread。
+
+#### 6.2.3 线程池
+
+在**线程池中执行任务**比**为每个任务分配一个线程**优势明显：
+
+* 重用线程，减少开销。
+* 延迟低，线程是等待任务到达。
+* 最大化挖掘系统资源以及保证稳定性。CPU忙碌但是又不会出现线程竞争资源而耗尽内存或者失败的情况。
+
+Executors可以看做一个工厂，的提供如下几种Executor的创建：
+
+```
+newCachedThreadPool
+newFixedThreadPool
+newSingleThreadExecutor
+newScheduledThreadPool
+```
+
+#### 6.2.4 Executor生命周期
+
+[JAVA 5 API](http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/ExecutorService.html#method_summary)
+
+```
+public interface ExecutorService extends Executor {
+ void shutdown();
+ List<Runnable> shutdownNow();
+ boolean isShutdown();
+ boolean isTerminated();
+ boolean awaitTermination(long timeout, TimeUnit unit)
+ throws InterruptedException;
+```
+
+一个优雅停止的例子：
+
+```
+public class LifecycleWebServer {
+    private final ExecutorService exec = Executors.newCachedThreadPool();
+ 
+    public void start() throws IOException {
+        ServerSocket socket = new ServerSocket(80);
+        while (!exec.isShutdown()) {
+            try {
+                final Socket conn = socket.accept();
+                exec.execute(new Runnable() {
+                    public void run() {
+                        handleRequest(conn);
+                    }
+                });
+            } catch (RejectedExecutionException e) {
+                if (!exec.isShutdown())
+                    log("task submission rejected", e);
+            }
+        }
+    }
+ 
+    public void stop() {
+        exec.shutdown();
+    }
+ 
+    private void log(String msg, Exception e) {
+        Logger.getAnonymousLogger().log(Level.WARNING, msg, e);
+    }
+ 
+    void handleRequest(Socket connection) {
+        Request req = readRequest(connection);
+        if (isShutdownRequest(req))
+            stop();
+        else
+            dispatchRequest(req);
+    }
+ 
+    interface Request {
+    }
+ 
+    private Request readRequest(Socket s) {
+        return null;
+    }
+ 
+    private void dispatchRequest(Request r) {
+    }
+ 
+    private boolean isShutdownRequest(Request r) {
+        return false;
+    }
+}
+```
+
+#### 6.2.5 延迟任务与周期任务
+
+使用Timer的弊端在于如果某个任务执行时间过长，那么将破坏其他TimerTask的定时精确性。第二，TimerTask抛出异常后就会终止定时线程。
+
+更加合理的做法是使用ScheduledThreadPoolExecutor，它是DelayQueue的应用场景。//TODO
+
+### 6.3 找出可利用的并行性
+
+这里的例子是串行的渲染网页的例子，包括HTML的骨架，TEXT以及IMAGE的渲染。
+
+#### 6.3.2 携带结果的任务Callable和Future
+
+Executor框架支持Runnable，同时也支持Callable，它将返回一个值或者抛出一个异常。
+
+在Executor框架中，已提交但是尚未开始的任务可以取消，但是对于那些已经开始执行的任务，只有他们能响应中断时，才能取消。
+
+Future非常实用，他的API如下：
+
+```
+boolean	cancel(boolean mayInterruptIfRunning) Attempts to cancel execution of this task.
+
+ V	get() Waits if necessary for the computation to complete, and then retrieves its result
+ 
+ V	get(long timeout, TimeUnit unit) Waits if necessary for at most the given time for the computation to complete, and then retrieves its result, if available.
+ 
+ boolean	isCancelled()  Returns true if this task was cancelled before it completed normally.
+ 
+ boolean	isDone()  Returns true if this task completed.
+```
+
+**内部get的阻塞是靠LockSupport.park来做的，在任务完成后Executor回调finishCompletion方法会依次唤醒被阻塞的线程。**
+
+ExecutorService的submit方法接受Runnable和Callable，返回一个Future。ThreadPoolExecutor框架留了一个口子，子类可以重写newTaskFor来决定创建什么Future的实现，默认是FutureTask类。
+
+#### 6.3.3 示例：使用Future实现页面的渲染器
+
+```
+public abstract class FutureRenderer {
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+ 
+    void renderPage(CharSequence source) {
+        final List<ImageInfo> imageInfos = scanForImageInfo(source);
+        Callable<List<ImageData>> task =
+                new Callable<List<ImageData>>() {
+                    public List<ImageData> call() {
+                        List<ImageData> result = new ArrayList<ImageData>();
+                        for (ImageInfo imageInfo : imageInfos)
+                            result.add(imageInfo.downloadImage());
+                        return result;
+                    }
+                };
+ 
+        Future<List<ImageData>> future = executor.submit(task);
+        renderText(source);
+ 
+        try {
+            List<ImageData> imageData = future.get();
+            for (ImageData data : imageData)
+                renderImage(data);
+        } catch (InterruptedException e) {
+            // Re-assert the thread's interrupted status
+            Thread.currentThread().interrupt();
+            // We don't need the result, so cancel the task too
+            future.cancel(true);
+        } catch (ExecutionException e) {
+            throw launderThrowable(e.getCause());
+        }
+    }
+ 
+    interface ImageData {
+    }
+ 
+    interface ImageInfo {
+        ImageData downloadImage();
+    }
+ 
+    abstract void renderText(CharSequence s);
+ 
+    abstract List<ImageInfo> scanForImageInfo(CharSequence s);
+ 
+    abstract void renderImage(ImageData i);
+}
+```
+
+#### 6.3.5 CompletionService: Executor Meets BlockingQueue
+
+计算完成后FutureTask会调用done方法，而CompletionService集成了FutureTask，对于计算完毕的结果直接放在自己维护的BlockingQueue里面，这样上层调用者就可以一个个take或者poll出来。
+
+```
+private class QueueingFuture<V> extends FutureTask<V> {
+ QueueingFuture(Callable<V> c) { super(c); }
+ QueueingFuture(Runnable t, V r) { super(t, r); }
+ protected void done() {
+ completionQueue.add(this);
+ }
+```
+
+#### 6.3.6 示例：使用CompletionService提高渲染性能
+
+```
+void renderPage(CharSequence source) {
+        final List<ImageInfo> info = scanForImageInfo(source);
+        CompletionService<ImageData> completionService =
+                new ExecutorCompletionService<ImageData>(executor);
+        for (final ImageInfo imageInfo : info)
+            completionService.submit(new Callable<ImageData>() {
+                public ImageData call() {
+                    return imageInfo.downloadImage();
+                }
+            });
+ 
+        renderText(source);
+ 
+        try {
+            for (int t = 0, n = info.size(); t < n; t++) {
+                Future<ImageData> f = completionService.take();
+                ImageData imageData = f.get();
+                renderImage(imageData);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw launderThrowable(e.getCause());
+        }
+    }
+```
+
+#### 6.3.7 为任务设置时限
+
+Future的get支持timeout。
+
+#### 6.3.8 批量提交任务
+
+使用invokeAll方法提交`List<Callable>`，返回一个`List<Future>`
+
+
+
+## 第7章 取消与关闭
+
+JAVA媒体提供任务机制来安全的终止线程。但是它提供了中断（interruption），这是一种写作机制，能够使一个线程终止另外一个线程。
+
+一般来说没人希望立即终止，因为必要时总要先清理再终止。
+
+开发一个应用能够妥善处理失败、关闭、取消等过程非常重要也有挑战。
+
+### 7.1 任务取消
+
+一定不要使用Thread.stop和suspend这些机制。
+
+一种协作机制就是“标记位”。例如使用volatile类型的field来保存取消状态。
+
+```
+@ThreadSafe
+public class PrimeGenerator implements Runnable {
+    private static ExecutorService exec = Executors.newCachedThreadPool();
+ 
+    @GuardedBy("this") private final List<BigInteger> primes
+            = new ArrayList<BigInteger>();
+    private volatile boolean cancelled;
+ 
+    public void run() {
+        BigInteger p = BigInteger.ONE;
+        while (!cancelled) {
+            p = p.nextProbablePrime();
+            synchronized (this) {
+                primes.add(p);
+            }
+        }
+    }
+ 
+    public void cancel() {
+        cancelled = true;
+    }
+ 
+    public synchronized List<BigInteger> get() {
+        return new ArrayList<BigInteger>(primes);
+    }
+ 
+    static List<BigInteger> aSecondOfPrimes() throws InterruptedException {
+        PrimeGenerator generator = new PrimeGenerator();
+        exec.execute(generator);
+        try {
+            SECONDS.sleep(1);
+        } finally {
+            generator.cancel();
+        }
+        return generator.get();
+    }
+}
+```
+
+#### 7.1.1 中断
+
+下面的例子会出现死锁，线程根本不会停止下来。
+
+```
+class BrokenPrimeProducer extends Thread {
+    private final BlockingQueue<BigInteger> queue;
+    private volatile boolean cancelled = false;
+ 
+    BrokenPrimeProducer(BlockingQueue<BigInteger> queue) {
+        this.queue = queue;
+    }
+ 
+    public void run() {
+        try {
+            BigInteger p = BigInteger.ONE;
+            while (!cancelled)
+                queue.put(p = p.nextProbablePrime());
+        } catch (InterruptedException consumed) {
+        }
+    }
+ 
+    public void cancel() {
+        cancelled = true;
+    }
+}
+```
+
+每个线程都有一个boolean类型的中断状态。当调用Thread.interrupt方法时，该值被设置为true，Thread.interruptted可以恢复中断。
+
+阻塞库方法，例如sleep和wait、join都会检查中断，并且发现中断则提前返回，他们会清楚中断状态，并抛出InterruptedException。
+
+但是对于其他方法interrupt仅仅是传递了中断的请求消息，并不会使线程中断，需要由线程在下一个合适的时刻中断自己。
+
+通常，用中断是取消的最合理的实现方式。
+
+上面的例子的改进方法就是:
+
+```
+public class PrimeProducer extends Thread {
+    private final BlockingQueue<BigInteger> queue;
+ 
+    PrimeProducer(BlockingQueue<BigInteger> queue) {
+        this.queue = queue;
+    }
+ 
+    public void run() {
+        try {
+            BigInteger p = BigInteger.ONE;
+            while (!Thread.currentThread().isInterrupted())
+                queue.put(p = p.nextProbablePrime());
+        } catch (InterruptedException consumed) {
+            /* Allow thread to exit */
+        }
+    }
+ 
+    public void cancel() {
+        interrupt();
+    }
+}
+```
+
+#### 7.1.2 中断策略
+
+发生了中断，需要尽快退出执行流程，并把中断信息传递给调用者，从而使调用栈中的上层代码可以采取进一步的操作。当然任务也可以不需要放弃所有操作，可以推迟处理中断清楚，知道某个时机。
+
+#### 7.1.3 响应中断
+
+* 传递异常
+* 回复中断状态
+
+```
+public class NoncancelableTask {
+    public Task getNextTask(BlockingQueue<Task> queue) {
+        boolean interrupted = false;
+        try {
+            while (true) {
+                try {
+                    return queue.take();
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                    // fall through and retry
+                }
+            }
+        } finally {
+            if (interrupted)
+                Thread.currentThread().interrupt();
+        }
+    }
+ 
+    interface Task {
+    }
+}
+```
+
+#### 7.1.6 处理不可中断的阻塞
+
+例如Socket I/O或者内置锁都不能响应中断，这时候该如何做才能终止他们呢？可以通过重写Thread.interrupt方法，例如加入close的逻辑。
+
+### 7.2 停止基于线程的服务
+
+#### 7.2.1 示例：日志服务
+
+#### 7.2.2 关闭ExecutorService
+
+#### 7.2.3 Poison Pill
+
+例如CloseEvent机制或者POISON对象，来做特殊的识别，从而让程序自己处理停止操作，退出线程。
+
+### 7.3 处理非正常的线程终止
+
+### 7.4 JVM关闭
+
+
+
+## 第8章 线程池的使用
+
+一个很好的[ThreadPoolExecutor源码分析文档](https://my.oschina.net/xionghui/blog/494698)
+
+ThreadPoolExecutor UML图：
+
+![](http://neoremind.com/wp-content/uploads/2016/09/java-7-concurrent-executors-uml-class-diagram-example.png)
+
+![](http://neoremind.com/wp-content/uploads/2016/09/java-7-concurrent-collections-uml-class-diagram-example.png)
+
+![](http://neoremind.com/wp-content/uploads/2016/09/java-7-concurrent-future-uml-class-diagram-example.png)
+
+### 8.1 在任务和执行策略之间隐形耦合
+
+避免Thread starvation deadlock
+
+### 8.2 设置线程池大小
+
+### 8.3 配置ThreadPoolExecutor
+
+![](http://neoremind.com/wp-content/uploads/2016/09/20111209111944_933.jpg)
+
+构造函数如下：
+
+```
+public ThreadPoolExecutor(int corePoolSize,
+ int maximumPoolSize,
+ long keepAliveTime,
+ TimeUnit unit,
+ BlockingQueue<Runnable> workQueue,
+ ThreadFactory threadFactory,
+ RejectedExecutionHandler handler) { ... } 
+```
+
+- 核心和最大池大小：如果运行的线程少于 corePoolSize，则创建新线程来处理请求（即一个Runnable实例），即使其它线程是空闲的。如果运行的线程多于 corePoolSize 而少于 maximumPoolSize，则仅当队列满时才创建新线程。
+- 保持活动时间：如果池中当前有多于 corePoolSize 的线程，则这些多出的线程在空闲时间超过 keepAliveTime 时将会终止。
+- 排队：如果运行的线程等于或多于 corePoolSize，则 Executor 始终首选将请求加入队列BlockingQueue，而不添加新的线程。
+- 被拒绝的任务：当 Executor 已经关闭，或者队列已满且线程数量达到maximumPoolSize时（即线程池饱和了），请求将被拒绝。这些拒绝的策略叫做Saturation Policy，即饱和策略。包括AbortPolicy,
+  CallerRunsPolicy, DiscardPolicy, and DiscardOldestPolicy.
+
+另外注意：
+
+- 如果运行的线程少于 corePoolSize，ThreadPoolExecutor 会始终首选创建新的线程来处理请求；注意，这时即使有空闲线程也不会重复使用（这和数据库连接池有很大差别）。
+- 如果运行的线程等于或多于 corePoolSize，则 ThreadPoolExecutor 会将请求加入队列BlockingQueue，而不添加新的线程（这和数据库连接池也不一样）。
+- 如果无法将请求加入队列（比如队列已满），则创建新的线程来处理请求；但是如果创建的线程数超出 maximumPoolSize，在这种情况下，请求将被拒绝。
+
+newCachedThreadPool使用了SynchronousQueue，并且是无界的。
+
+线程工厂ThreadFactory
+
+### 8.4 扩展ThreadPoolExecutor
+
+重写beforeExecute和afterExecute方法。
+
+### 8.5 递归算法的并行化
+
+实际就是类似Number of Islands或者N-Queens等DFS问题的一种并行处理。
+
+串行版本如下：
+
+```
+public class SequentialPuzzleSolver <P, M> {
+    private final Puzzle<P, M> puzzle;
+    private final Set<P> seen = new HashSet<P>();
+ 
+    public SequentialPuzzleSolver(Puzzle<P, M> puzzle) {
+        this.puzzle = puzzle;
+    }
+ 
+    public List<M> solve() {
+        P pos = puzzle.initialPosition();
+        return search(new PuzzleNode<P, M>(pos, null, null));
+    }
+ 
+    private List<M> search(PuzzleNode<P, M> node) {
+        if (!seen.contains(node.pos)) {
+            seen.add(node.pos);
+            if (puzzle.isGoal(node.pos))
+                return node.asMoveList();
+            for (M move : puzzle.legalMoves(node.pos)) {
+                P pos = puzzle.move(node.pos, move);
+                PuzzleNode<P, M> child = new PuzzleNode<P, M>(pos, move, node);
+                List<M> result = search(child);
+                if (result != null)
+                    return result;
+            }
+        }
+        return null;
+    }
+}
+```
+
+并行版本如下：
+
+```
+public class ConcurrentPuzzleSolver <P, M> {
+    private final Puzzle<P, M> puzzle;
+    private final ExecutorService exec;
+    private final ConcurrentMap<P, Boolean> seen;
+    protected final ValueLatch<PuzzleNode<P, M>> solution = new ValueLatch<PuzzleNode<P, M>>();
+ 
+    public ConcurrentPuzzleSolver(Puzzle<P, M> puzzle) {
+        this.puzzle = puzzle;
+        this.exec = initThreadPool();
+        this.seen = new ConcurrentHashMap<P, Boolean>();
+        if (exec instanceof ThreadPoolExecutor) {
+            ThreadPoolExecutor tpe = (ThreadPoolExecutor) exec;
+            tpe.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        }
+    }
+ 
+    private ExecutorService initThreadPool() {
+        return Executors.newCachedThreadPool();
+    }
+ 
+    public List<M> solve() throws InterruptedException {
+        try {
+            P p = puzzle.initialPosition();
+            exec.execute(newTask(p, null, null));
+            // block until solution found
+            PuzzleNode<P, M> solnPuzzleNode = solution.getValue();
+            return (solnPuzzleNode == null) ? null : solnPuzzleNode.asMoveList();
+        } finally {
+            exec.shutdown();
+        }
+    }
+ 
+    protected Runnable newTask(P p, M m, PuzzleNode<P, M> n) {
+        return new SolverTask(p, m, n);
+    }
+ 
+    protected class SolverTask extends PuzzleNode<P, M> implements Runnable {
+        SolverTask(P pos, M move, PuzzleNode<P, M> prev) {
+            super(pos, move, prev);
+        }
+ 
+        public void run() {
+            if (solution.isSet()
+                    || seen.putIfAbsent(pos, true) != null)
+                return; // already solved or seen this position
+            if (puzzle.isGoal(pos))
+                solution.setValue(this);
+            else
+                for (M m : puzzle.legalMoves(pos))
+                    exec.execute(newTask(puzzle.move(pos, m), m, this));
+        }
+    }
+}
+```
+
+
+
+## 第9章 图形用户界面应用程序
+
+略
+
+
+
+
+
 
 
 

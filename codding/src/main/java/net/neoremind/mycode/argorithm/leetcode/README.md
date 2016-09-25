@@ -1378,15 +1378,15 @@ start                    end
 int start = 0, end = 0;
 int minLen = Integer.MAX_VALUE;
 int sum = 0;
-while (end < nums.length) {
-    if (sum < s)
+for (; end < nums.length; end++) {
+    if (sum < s)   //上一把小于s我就加
         sum += nums[end];
-    end++;
-    while (sum >= s)
-        if (end - start < minLen)
-            minLen = end - start;
+
+    while (sum >= s) //条件满足正好是刚刚超过，就计算下长度，然后找前一个start位置刚好小于s
+        minLen = Math.min(end - start + 1, minLen);
         sum -= nums[start];
         start++;
+}
 return minLen == Integer.MAX_VALUE ? 0 : minLen;
 ```
 

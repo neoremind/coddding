@@ -45,7 +45,7 @@ sleep是TIMED_WAITING，wait不带计时参数是WAITING，带计时参数是TIM
 
 * 每个线程都有一个interrupt status标志位，用于表明当前线程是否处于中断状态 
 * 一般调用Thread.interrupt()会有两种处理方式，遇到调用wait(), wait(long), or wait(long, int) methods of the Object class, or of the join(), join(long), join(long, int), sleep(long), or sleep(long, int), methods of this class。这些状态会挂起线程，这时候interrupt会throw一个InterruptedException。 
-* 其他情况，Thread.interrupt()仅仅只是更新了status标志位。然后你的工作线程通过Thread.isInterrrupted()进行检查，可以做相应的处理，比如也throw InterruptedException或者是清理状态，任务cancle， 数据清理等。 
+* 其他情况，Thread.interrupt()仅仅只是更新了status标志位。然后你的工作线程通过Thread.isInterrrupted()进行检查，可以做相应的处理，比如也throw InterruptedException或者是清理状态，任务cancel， 数据清理等。 
 
 4）LockSupport.park()和unpark()，与object.wait()和notify()的区别？ 
 
@@ -153,9 +153,9 @@ public class UnsafeSequence {
 
 - 性能问题
 
-  刚刚明明说了线程可以提高性能，但是怎么又降低了？降低的现象可能是服务响应时间长、吞吐量低、资源消耗过多，伸缩性（啥叫做伸缩性？？？）较差。
+  刚刚明明说了线程可以提高性能，但是怎么又降低了？降低的现象可能是服务响应时间长、吞吐量低、资源消耗过多，伸缩性（见第三部分）较差。
 
-  这是因为线程本身存在运行开销，挂起、唤醒线程需要频繁的上下文切换（context switch），CPU花了不少时间在线程调度上而不是线程运行商，因此共享数据并为了安全，使用同步机制的时候，会抑制某些编译器优化，使内存缓冲区数据吴萧，以及增加内存总线的同步数量等等。这些额外的开销都属于性能问题。
+  这是因为线程本身存在运行开销，挂起、唤醒线程需要频繁的上下文切换（context switch），CPU花了不少时间在线程调度上而不是线程运行上，因此共享数据并为了安全，使用同步机制的时候，会抑制某些编译器优化，使内存缓冲区数据无效，以及增加内存总线的同步数量等等。这些额外的开销都属于性能问题。
 
 ### 1.4 线程无处不在
 
@@ -369,7 +369,7 @@ public class NotVisibility {
 
 输出可能是0或者无限循环下去。
 
-1）如果输出是0，那么出现了指令重排序，read=true先执行，然后number=42后执行，因为可见性问题，reader读不到最新的42，而是默认的0。根据Javadoc虽然yield能让出CPU，单这个JNI的调用完全没有任何保障，所以你等不到number赋值为42了也是有可能的。
+1）如果输出是0，那么出现了指令重排序，read=true先执行，然后number=42后执行，因为可见性问题，reader读不到最新的42，而是默认的0。根据Javadoc虽然yield能让出CPU，但这个JNI的调用完全没有任何保障，所以你等不到number赋值为42了也是有可能的。
 
 2）如果无限循环，是由于编译器优化，将while(!ready)优化为if(!ready) while(true)则无限下去。
 
@@ -410,7 +410,7 @@ public class MutableInteger {
 下面说volatile，可以看做和synchronized有一样的特性，都是互斥和可见性，在某些情况下比锁更加方便，比锁更轻量，他的作用实际就是解决刚刚背景提到的两个问题。
 
 * 禁止重排序：这个保证对volatile变量的操作时按照指令的出现顺序执行的。
-* 不会被缓存在寄存器中（只有拥有线程可见）或者其他对CPU不可见的地方，每次总是从主存中读取volatile变量的结果。也就是在happens-before法则中，对一个valatile变量的写操作后，其后的任何读操作理解可见此写操作的结果。
+* 不会被缓存在寄存器中（只有拥有线程可见）或者其他对CPU不可见的地方，每次总是从主存中读取volatile变量的结果。也就是在happens-before法则中，对一个valatile变量的写操作后，其后的任何读操作立即可见此写操作的结果。
 
 还是用MutableInteger作例子，如果value为volatile，那么可以同样保障可见性，但是没有线程的阻塞，不会加锁，所以更轻量。
 
@@ -552,7 +552,7 @@ public class ConnectionDispenser {
 
 final很重要，他确保初始化过程的安全性，这是Java内存模型（JMM）规定的。
 
-可不变对象很好的一个例子，这在guava类库中非常常见。
+不可变对象很好的一个例子，这在guava类库中非常常见。
 
 ```
 public class OneValueCache {
@@ -624,7 +624,7 @@ public static Holder holder = new Holder(42);
 
 ### 4.3 线程安全性委托
 
-例如可以通过封装ConcurrentMap来打到线程安全的目的。这要确保委托是正确的足以保护类的安全。
+例如可以通过封装ConcurrentMap来达到线程安全的目的。这要确保委托是正确的足以保护类的安全。
 
 ### 4.4 在现有的安全类中添加功能
 
@@ -661,37 +661,11 @@ class BadListHelper <E> {
         return absent;
     }
 }
- 
-@ThreadSafe
-class GoodListHelper <E> {
-    public List<E> list = Collections.synchronizedList(new ArrayList<E>());
- 
-    public boolean putIfAbsent(E x) {
-        synchronized (list) {
-            boolean absent = !list.contains(x);
-            if (absent)
-                list.add(x);
-            return absent;
-        }
-    }
-}
 ```
 
 非常经典的例子，本来是想做到安全，但是不是用的同一把锁。正确的如下：
 
 ```
-@NotThreadSafe
-class BadListHelper <E> {
-    public List<E> list = Collections.synchronizedList(new ArrayList<E>());
- 
-    public synchronized boolean putIfAbsent(E x) {
-        boolean absent = !list.contains(x);
-        if (absent)
-            list.add(x);
-        return absent;
-    }
-}
- 
 @ThreadSafe
 class GoodListHelper <E> {
     public List<E> list = Collections.synchronizedList(new ArrayList<E>());
@@ -853,7 +827,7 @@ HashTable 容器在竞争激烈的并发环境下表现出效率低下的原因�
 
 ConcurrentHashMap 是由 Segment 数组结构和 HashEntry 数组结构组成。Segment 是一种可重入锁 ReentrantLock,在 ConcurrentHashMap 里扮演锁的角色,HashEntry 则用于存储键值对数据。 一个 ConcurrentHashMap 里包含一个 Segment 数组,Segment 的结构和 HashMap 类似,是一种数 组和链表结构, 一个 Segment 里包含一个 HashEntry 数组,每个 HashEntry 是一个链表结构的元 素, 每个 Segment 守护者一个 HashEntry 数组里的元素,当对 HashEntry 数组的数据进行修改时, 必须首先获得它对应的 Segment 锁。
 
-get操作的高效之处在于不需要加锁,原因是它的get方法里将要使用的共享变量都定义成 volatile,如用于统计当前Segement大小的count字段和用于存储值的HashEntry的 value。定义成volatile的变量,能够在线程之间保持可见性,能够被多线程同时读,并且保证不会读到过期的值,但是只能被单线程写(有一种情况 可以被多线程写,就是写入的值不依赖于原值),在get 操作里只需要读不需要写共享变量count和value,所以可以不用加锁。只所以不会读到过期的值,是根据JMM内存模型的 happens-before原则,对volatile字段的写入操作先于读操作,即使两个线程同时修改和获取 volatile变量,get操作也能拿到最新的值,这是用volatile替换锁的经典应用场景。
+get操作的高效之处在于不需要加锁,原因是它的get方法里将要使用的共享变量都定义成 volatile,如用于统计当前Segement大小的count字段和用于存储值的HashEntry的 value。定义成volatile的变量,能够在线程之间保持可见性,能够被多线程同时读,并且保证不会读到过期的值,但是只能被单线程写(有一种情况 可以被多线程写,就是写入的值不依赖于原值),在get 操作里只需要读不需要写共享变量count和value,所以可以不用加锁。之所以不会读到过期的值,是根据JMM内存模型的 happens-before原则,对volatile字段的写入操作先于读操作,即使两个线程同时修改和获取 volatile变量,get操作也能拿到最新的值,这是用volatile替换锁的经典应用场景。
 
 下面的源代码摘自JDK7。
 
@@ -880,6 +854,18 @@ get操作的高效之处在于不需要加锁,原因是它的get方法里将要�
 另外ConcurrentHashMap不会抛出ConcurrentModificationException。
 
 ConcurrentHashMap还提供了一系列额外的原子操作putIfAbsent, removeIfEqual, and replaceIfEqual等等。
+
+putIfAbsen解决了如下的原子性问题：
+
+```
+ConcurrentMap<String,String> map = new ConcurrentHashMap<String,String>();
+
+if(!map.containsKey(key)){
+    map.put(key,value);
+}
+```
+
+从Java 8开始，HashMap，ConcurrentHashMap和LinkedHashMap在处理频繁冲突时将使用平衡树来代替链表，当同一hash桶中的元素数量超过特定的值便会由链表切换到平衡树，这会将get()方法的性能从O(n)提高到O(logn)。
 
 CopyOnWriteArrayList每次修改时候都会复制一遍底层的数组，当迭代的操作远远大于修改的时候，才可以使用“写入时复制”容器。
 
@@ -1098,7 +1084,54 @@ public class TestHarness {
 
 #### 5.5.2 FutureTask
 
-FutureTask通过Callable实现，相当于一个可生成结果的Runnable，如果任务完成get立即返回结果，否则阻塞直到任务进行完成状态。
+FutureTask通过Callable实现，同时也实现了Runnable接口，相当于一个可生成结果的Runnable，如果任务完成get立即返回结果，否则阻塞直到任务进行完成状态。
+
+FutureTask的以上功能却是依靠通过一个叫AbstractQueuedSynchronizer的类来实现，至少在JDK 1.5、JDK1.6版本是这样的（从1.7开始FutureTask已经被其作者Doug Lea修改为不再依赖AbstractQueuedSynchronizer实现了，这是JDK1.7的变化之一）。
+
+一定要看看FutureTask的源代码，内部使用WaitNode记录所有调用get()被阻塞的线程，run方法实际的实现简单如下：
+
+```
+run() {
+  try {
+     result = callable.call()
+  } catch (Throwable t) {
+     result = t;
+  }
+  if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {  //原子操作设置状态。
+      outcome = result;
+      UNSAFE.putOrderedInt(this, stateOffset, NORMAL); // final state
+      for (WaitNode q; (q = waiters) != null;) {
+            for (;;) {
+               Thread t = q.thread;
+               LockSupport.unpark(t);
+               WaitNode next = q.next;
+               if (next == null)
+                  break;
+            }
+            break;
+      }
+  }
+}
+```
+
+get()阻塞方法如下：
+
+```
+if (s <= COMPLETING)
+    s = waiters queue append this waitNode and LockSupport.parkNanos(this, nanos);
+return report(s);
+
+ private V report(int s) throws ExecutionException {
+        Object x = outcome;
+        if (s == NORMAL)
+            return (V)x;  //正常返回
+        if (s >= CANCELLED)
+            throw new CancellationException();
+        throw new ExecutionException((Throwable)x);  错误返回经过封装的异常
+    }
+```
+
+圆规正传：
 
 ```
 public class Preloader {
@@ -2203,7 +2236,653 @@ public class ConcurrentPuzzleSolver <P, M> {
 
 
 
+# 第三部分 Liveness, Performance, and Testing
 
+## 第10章 避免活跃性危险
+
+### 10.1 死锁
+
+哲学家问题
+
+有环
+
+A等B，B等A
+
+数据库往往可以检测和解决死锁//TODO
+
+JVM不行，一旦死锁只有停止重启。
+
+下面分别介绍了几种典型的死锁情况：
+
+#### 10.1.1 Lock ordering Deadlocks
+
+下面是一个经典的锁顺序死锁：两个线程用不同的顺序来获得相同的锁，**如果按照锁的请求顺序来请求锁，就不会发生这种循环依赖的情况。**
+
+```
+public class LeftRightDeadlock {
+    private final Object left = new Object();
+    private final Object right = new Object();
+ 
+    public void leftRight() {
+        synchronized (left) {
+            synchronized (right) {
+                doSomething();
+            }
+        }
+    }
+ 
+    public void rightLeft() {
+        synchronized (right) {
+            synchronized (left) {
+                doSomethingElse();
+            }
+        }
+    }
+ 
+    void doSomething() {
+    }
+ 
+    void doSomethingElse() {
+    }
+}
+```
+
+#### 10.1.1 Dynamic Lock Order Deadlocks
+
+下面的转账例子，如果一个线程X向Y转，而另外一个线程Y向X也转，那么就会发生死锁。
+
+```
+public class DynamicOrderDeadlock {
+    // Warning: deadlock-prone!
+    public static void transferMoney(Account fromAccount,
+                                     Account toAccount,
+                                     DollarAmount amount)
+            throws InsufficientFundsException {
+        synchronized (fromAccount) {
+            synchronized (toAccount) {
+                if (fromAccount.getBalance().compareTo(amount) < 0)
+                    throw new InsufficientFundsException();
+                else {
+                    fromAccount.debit(amount);
+                    toAccount.credit(amount);
+                }
+            }
+        }
+    }
+ 
+    static class DollarAmount implements Comparable<DollarAmount> {
+        // Needs implementation
+ 
+        public DollarAmount(int amount) {
+        }
+ 
+        public DollarAmount add(DollarAmount d) {
+            return null;
+        }
+ 
+        public DollarAmount subtract(DollarAmount d) {
+            return null;
+        }
+ 
+        public int compareTo(DollarAmount dollarAmount) {
+            return 0;
+        }
+    }
+ 
+    static class Account {
+        private DollarAmount balance;
+        private final int acctNo;
+        private static final AtomicInteger sequence = new AtomicInteger();
+ 
+        public Account() {
+            acctNo = sequence.incrementAndGet();
+        }
+ 
+        void debit(DollarAmount d) {
+            balance = balance.subtract(d);
+        }
+ 
+        void credit(DollarAmount d) {
+            balance = balance.add(d);
+        }
+ 
+        DollarAmount getBalance() {
+            return balance;
+        }
+ 
+        int getAcctNo() {
+            return acctNo;
+        }
+    }
+ 
+    static class InsufficientFundsException extends Exception {
+    }
+}
+```
+
+解决办法还是顺序话锁，考虑针对两种情况取hashcode然后判断if-else里面决定锁顺序。
+
+```
+class Helper {
+            public void transfer() throws InsufficientFundsException {
+                if (fromAcct.getBalance().compareTo(amount) < 0)
+                    throw new InsufficientFundsException();
+                else {
+                    fromAcct.debit(amount);
+                    toAcct.credit(amount);
+                }
+            }
+        }
+        int fromHash = System.identityHashCode(fromAcct);
+        int toHash = System.identityHashCode(toAcct);
+ 
+        if (fromHash < toHash) {
+            synchronized (fromAcct) {
+                synchronized (toAcct) {
+                    new Helper().transfer();
+                }
+            }
+        } else if (fromHash > toHash) {
+            synchronized (toAcct) {
+                synchronized (fromAcct) {
+                    new Helper().transfer();
+                }
+            }
+        } else {
+            synchronized (tieLock) {
+                synchronized (fromAcct) {
+                    synchronized (toAcct) {
+                        new Helper().transfer();
+                    }
+                }
+            }
+        }
+```
+
+#### 10.1.3 在协作对象之间发生死锁Deadlocks Between Cooperating Objects
+
+下面的例子setLocation和getImage都会获取两把锁，会存在两个线程按照不同的顺序获取锁的情况。
+
+```
+public class CooperatingDeadlock {
+    // Warning: deadlock-prone!
+    class Taxi {
+        @GuardedBy("this") private Point location, destination;
+        private final Dispatcher dispatcher;
+ 
+        public Taxi(Dispatcher dispatcher) {
+            this.dispatcher = dispatcher;
+        }
+ 
+        public synchronized Point getLocation() {
+            return location;
+        }
+ 
+        public synchronized void setLocation(Point location) {
+            this.location = location;
+            if (location.equals(destination))
+                dispatcher.notifyAvailable(this);
+        }
+ 
+        public synchronized Point getDestination() {
+            return destination;
+        }
+ 
+        public synchronized void setDestination(Point destination) {
+            this.destination = destination;
+        }
+    }
+ 
+    class Dispatcher {
+        @GuardedBy("this") private final Set<Taxi> taxis;
+        @GuardedBy("this") private final Set<Taxi> availableTaxis;
+ 
+        public Dispatcher() {
+            taxis = new HashSet<Taxi>();
+            availableTaxis = new HashSet<Taxi>();
+        }
+ 
+        public synchronized void notifyAvailable(Taxi taxi) {
+            availableTaxis.add(taxi);
+        }
+ 
+        public synchronized Image getImage() {
+            Image image = new Image();
+            for (Taxi t : taxis)
+                image.drawMarker(t.getLocation());
+            return image;
+        }
+    }
+ 
+    class Image {
+        public void drawMarker(Point p) {
+        }
+    }
+}
+```
+
+#### 10.1.4 开放调用
+
+减小锁的力度，锁不嵌套。
+
+```
+class CooperatingNoDeadlock {
+    @ThreadSafe
+    class Taxi {
+        @GuardedBy("this") private Point location, destination;
+        private final Dispatcher dispatcher;
+ 
+        public Taxi(Dispatcher dispatcher) {
+            this.dispatcher = dispatcher;
+        }
+ 
+        public synchronized Point getLocation() {
+            return location;
+        }
+ 
+        public synchronized void setLocation(Point location) {
+            boolean reachedDestination;
+            synchronized (this) {
+                this.location = location;
+                reachedDestination = location.equals(destination);
+            }
+            if (reachedDestination)
+                dispatcher.notifyAvailable(this);
+        }
+ 
+        public synchronized Point getDestination() {
+            return destination;
+        }
+ 
+        public synchronized void setDestination(Point destination) {
+            this.destination = destination;
+        }
+    }
+ 
+    @ThreadSafe
+    class Dispatcher {
+        @GuardedBy("this") private final Set<Taxi> taxis;
+        @GuardedBy("this") private final Set<Taxi> availableTaxis;
+ 
+        public Dispatcher() {
+            taxis = new HashSet<Taxi>();
+            availableTaxis = new HashSet<Taxi>();
+        }
+ 
+        public synchronized void notifyAvailable(Taxi taxi) {
+            availableTaxis.add(taxi);
+        }
+ 
+        public Image getImage() {
+            Set<Taxi> copy;
+            synchronized (this) {
+                copy = new HashSet<Taxi>(taxis);
+            }
+            Image image = new Image();
+            for (Taxi t : copy)
+                image.drawMarker(t.getLocation());
+            return image;
+        }
+    }
+ 
+    class Image {
+        public void drawMarker(Point p) {
+        }
+    }
+ 
+}
+```
+
+#### 1.0.15 资源死锁
+
+* 数据库连接池，A持有数据库D1连接，等待与D2连接，B持有D2的连接，等待与D1连接。
+* 线程饥饿死锁，如8.1.1小节的例子。
+
+### 10.2 死锁的避免与诊断
+
+#### 10.2.1 支持定时的锁
+
+tryLock
+
+#### 10.2.2 kill -3 发信号给JVM dump线程
+
+### 10.3 其他活跃性危险
+
+#### 10.3.1 饥饿
+
+#### 10.3.3 活锁Livelock
+
+他不会阻塞线程，但是也不能继续执行，因为线程在不断的重复执行相同的操作，而且总会失败。
+
+例如处理事务消，回滚后再次重新把任务放在队头。
+
+又例如发送数据包，都选择1s后重试，那么总会冲突，所以可以考虑一个随机数时间间隔。
+
+
+
+## 第11章 性能与可伸缩性Performance and Scalability
+
+线程可以充分发挥系统的处理能力，提高资源利用率。同时现有的线程可以提升系统响应性。
+
+但是在安全性与极限性能上，我们首先需要保证的是安全性。
+
+### 11.1 对性能的思考
+
+提升性能=用更少的资源做更多的事情（太对了，这才是问题的本质）。
+
+资源包括：CPU时钟周期，内存，网络带宽，I/O带宽，数据请求，磁盘空间等。
+
+资源密集型说的就是对上述维度敏感的应用。
+
+与单线程相比，多线程总会一起一些额外的性能开销：
+
+* 线程协调with coordinating between threads (locking, signaling, and memory synchronization)
+* 上下文切换increased context switching
+* 线程创建和销毁thread creation and teardown
+* 线程调度scheduling overhead
+
+可伸缩性是指：增加资源，程序的吞吐可以成比例的增加。
+
+性能的提高往往是一个权衡的过程，需要考虑诸多因素。
+
+### 11.2 Amdahl定律 Amdahl's Law
+
+收割可以靠并行提高性能，而作物生长则不行。这是一个很简单的自然界的问题，在计算机界也存在，需要对问题进行合理的分解，发现潜在的并行能力。
+
+Amdahl定律：[并行计算](https://zh.wikipedia.org/wiki/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97)中的**加速比**是用并行前的执行速度和并行后的执行速度之比来表示的，它表示了在并行化之后的效率提升情况。
+
+speedup <= 1 /  F + (1 - F) /N 
+
+F表示被串行化的部分，N表示处理器数量。
+
+如果N无穷大，那么最大的加速比例是1/F。理论上如果50%是串行的，那么最大的加速比只能是2。如果10%串行。那么最大加速比接近10，如果N=10也就是说有10个处理器资源，那么最高的加速比是5.4，在100个处理器的情况下是9.2。
+
+但是任何程序都存在串行部分，例如从队列中take数据，访问数据库的操作等，这是绝对的。
+
+书中举了一个例子是Synchronized linkedlist和ConcurrentLinkedQueue的吞吐率对比，在处理器数量到达上限后，他们的吞吐都基本是一条持平的线，但是Synchronized linkedlist吞吐率更低，在处理器较少的情况下就到达了极限，这主要受context switch的限制。
+
+### 11.3 线程引入的开销
+
+单线程不存在线程调度，也不存在同步开销，不需要使用锁来保证安全一致性。而多线程这些都需要考虑。
+
+#### 11.3.1 上下文切换
+
+操作系统的设计者巧妙地利用了时间片轮转的方式, CPU给每个任务都服务一定的时间, 然后把当前任务的状态保存下来, 在加载下一任务的状态后, 继续服务下一任务. 如果可运行的线程数大于CPU数量，那么OS会最终将某个正在运行的线程调度出来，从而让其他线程能够使用CPU，这会导致一次上下文切换，主要包括当前线程“保存现场”，并且新调度出来的线程需要“恢复现场“。这里的context switch直接消耗包括: CPU寄存器需要保存和加载, 系统调度器的代码需要执行, TLB实例需要重新加载, CPU 的pipeline需要刷掉; 间接消耗指的是多核的cache之间得共享数据, 间接消耗对于程序的影响要看线程工作区操作数据的大小). 
+
+JVM和OS消耗的CPU时钟周期越少，那么APP可用的CPU时钟周期就越多。
+
+往往OS有一个最小的执行时间，防止过于频繁的上下文切换。
+
+JVM会因为阻塞比如锁、阻塞I/O而挂起线程，如果频繁的阻塞，就会无法使用完整的调度时间片。//?
+
+如果可运行的线程数大于CPU的内核数，那么OS会根据一定的调度算法，强行切换正在运行的线程，从而使其它线程能够使用CPU周期。
+
+切换线程会导致上下文切换。线程的调度会导致CPU需要在操作系统和进程间花费更多的时间片段，这样真正执行应用程序的时间就减少了。另外上下文切换也会导致缓存的频繁进出，对于一个刚被切换的线程来说，可能由于高速缓冲中没有数据而变得更慢，从而导致更多的IO开销。
+
+`vmstat`	命令可以看cs这一个字段看上下文切换的数据。
+
+#### 11.3.2 内存同步
+
+同步的性能开销包括多个方面。在synchronized和volatile提供的可见性保证中会使用一些特殊指令，即内存栅栏（memory barrier），内存栅栏可以刷新缓存，满足可见性，但是它也会抑制一些编译器优化，例如不能指令重排序。
+
+现代的JVM对于无竞争的synchronized的消耗非常小，基本微乎其微。
+
+同时现代的JVM编译优化做的非常成熟，一些不必要的同步开销往往可以优化掉。例如，下面的代码会去掉锁获取。
+
+```
+synchronized (new Object()) {
+ // do something
+} 
+```
+
+还有一些比如escape analysis会找出不会发布到堆上的本地对象，锁的获取和释放会被优化为最小的次数甚至去掉。例如下面的操作。
+
+```
+public String getStoogeNames() {
+ List<String> stooges = new Vector<String>();
+ stooges.add("Moe");
+ stooges.add("Larry");
+ stooges.add("Curly");
+ return stooges.toString();
+} 
+```
+
+当然即使不escape，也会有lock coarsening过程，将临近的同步代码块使用同一个锁合并起来。这都减少了同步的开销。
+
+所以不必过度担心非竞争同步带来的开销，这个基本的机制已经非常的快了，而且JVM还有能进行额外的优化以进一步降低或者消除开销的本领。
+
+不同线程间要进行数据同步，synchronized以及volatile提供的可见性都会导致缓存失效。线程栈之间的数据要和主存进行同步，这些同步有一些小小的开销。如果线程间同时要进行数据同步，那么这些同步的线程可能都会受阻。
+
+#### 11.3.3 阻塞
+
+竞争的同步需要OS介入，从而增加了开销。当在锁上发生竞争时，失败者线程会被阻塞，JVM在实现发现阻塞的行为时，可以采用
+
+* 自旋等待 spin-waiting
+* 或者OS挂起被阻塞的线程
+
+这两种的效率高低取决于上下文切换的开销以及成功获取锁之前的等待时间，如果等待时间较短，则spin-waiting，如果较长则挂起。
+
+一个线程被阻塞会产生上下文切换的影响，但是它到底何时执行这是由OS决定的，靠时间分片机制，这个调度的策略是OS解决的，而JVM的scheduler解决的是阻塞释放锁之后哪个线程需要被select出来执行，也就是转到runnable状态。
+
+There is no single Java Virtual Machine; JVM is a specification, and there are multiple implementations of it, including the OpenJDK version and the Sun version of it, among others. I don't know for certain, but I would guess that any reasonable JVM would simply use the underlying threading mechanism provided by the OS, which would imply POSIX Threads (pthreads) on UNIX (Mac OS X, Linux, etc.) and would imply WIN32 threads on Windows. Typically, those systems use a round-robin strategy by default. Many types of algorithms exist like **preemptive** and **time slicing**with **round robin** etc. 
+
+The JVM is based on **preemptive and priority based** scheduling algorithm to select thread to run.
+
+每个Java线程一对一映射到Solaris平台上的一个本地线程上，并将线程调度交由本地线程的调度程序。由于Java线程是与本地线程是一对一地绑在一起的，所以改变Java线程的优先权也不会有可靠地运行结果。
+
+对于类Unix系统而言，一般都是进程作为任务的调度单位，也即是操作系统调度器，只会针对进程来分配CPU等资源。由于进程彼此独立，相互不可进行直接访问，这增加了应用的通信成本。所以后面有了微进程，微进程与进程不同的是，允许一定程度上，彼此可以直接进行访问，详细可参考[LinuxThreads](http://en.wikipedia.org/wiki/LinuxThreads)。JVM在一些类Unix平台下，就是将线程映射到操作系统的微进程，来实现线程调度。这样多线程能够直接被系统调度器进行调度，与此对应的就是其线程的创建和销毁的成本就比较高，而且JVM的线程优先级很难进行匹配，无法提供确切的保证，仅仅是个hint。
+
+当发生锁竞争时，失败的线程会导致阻塞。通常阻塞的线程可能在JVM内部进行自旋等待，或者被操作系统挂起。自旋等待可能会导致更多的CPU切片浪费，而操作系统挂起则会导致更多的上下文切换。
+
+### 11.4 减少锁的竞争
+
+减少锁的竞争能够提高性能和可伸缩性。
+
+在并发程序中，对可伸缩性的最主要的威胁就是独占方式的资源锁。
+
+有三种方式可以减低锁的竞争程度：
+
+* 减少锁的持有时间
+* 降低锁的请求频率
+* 使用带有协调机制的独占锁，这些机器允许更好的并发性。//?
+
+#### 11.4.1 缩小锁的范围（快进快出）
+
+原理就是Amdah定律，串行的代码总量减少了。
+
+#### 11.4.2 减小锁的粒度
+
+这种方式就是降低线程请求锁的频率，通过锁分解来实现。
+
+下面的应用明显锁的粒度太粗了。
+
+```
+public class ServerStatusBeforeSplit {
+    @GuardedBy("this") public final Set<String> users;
+    @GuardedBy("this") public final Set<String> queries;
+ 
+    public ServerStatusBeforeSplit() {
+        users = new HashSet<String>();
+        queries = new HashSet<String>();
+    }
+ 
+    public synchronized void addUser(String u) {
+        users.add(u);
+    }
+ 
+    public synchronized void addQuery(String q) {
+        queries.add(q);
+    }
+ 
+    public synchronized void removeUser(String u) {
+        users.remove(u);
+    }
+ 
+    public synchronized void removeQuery(String q) {
+        queries.remove(q);
+    }
+}
+```
+
+锁分解就是独立的变量独立分配锁，不适用全局锁。优化后如下：
+
+```
+public class ServerStatusAfterSplit {
+    @GuardedBy("users") public final Set<String> users;
+    @GuardedBy("queries") public final Set<String> queries;
+ 
+    public ServerStatusAfterSplit() {
+        users = new HashSet<String>();
+        queries = new HashSet<String>();
+    }
+ 
+    public void addUser(String u) {
+        synchronized (users) {
+            users.add(u);
+        }
+    }
+ 
+    public void addQuery(String q) {
+        synchronized (queries) {
+            queries.add(q);
+        }
+    }
+ 
+    public void removeUser(String u) {
+        synchronized (users) {
+            users.remove(u);
+        }
+    }
+ 
+    public void removeQuery(String q) {
+        synchronized (users) {
+            queries.remove(q);
+        }
+    }
+}
+```
+
+#### 11.4.3 锁分段
+
+最典型的例子就是ConcurrentHashMap。
+
+```
+public class StripedMap {
+    // Synchronization policy: buckets[n] guarded by locks[n%N_LOCKS]
+    private static final int N_LOCKS = 16;
+    private final Node[] buckets;
+    private final Object[] locks;
+ 
+    private static class Node {
+        Node next;
+        Object key;
+        Object value;
+    }
+ 
+    public StripedMap(int numBuckets) {
+        buckets = new Node[numBuckets];
+        locks = new Object[N_LOCKS];
+        for (int i = 0; i < N_LOCKS; i++)
+            locks[i] = new Object();
+    }
+ 
+    private final int hash(Object key) {
+        return Math.abs(key.hashCode() % buckets.length);
+    }
+ 
+    public Object get(Object key) {
+        int hash = hash(key);
+        synchronized (locks[hash % N_LOCKS]) {
+            for (Node m = buckets[hash]; m != null; m = m.next)
+                if (m.key.equals(key))
+                    return m.value;
+        }
+        return null;
+    }
+ 
+    public void clear() {
+        for (int i = 0; i < buckets.length; i++) {
+            synchronized (locks[i % N_LOCKS]) {
+                buckets[i] = null;
+            }
+        }
+    }
+}
+```
+
+#### 11.4.4 避免热点域hot field
+
+比如HashMap的size方法，ConcurrentHashMap采用了牺牲size的准确性的策略。
+
+#### 11.4.5 一些替代独占锁的方法
+
+ReadWriteLock，AtomicInteger，UNSAFE.compareAndSwap(..)
+
+#### 11.4.6 监测CPU的利用率
+
+vmstat，kill -3 pid
+
+”waiting to lock monitor…“有这句就证明竞争太激烈了。
+
+### 11.5 示例：比较Map的性能
+
+比较了ConcurrentHashMap和synchronized hashmap的性能对比。
+
+串行访问Map一个锁 pk 多个线程能并发的访问Map通过分段锁。
+
+竞争非常激烈的时候，synchronized hashmap伸缩性非常差，吞吐量不会随着线程数增加而增加，反而降低，因为每个操作消耗的时间大部分都用于上下文切换和调度延迟上了。
+
+### 11.6 减少上下文切换的开销
+
+举个例子，就是APP记录日志，例如写日志到本地或者远程RPC，直接记录会存在I/O阻塞，靠一个轻量级的queue来解耦，使得APP不感知影响，减少阻塞。
+
+http://www.artima.com/insidejvm/ed2/threadsynch.html  //TODO
+
+### 总结
+
+了解了性能的提升的几个方面，也了解性能的开销后，应用程序就要根据实际的场景进行取舍和评估。没有一劳永逸的优化方案，不断的进行小范围改进和调整是提高性能的有效手段。当前一些大的架构调整也会导致较大的性能的提升。
+
+性能提升考虑的方面：
+
+* 系统平台的资源利用率
+
+一个程序对系统平台的资源利用率是指某一个设备繁忙且服务于此程序的时间占所有时间的比率。从物理学的角度讲类似于有用功的比率。简单的说就是：资源利用率=有效繁忙时间/总耗费时间。
+
+也就说尽可能的让设备做有用的功，同时榨取其最大值。无用的循环可能会导致CPU 100%的使用率，但不一定是有效的工作。有效性通常难以衡量，通常只能以主观来评估，或者通过被优化的程序的行为来判断是否提高了有效性。
+
+* 延迟
+
+延迟描述的是完成任务所耗费的时间。延迟有时候也成为响应时间。如果有多个并行的操作，那么延迟取决于耗费时间最大的任务。
+
+* 多处理
+
+多处理是指在单一系统上同时执行多个进程或者多个程序的能力。多处理能力的好处是可以提高吞吐量。多处理可以有效利用多核CPU的资源。
+
+* 多线程
+
+多线程描述的是同一个地址空间内同时执行多个线程的过程。这些线程都有不同的执行路径和不同的栈结构。我们说的并发性更多的是指针对线程。
+
+* 并发性
+
+同时执行多个程序或者任务称之为并发。单程序内的多任务处理或者多程序间的多任务处理都认为是并发。
+
+* 吞吐量
+
+吞吐量衡量系统在单位之间内可以完成的工作总量。对于硬件系统而言，吞吐量是物理介质的上限。在没有达到物理介质之前，提高系统的吞吐量也可以大幅度改进性能。同时吞吐量也是衡量性能的一个指标。
+
+* 瓶颈
+
+程序运行过程中性能最差的地方。通常而言，串行的IO、磁盘IO、内存单元分配、网络IO等都可能造成瓶颈。某些使用太频繁的算法也有可能成为瓶颈。
+
+* 可扩展性
+
+这里的可扩展性主要是指程序或系统通过增加可使用的资源而增加性能的能力。
+
+
+
+## 第12章 并发程序的测试
+
+略
 
 
 
@@ -2211,6 +2890,8 @@ public class ConcurrentPuzzleSolver <P, M> {
 ## 第13章 显式锁 Explicit Locks 
 
 Java5.0之前只能用synchronized和volatile，5.0后Doug Lea加入了ReentrantLock，并不是替代内置锁，而是当内置锁机制不适用时，作为一种可选择的高级功能。
+
+不适用可以包括无法中断一个正在等待获取锁的线程，无限的锁等待，内置锁必须放在代码块里面（编程有些局限性），所以提供了J.U.C的lock。
 
 ### 13.1 Lock和ReentrantLock
 
@@ -2259,7 +2940,7 @@ try {
 
 下面依次讲解：
 
-轮询锁和定时锁，内置锁的死锁问题只能通过重启程序解决，那么可定时和可轮询的锁提供了另一种选择。
+轮询锁和定时锁，内置锁的死锁问题只能通过重启程序解决，那么可定时和可轮询的锁提供了另一种选择。通过tryLock解决。
 
 ```
 public class DeadlockAvoidance {
@@ -2273,7 +2954,7 @@ public class DeadlockAvoidance {
             throws InsufficientFundsException, InterruptedException {
         long fixedDelay = getFixedDelayComponentNanos(timeout, unit);
         long randMod = getRandomDelayModulusNanos(timeout, unit);
-        long stopTime = System.nanoTime() + unit.toNanos(timeout);
+        long stopTime = System.nanoTime() + unit.toNanos(timeout); //定时，轮询
  
         while (true) {
             if (fromAcct.lock.tryLock()) {
@@ -2513,19 +3194,1208 @@ Java5.0的时候J.U.C的ReentrantLock锁竞争性能非常好，到了Java6.0使
 
 默认ReentrantLock创建的事非公平的锁，这个非公平是指被阻塞挂起的线程（使用LockSupport.park）都在AQS（下一节会讲）的CLH队列中排队等待自己被唤醒，他们是按照发出的请求顺序来排队的，但是一旦有一个唤醒的就会和新来的线程来竞争锁，新来的可能会“插队”，如果新来的成功获取锁，那么它将跳过所有等待线程而开始执行，这也就是以为着本该被唤醒的线程失败了，对不起您回到队列的尾部继续等。这就是非公平性。
 
-一般，非公平锁的性能要好于公平锁。原因在于一个线程被唤醒是需要时间的，这个空隙如果有其他线程处于ready状态，不需要上下文切换，那么直接运行就行，这个“双赢”的局面，是提高吞吐量的原因。
+一般，非公平锁的性能要好于公平锁。原因在于一个线程被唤醒是需要时间的，挂起线程和唤醒回复线程存在开销，这个空隙如果有其他线程处于ready状态，不需要上下文切换，那么直接运行就行，A持有锁，B请求，但是B在恢复的过程中,C可以插队“非公平”的获取锁，然后执行再释放，这时候B刚刚好做完上下文切换可以执行，这个对于B和C来说是一个“双赢”的局面，是提高吞吐量的原因。
+
+那么JVM也没有在其内置锁上采用公平性的机制。
 
 ### 13.4 在synchronized和ReentrantLock之间进行选择
 
 除非使用到13.1提到的高级特性，或者内置锁无法满足需求时，否则还是老实用内置锁，毕竟是JVM自身提供的，而不是靠类库，因此可能会执行一些优化。
 
+另外内置锁在利用kill -3 dump thread的时候可以发现栈帧上的一些monitor lock的信息，识别死锁，而J.U.C的锁这方面就不太行，当然JAVA6之后提供了管理和调试接口解决了。
+
 ### 13.5 读-写锁
 
-//TODO
+ReentrantLock每次只有一个线程能持有锁，但是这种严格的互斥也会抑制并发。会抑制：
+
+* 写/写
+* 写/读
+* 读/读
+
+冲突，但是很多情况下读操作是非常多的，如果放宽加锁的需求，允许多个读操作可以同时访问数据，那么就可以提升性能。**但是要保证读取的数据是最新的，不会有其他线程修改数据。**
+
+使用ReadWriteLock的场景是：一个资源可以被多个读操作访问，或者被一个写操作访问，但是二者不能同时进行。API如下：
+
+```
+Lock	readLock() Returns the lock used for reading.
+ Lock	writeLock()  Returns the lock used for writing.
+```
+
+如果读正在持有锁，这时候另外一个线程写，那么会优先获取写。//？
+
+下面是一个应用：
+
+```
+public class ReadWriteMap <K,V> {
+    private final Map<K, V> map;
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock r = lock.readLock();
+    private final Lock w = lock.writeLock();
+ 
+    public ReadWriteMap(Map<K, V> map) {
+        this.map = map;
+    }
+ 
+    public V put(K key, V value) {
+        w.lock();
+        try {
+            return map.put(key, value);
+        } finally {
+            w.unlock();
+        }
+    }
+ 
+    public V remove(Object key) {
+        w.lock();
+        try {
+            return map.remove(key);
+        } finally {
+            w.unlock();
+        }
+    }
+ 
+    public void putAll(Map<? extends K, ? extends V> m) {
+        w.lock();
+        try {
+            map.putAll(m);
+        } finally {
+            w.unlock();
+        }
+    }
+ 
+    public void clear() {
+        w.lock();
+        try {
+            map.clear();
+        } finally {
+            w.unlock();
+        }
+    }
+ 
+    public V get(Object key) {
+        r.lock();
+        try {
+            return map.get(key);
+        } finally {
+            r.unlock();
+        }
+    }
+ 
+    public int size() {
+        r.lock();
+        try {
+            return map.size();
+        } finally {
+            r.unlock();
+        }
+    }
+ 
+    public boolean isEmpty() {
+        r.lock();
+        try {
+            return map.isEmpty();
+        } finally {
+            r.unlock();
+        }
+    }
+ 
+    public boolean containsKey(Object key) {
+        r.lock();
+        try {
+            return map.containsKey(key);
+        } finally {
+            r.unlock();
+        }
+    }
+ 
+    public boolean containsValue(Object value) {
+        r.lock();
+        try {
+            return map.containsValue(value);
+        } finally {
+            r.unlock();
+        }
+    }
+}
+```
 
 
 
 ## 第14章 构建自定义的同步工具 Building Custom Synchronizers
 
+类库中包含了许多存在状态依赖的类，例如FutureTask、Semaphore和BlockingQueue，他们的一些操作都有前提条件，例如非空，或者任务已完成等。
 
+创建状态依赖类的最简单的房就是在JDK提供了的状态依赖类基础上构造。例如第八章的ValueLactch，如果这些不满足，可以使用Java语言或者类库提供的底层机制来构造，包括
+
+* 内置的条件队列
+* condition
+* AQS
+
+这一章就介绍这些。
+
+### 14.1 状态依赖性的管理 State Dependence
+
+在14.2节会介绍使用条件队列来解决阻塞线程运行的问题。下面先介绍通过轮询和休眠的方式（勉强）的解决。
+
+下面是一个标准的模板，
+
+```
+void blockingAction() throws InterruptedException {
+   acquire lock on object state
+   while (precondition does not hold) {
+      release lock
+      wait until precondition might hold
+      optionally fail if interrupted or timeout expires
+      reacquire lock
+   }
+   perform action
+}
+```
+
+下面介绍阻塞有界队列的集中实现方式。依赖的前提条件是：
+
+* 不能从空缓存中获取元素
+* 不能将元素放入已满的缓存中
+
+不满足条件时候，依赖状态的操作可以
+
+* 抛出异常
+* 返回一个错误状态（码）
+* 阻塞直到进入正确的状态
+
+下面是基类，线程安全，但是非阻塞。
+
+```
+@ThreadSafe
+public abstract class BaseBoundedBuffer <V> {
+    @GuardedBy("this") private final V[] buf;
+    @GuardedBy("this") private int tail;
+    @GuardedBy("this") private int head;
+    @GuardedBy("this") private int count;
+ 
+    protected BaseBoundedBuffer(int capacity) {
+        this.buf = (V[]) new Object[capacity];
+    }
+ 
+    protected synchronized final void doPut(V v) {
+        buf[tail] = v;
+        if (++tail == buf.length)
+            tail = 0;
+        ++count;
+    }
+ 
+    protected synchronized final V doTake() {
+        V v = buf[head];
+        buf[head] = null;
+        if (++head == buf.length)
+            head = 0;
+        --count;
+        return v;
+    }
+ 
+    public synchronized final boolean isFull() {
+        return count == buf.length;
+    }
+ 
+    public synchronized final boolean isEmpty() {
+        return count == 0;
+    }
+}
+```
+
+“先检查再运行”的逻辑解决方案如下，调用者必须自己处理前提条件失败的情况。当然也可以返回错误消息。
+
+当然调用者可以不Sleep，而是直接重试，这种方法叫做**忙等待或者自旋等待（busy waiting or spin waiting. ）**，如果换成很长时间都不变，那么这将会消耗大量的CPU时间！！！所以调用者自己休眠，sleep让出CPU。但是这个时间就很尴尬了，sleep长了万一一会前提条件就满足了岂不是白等了从而响应性低，sleep短了浪费CPU时钟周期。另外可以试试yield，但是这也不靠谱。
+
+```
+@ThreadSafe
+        public class GrumpyBoundedBuffer <V> extends BaseBoundedBuffer<V> {
+    public GrumpyBoundedBuffer() {
+        this(100);
+    }
+ 
+    public GrumpyBoundedBuffer(int size) {
+        super(size);
+    }
+ 
+    public synchronized void put(V v) throws BufferFullException {
+        if (isFull())
+            throw new BufferFullException();
+        doPut(v);
+    }
+ 
+    public synchronized V take() throws BufferEmptyException {
+        if (isEmpty())
+            throw new BufferEmptyException();
+        return doTake();
+    }
+}
+ 
+class ExampleUsage {
+    private GrumpyBoundedBuffer<String> buffer;
+    int SLEEP_GRANULARITY = 50;
+ 
+    void useBuffer() throws InterruptedException {
+        while (true) {
+            try {
+                String item = buffer.take();
+                // use item
+                break;
+            } catch (BufferEmptyException e) {
+                Thread.sleep(SLEEP_GRANULARITY);
+            }
+        }
+    }
+}
+```
+
+下一步改进下，首先让客户端舒服些。
+
+```
+@ThreadSafe
+public class SleepyBoundedBuffer <V> extends BaseBoundedBuffer<V> {
+    int SLEEP_GRANULARITY = 60;
+ 
+    public SleepyBoundedBuffer() {
+        this(100);
+    }
+ 
+    public SleepyBoundedBuffer(int size) {
+        super(size);
+    }
+ 
+    public void put(V v) throws InterruptedException {
+        while (true) {
+            synchronized (this) {
+                if (!isFull()) {
+                    doPut(v);
+                    return;
+                }
+            }
+            Thread.sleep(SLEEP_GRANULARITY);
+        }
+    }
+ 
+    public V take() throws InterruptedException {
+        while (true) {
+            synchronized (this) {
+                if (!isEmpty())
+                    return doTake();
+            }
+            Thread.sleep(SLEEP_GRANULARITY);
+        }
+    }
+}
+```
+
+这种方式测试失败，那么释放锁，让别人做，自己休眠下，然后再检测，不断的重复这个过程，当然可以解决，但是还是需要做权衡，CPU使用率与响应性之间的抉择。
+
+那么我们想如果这种轮询和休眠的dummy方式不用，而是存在某种挂起线程的方案，并且这种方法能够确保党某个条件成真时候立刻唤醒线程，那么将极大的简化实现工作，这就是条件队列的实现。
+
+Condition Queues的名字来源：it gives a group of threads called the **wait set** a way to wait for a specific
+condition to become true. Unlike typical queues in which the elements are data items, the elements of a condition queue are the threads waiting for the condition.
+
+每个Java对象都可以是一个锁，每个对象同样可以作为一个条件队列，并且Object的wait、notify和notifyAll就是内部条件队列的API。对象的内置锁（intrinsic lock ）和内置条件队列是关联的，**要调用X中的条件队列的任何一个方法，都必须持有对象X上的锁。**
+
+Object.wait自动释放锁，并且请求操作系统挂起当前线程，从而其他线程可以获得这个锁并修改对象状态。当被挂起的线程唤醒时。它将在返回之前重新获取锁。
+
+```
+@ThreadSafe
+public class BoundedBuffer <V> extends BaseBoundedBuffer<V> {
+    // CONDITION PREDICATE: not-full (!isFull())
+    // CONDITION PREDICATE: not-empty (!isEmpty())
+    public BoundedBuffer() {
+        this(100);
+    }
+ 
+    public BoundedBuffer(int size) {
+        super(size);
+    }
+ 
+    // BLOCKS-UNTIL: not-full
+    public synchronized void put(V v) throws InterruptedException {
+        while (isFull())
+            wait();
+        doPut(v);
+        notifyAll();
+    }
+ 
+    // BLOCKS-UNTIL: not-empty
+    public synchronized V take() throws InterruptedException {
+        while (isEmpty())
+            wait();
+        V v = doTake();
+        notifyAll();
+        return v;
+    }
+ 
+    // BLOCKS-UNTIL: not-full
+    // Alternate form of put() using conditional notification
+    public synchronized void alternatePut(V v) throws InterruptedException {
+        while (isFull())
+            wait();
+        boolean wasEmpty = isEmpty();
+        doPut(v);
+        if (wasEmpty)
+            notifyAll();
+    }
+}
+```
+
+注意，如果某个功能无法通过“轮询和休眠"来实现，那么条件队列也无法实现。
+
+### 14.2 Using Condition Queues
+
+#### 14.2.1 条件谓词The Condition Predicate
+
+The Condition Predicate 是使某个操作成为状态依赖操作的前提条件。take方法的条件谓词是”缓存不为空“，take方法在执行之前必须首先测试条件谓词。同样，put方法的条件谓词是”缓存不满“。
+
+在条件等待中存在一种重要的三元关系，包括
+
+* 加锁
+* wait方法
+* 条件谓词
+
+条件谓词中包含多个状态变量，而状态变量由一个锁来保护，因此在测试条件谓词之前必须先持有这个锁。锁对象和条件队列对象必须是同一个对象。wait释放锁，线程挂起阻塞，等待知道超时，然后被另外一个线程中断或者被一个通知唤醒。唤醒后，wait在返回前还需要重新获取锁，当线程从wait方法中唤醒，它在重新请求锁时不具有任何特殊的优先级，和其他人一起竞争。
+
+#### 14.2.2 过早唤醒
+
+其他线程中间插足了，获取了锁，并且修改了遍历，这时候线程获取锁需要重新检查条件谓词。
+
+```
+wait block ----------race to get lock ------------------------------------------get lock ----- 
+                    ^
+wait block --------> race to get lock ------get lock------> perform action  ---> release lock
+                    ^
+                    notifyAll
+```
+
+当然有的时候，比如一个你根本不知道为什么别人调用了notify或者notifyAll，也许条件谓词压根就没满足，但是线程还是获取了锁，然后test条件谓词，释放所，其他线程都来了这么一趟，发生这就是“谎报军情”啊。
+
+基于以上这两种情况，都必须重新测试条件谓词。
+
+When using condition waits (Object.wait or Condition.await):
+
+* Always have a condition predicate——some test of object state that must hold before proceeding;
+* Always test the condition predicate before calling wait, and again after returning from wait;
+* Always call wait in a loop;
+* Ensure that the state variables making up the condition predicate are guarded by the lock associated with the condition queue;
+* Hold the lock associated with the the condition queue when calling wait, notify, or notifyAll
+* Do not release the lock after checking the condition predicate but before acting on it.
+
+模板就是：
+
+```
+void stateDependentMethod() throws InterruptedException {
+ // condition predicate must be guarded by lock
+ synchronized(lock) {  
+     while (!conditionPredicate())  //一定在循环里面做条件谓词
+         lock.wait();  //确保和synchronized的是一个对象
+     // object is now in desired state  //不要释放锁
+ }
+} 
+```
+
+#### 14.2.3 丢失的信号
+
+保证notify一定在wait之后
+
+#### 14.2.4 通知
+
+下面介绍通知。
+
+调用notify和notifyAll也得持有与条件队列对象相关联的锁。调用notify，JVM Thread Scheduler在这个条件队列上等待的多个线程中选择一个唤醒，而notifyAll则会唤醒所有线程。因此一旦notify了那么就需要尽快的释放锁，否则别人都竞争等着拿锁，都会进行blocked的状态，而不是线程挂起waiting状态，竞争都了不是好事，但是这是你考了性能因素和安全性因素的一个矛盾，具体问题要具体分析。
+
+下面的方法可以进来减少竞争，但是确然程序正确的实现有些难写，所以这个折中还得自己考虑：
+
+```
+public synchronized void alternatePut(V v) throws InterruptedException {
+        while (isFull())
+            wait();
+        boolean wasEmpty = isEmpty();
+        doPut(v);
+        if (wasEmpty)
+            notifyAll();
+    }
+```
+
+使用notify容易丢失信号，所以大多数情况下用notifyAll，比如take notify，却通知了另外一个take，没有通知put，那么这就是信号丢失，是一种“被劫持的”信号。
+
+因此只有满足下面两个条件，才能用notify，而不是notifyAll：
+
+* 所有等待线程的类型都相同
+* 单进单出
+
+#### 14.2.5 示例：阀门类A Gate Class
+
+和第5章的那个TestHarness中使用CountDownLatch类似，完全可以使用wait/notifyAll做阀门。
+
+```
+@ThreadSafe
+public class ThreadGate {
+    // CONDITION-PREDICATE: opened-since(n) (isOpen || generation>n)
+    @GuardedBy("this") private boolean isOpen;
+    @GuardedBy("this") private int generation;
+ 
+    public synchronized void close() {
+        isOpen = false;
+    }
+ 
+    public synchronized void open() {
+        ++generation;
+        isOpen = true;
+        notifyAll();
+    }
+ 
+    // BLOCKS-UNTIL: opened-since(generation on entry)
+    public synchronized void await() throws InterruptedException {
+        int arrivalGeneration = generation;
+        while (!isOpen && arrivalGeneration == generation)
+            wait();
+    }
+}
+```
+
+### 14.3 Explicit Condition Objects
+
+Lock是一个内置锁的替代，而Condition也是一种广义的**内置条件队列**。
+
+Condition的API如下：
+
+```
+public interface Condition {
+ void await() throws InterruptedException;
+ boolean await(long time, TimeUnit unit)throws InterruptedException;
+ long awaitNanos(long nanosTimeout) throws InterruptedException;
+ void awaitUninterruptibly();
+ boolean awaitUntil(Date deadline) throws InterruptedException;
+ void signal();
+ void signalAll();
+}
+```
+
+内置条件队列存在一些缺陷，每个内置锁都只能有一个相关联的条件队列，记住是**一个**。所以在BoundedBuffer这种累中，**多个线程可能在同一个条件队列上等待不同的条件谓词**，所以notifyAll经常通知不是同一个类型的需求。如果想编写一个带有多个条件谓词的并发对象，或者想获得除了条件队列可见性之外的更多的控制权，可以使用Lock和Condition，而不是内置锁和条件队列，这更加灵活。
+
+一个Condition和一个lock关联，想象一个条件队列和内置锁关联一样。在Lock上调用newCondition就可以新建无数个条件谓词，这些condition是可中断的、可有时间限制的，公平的或者非公平的队列操作。
+
+The equivalents of wait, notify, and notifyAll for Condition objects are await, signal, and
+signalAll。
+
+下面的例子就是改造后的BoundedBuffer，
+
+```
+@ThreadSafe
+public class ConditionBoundedBuffer <T> {
+    protected final Lock lock = new ReentrantLock();
+    // CONDITION PREDICATE: notFull (count < items.length)
+    private final Condition notFull = lock.newCondition();
+    // CONDITION PREDICATE: notEmpty (count > 0)
+    private final Condition notEmpty = lock.newCondition();
+    private static final int BUFFER_SIZE = 100;
+    @GuardedBy("lock") private final T[] items = (T[]) new Object[BUFFER_SIZE];
+    @GuardedBy("lock") private int tail, head, count;
+ 
+    // BLOCKS-UNTIL: notFull
+    public void put(T x) throws InterruptedException {
+        lock.lock();
+        try {
+            while (count == items.length)
+                notFull.await();
+            items[tail] = x;
+            if (++tail == items.length)
+                tail = 0;
+            ++count;
+            notEmpty.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+ 
+    // BLOCKS-UNTIL: notEmpty
+    public T take() throws InterruptedException {
+        lock.lock();
+        try {
+            while (count == 0)
+                notEmpty.await();
+            T x = items[head];
+            items[head] = null;
+            if (++head == items.length)
+                head = 0;
+            --count;
+            notFull.signal();
+            return x;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
+注意这里使用了signal而不是signalll，能极大的减少每次缓存操作中发生的上下文切换和锁请求次数。
+
+使用condition和内置锁和条件队列一样，必须保卫在lock里面。
+
+### 14.4 Synchronizer剖析
+
+看似ReentrantLock和Semaphore功能很类似，每次只允许一定的数量线程通过，到达阀门时
+
+* 可以通过 lock或者acquire
+* 等待，阻塞住了
+* 取消tryLock，tryAcquire
+* 可中断的，限时的
+* 公平等待和非公平等待
+
+下面的程序是使用Lock做一个Mutex也就是持有一个许可的Semaphore。
+
+```
+@ThreadSafe
+public class SemaphoreOnLock {
+    private final Lock lock = new ReentrantLock();
+    // CONDITION PREDICATE: permitsAvailable (permits > 0)
+    private final Condition permitsAvailable = lock.newCondition();
+    @GuardedBy("lock") private int permits;
+ 
+    SemaphoreOnLock(int initialPermits) {
+        lock.lock();
+        try {
+            permits = initialPermits;
+        } finally {
+            lock.unlock();
+        }
+    }
+ 
+    // BLOCKS-UNTIL: permitsAvailable
+    public void acquire() throws InterruptedException {
+        lock.lock();
+        try {
+            while (permits <= 0)
+                permitsAvailable.await();
+            --permits;
+        } finally {
+            lock.unlock();
+        }
+    }
+ 
+    public void release() {
+        lock.lock();
+        try {
+            ++permits;
+            permitsAvailable.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+```
+
+实际上很多J.U.C下面的类都是基于AbstractQueuedSynchronizer (AQS)构建的，例如CountDownLatch, ReentrantReadWriteLock, SynchronousQueue,and FutureTask（java7之后不是了）。AQS解决了实现同步器时设计的大量细节问题，例如等待线程采用FIFO队列操作顺序。AQS不仅能极大极少实现同步器的工作量，并且也不必处理竞争问题，基于AQS构建只可能在一个时刻发生阻塞，从而降低上下文切换的开销，提高吞吐量。在设计AQS时，充分考虑了可伸缩性，可谓大师Doug Lea的经典作品啊！
+
+### 14.5 AbstractQueuedSynchronizer (AQS) 
+
+基于AQS构建的同步器勒种，最进步的操作包括各种形式的获取操作和释放操作。获取操作是一种依赖状态的操作，并且通常会阻塞。
+
+如果一个类想成为状态依赖的类，它必须拥有一些状态，AQS负责管理这些状态，通过getState,setState, compareAndSetState等protected类型方法进行操作。这是设计模式中的模板模式。
+
+使用AQS的模板如下：
+
+获取锁：首先判断当前状态是否允许获取锁，如果是就获取锁，否则就阻塞操作或者获取失败，也就是说如果是独占锁就可能阻塞，如果是共享锁就可能失败。另外如果是阻塞线程，那么线程就需要进入阻塞队列。当状态位允许获取锁时就修改状态，并且如果进了队列就从队列中移除。
+
+释放锁:这个过程就是修改状态位，如果有线程因为状态位阻塞的话就唤醒队列中的一个或者更多线程。
+
+```
+boolean acquire() throws InterruptedException {
+ while (state does not permit acquire) {
+ if (blocking acquisition requested) {
+ enqueue current thread if not already queued
+ block current thread
+ }
+ else
+ return failure
+ }
+ possibly update synchronization state
+ dequeue thread if it was queued
+ return success
+}
+void release() {
+ update synchronization state
+ if (new state may permit a blocked thread to acquire)
+ unblock one or more queued threads
+}
+```
+
+要支持上面两个操作就必须有下面的条件：
+
+- 原子性操作同步器的状态位
+- 阻塞和唤醒线程
+- 一个有序的队列
+
+**1 状态位的原子操作**
+
+这里使用一个32位的整数来描述状态位，前面章节的原子操作的理论知识整好派上用场，在这里依然使用CAS操作来解决这个问题。事实上这里还有一个64位版本的同步器（AbstractQueuedLongSynchronizer），这里暂且不谈。
+
+**2 阻塞和唤醒线程**
+
+标准的JAVA API里面是无法挂起（阻塞）一个线程，然后在将来某个时刻再唤醒它的。JDK 1.0的API里面有Thread.suspend和Thread.resume，并且一直延续了下来。但是这些都是过时的API，而且也是不推荐的做法。
+
+HotSpot在Linux中中通过调用pthread_mutex_lock函数把线程交给系统内核进行阻塞。
+
+在JDK 5.0以后利用JNI在LockSupport类中实现了此特性。
+
+> LockSupport.park()
+> LockSupport.park(Object)
+> LockSupport.parkNanos(Object, long)
+> LockSupport.parkNanos(long)
+> LockSupport.parkUntil(Object, long)
+> LockSupport.parkUntil(long)
+> LockSupport.unpark(Thread)
+
+上面的API中park()是在当前线程中调用，导致线程阻塞，带参数的Object是挂起的对象，这样监视的时候就能够知道此线程是因为什么资源而阻塞的。由于park()立即返回，所以通常情况下需要在循环中去检测竞争资源来决定是否进行下一次阻塞。park()返回的原因有三：
+
+- 其他某个线程调用将当前线程作为目标调用 [`unpark`](http://www.blogjava.net/xylz/java/util/concurrent/locks/LockSupport.html#unpark(java.lang.Thread))；
+- 其他某个线程[中断](http://www.blogjava.net/xylz/java/lang/Thread.html#interrupt())当前线程；
+- 该调用不合逻辑地（即毫无理由地）返回。
+
+其实第三条就决定了需要循环检测了，类似于通常写的while(checkCondition()){Thread.sleep(time);}类似的功能。
+
+**3 有序队列**
+
+在AQS中采用CHL列表来解决有序的队列的问题。
+
+AQS采用的CHL模型采用下面的算法完成FIFO的入队列和出队列过程。该队列的操作均通过Lock-Free（CAS）操作.
+
+自己实现的CLH SpinLock如下：
+
+```
+class ClhSpinLock {
+    private final ThreadLocal<Node> prev;
+    private final ThreadLocal<Node> node;
+    private final AtomicReference<Node> tail = new AtomicReference<Node>(new Node());
+
+    public ClhSpinLock() {
+        this.node = new ThreadLocal<Node>() {
+            protected Node initialValue() {
+                return new Node();
+            }
+        };
+
+        this.prev = new ThreadLocal<Node>() {
+            protected Node initialValue() {
+                return null;
+            }
+        };
+    }
+
+    public void lock() {
+        final Node node = this.node.get();
+        node.locked = true;
+        // 一个CAS操作即可将当前线程对应的节点加入到队列中，
+        // 并且同时获得了前继节点的引用，然后就是等待前继释放锁
+        Node pred = this.tail.getAndSet(node);
+        this.prev.set(pred);
+        while (pred.locked) {// 进入自旋
+        }
+    }
+
+    public void unlock() {
+        final Node node = this.node.get();
+        node.locked = false;
+        this.node.set(this.prev.get());
+    }
+
+    private static class Node {
+        private volatile boolean locked;
+    }
+}
+```
+
+对于入队列(*enqueue)：*采用CAS操作，每次比较尾结点是否一致，然后插入的到尾结点中。
+
+```
+do {
+        pred = tail;
+}while ( !compareAndSet(pred,tail,node) );
+```
+
+对于出队列(*dequeue*):由于每一个节点也缓存了一个状态，决定是否出队列，因此当不满足条件时就需要自旋等待，一旦满足条件就将头结点设置为下一个节点。
+
+AQS里面有三个核心字段：
+
+> private volatile int state;
+>
+> private transient volatile Node head;
+>
+> private transient volatile Node tail;
+
+其中state描述的有多少个线程取得了锁，对于互斥锁来说state<=1。head/tail加上CAS操作就构成了一个CHL的FIFO队列。下面是Node节点的属性。
+
+独占操作的API都是不带有shared，而共享的包括semaphore和countdownlatch都是使用带有shared字面的API。
+
+一些有用的参考资料：
+
+**java.util.concurrent.locks.AbstractQueuedSynchronizer - **AQS
+
+[http://gee.cs.oswego.edu/dl/papers/aqs.pdf](http://gee.cs.oswego.edu/dl/papers/aqs.pdf)论文
+
+http://www.blogjava.net/xylz/archive/2010/07/08/325587.html 一个比较全面的另外一个人的解读
+
+[http://suo.iteye.com/blog/1329460](http://suo.iteye.com/blog/1329460)
+
+[http://www.infoq.com/cn/articles/jdk1.8-abstractqueuedsynchronizer](http://www.infoq.com/cn/articles/jdk1.8-abstractqueuedsynchronizer)
+
+[http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-overview.html](http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-overview.html)
+
+[http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-clh-and-spin-lock.html](http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-clh-and-spin-lock.html)
+
+[http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-locksupport-and-thread-interrupt.html](http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-aqs-locksupport-and-thread-interrupt.html)
+
+独占的就用TRyAcquire, TRyRelease, and isHeldExclusively,共享的就用 tryAcquireShared and TRyReleaseShared. 带有try前缀的方法都是模板方法，AQS用于判断是否可以继续，例如如果tryAcquireShared返回一个负值，那么表示获取锁失败，失败的就需要进入CLH队列，并且挂起线程。
+
+举一个例子，一个简单的闭锁。
+
+```
+@ThreadSafe
+public class OneShotLatch {
+    private final Sync sync = new Sync();
+ 
+    public void signal() {
+        sync.releaseShared(0);
+    }
+ 
+    public void await() throws InterruptedException {
+        sync.acquireSharedInterruptibly(0);
+    }
+ 
+    private class Sync extends AbstractQueuedSynchronizer {
+        protected int tryAcquireShared(int ignored) {
+            // Succeed if latch is open (state == 1), else fail
+            return (getState() == 1) ? 1 : -1;
+        }
+ 
+        protected boolean tryReleaseShared(int ignored) {
+            setState(1); // Latch is now open
+            return true; // Other threads may now be able to acquire
+ 
+        }
+    }
+}
+```
+
+下面是自己实现的一个Mutex。
+
+```
+/**
+ * Lock free的互斥锁，简单实现，不可重入锁
+ */
+public class Mutex implements Lock {
+
+    private static final int FREE = 0;
+    private static final int BUSY = 1;
+
+    private static class LockSync extends AbstractQueuedSynchronizer {
+
+        private static final long serialVersionUID = 4689388770786922019L;
+
+        protected boolean isHeldExclusively() {
+            return getState() == BUSY;
+        }
+
+        public boolean tryAcquire(int acquires) {
+            return compareAndSetState(FREE, BUSY);
+        }
+
+        protected boolean tryRelease(int releases) {
+            if (getState() == FREE) {
+                throw new IllegalMonitorStateException();
+            }
+
+            setState(FREE);
+            return true;
+        }
+
+        Condition newCondition() {
+            return new ConditionObject();
+        }
+
+    }
+
+    private final LockSync sync = new LockSync();
+
+    public void lock() {
+        sync.acquire(0);
+    }
+
+    public boolean tryLock() {
+        return sync.tryAcquire(0);
+    }
+
+    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
+        return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+    }
+
+    public void unlock() {
+        sync.release(0);
+    }
+
+    public Condition newCondition() {
+        return sync.newCondition();
+    }
+
+    public boolean isLocked() {
+        return sync.isHeldExclusively();
+    }
+
+    public boolean hasQueuedThreads() {
+        return sync.hasQueuedThreads();
+    }
+
+    public void lockInterruptibly() throws InterruptedException {
+        sync.acquireInterruptibly(0);
+    }
+
+}
+```
+
+
+
+### 14.6 J.U.C同步器勒种的AQS
+
+* ReentrantLock
+
+```
+protected boolean tryAcquire(int ignored) {
+ final Thread current = Thread.currentThread();
+ int c = getState();
+ if (c == 0) {
+ if (compareAndSetState(0, 1)) {
+ owner = current;
+ return true;
+ }
+ } else if (current == owner) {
+ setState(c+1);
+ return true;
+ }
+ return false;
+} 
+```
+
+* Semaphore和CountDownLatch
+
+```
+protected int tryAcquireShared(int acquires) {
+ while (true) {
+ int available = getState();
+ int remaining = available - acquires;
+ if (remaining < 0
+ || compareAndSetState(available, remaining))
+ return remaining;
+ }
+}
+protected boolean tryReleaseShared(int releases) {
+ while (true) {
+ int p = getState();
+ if (compareAndSetState(p, p + releases))
+ return true;
+ }
+} 
+```
+
+
+
+## 第15章 原子遍历与非阻塞同步机制Atomic Variables and Non-blocking Synchronization
+
+近年来，在并发算法领域的大多数研究都侧重于非阻塞算法，这种算法用底层的原子机器指令来代替锁来确保数据在并发访问中的一致性，非阻塞算法被广泛应用于OS和JVM中实现线程/进程调度机制和GC以及锁，并发数据结构中。
+
+与锁的方案相比，非阻塞算法都要复杂的多，他们在可伸缩性和活跃性上（避免死锁）都有巨大的优势。
+
+非阻塞算法，顾名思义，多个线程竞争相同的数据时不会发生阻塞，因此他能在粒度更细的层次上进行协调，而且极大的减少调度开销。
+
+### 15.1 锁的劣势
+
+独占，可见性是锁要保证的。
+
+许多JVM都对非竞争的锁获取和释放做了很多优化，性能很不错了。但是如果一些线程被挂起然后稍后恢复运行，当线程恢复后还得等待其他线程执行完他们的时间片，才能被调度，所以挂起和恢复线程存在很大的开销，其实很多锁的力度很小的，很简单，如果锁上存在着激烈的竞争，那么多调度开销/工作开销比值就会非常高。
+
+与锁相比volatile是一种更轻量的同步机制，因为使用volatile不会发生上下文切换或者线程调度操作，但是volatile的指明问题就是虽然保证了可见性，但是原子性无法保证，比如i++的字节码就是N行。
+
+锁的其他缺点还包括，如果一个线程正在等待锁，它不能做任何事情，如果一个线程在持有锁的情况下呗延迟执行了，例如发生了缺页错误，调度延迟，那么就没法执行。如果被阻塞的线程优先级较高，那么就会出现priority invesion的问题，被永久的阻塞下去。
+
+### 15.2 硬件对并发的支持
+
+独占锁是悲观所，对于细粒度的操作，更高效的应用是乐观锁，这种方法需要借助**冲突监测机制来判断更新过程中是否存在来自其他线程的干扰，如果存在则失败重试**。
+
+几乎所有的现代CPU都有某种形式的原子读-改-写指令，例如compare-and-swap等，JVM就是使用这些指令来实现无锁并发。
+
+#### 15.2.1 比较并交换
+
+CAS（Compare and set）乐观的技术。Java实现的一个compare and set如下，这是一个模拟底层的示例：
+
+```
+@ThreadSafe
+public class SimulatedCAS {
+    @GuardedBy("this") private int value;
+ 
+    public synchronized int get() {
+        return value;
+    }
+ 
+    public synchronized int compareAndSwap(int expectedValue,
+                                           int newValue) {
+        int oldValue = value;
+        if (oldValue == expectedValue)
+            value = newValue;
+        return oldValue;
+    }
+ 
+    public synchronized boolean compareAndSet(int expectedValue,
+                                              int newValue) {
+        return (expectedValue
+                == compareAndSwap(expectedValue, newValue));
+    }
+}
+```
+
+#### 15.2.2 非阻塞的计数器
+
+```
+public class CasCounter {
+    private SimulatedCAS value;
+ 
+    public int getValue() {
+        return value.get();
+    }
+ 
+    public int increment() {
+        int v;
+        do {
+            v = value.get();
+        } while (v != value.compareAndSwap(v, v + 1));
+        return v + 1;
+    }
+}
+```
+
+Java中使用AtomicInteger。
+
+首先在竞争激烈一般时候，CAS性能远超过第三章基于锁的计数器。看起来他的指令更多，但是无需上下文切换和线程挂起，JVM内部的代码路径实际很长，所以反而好些。但是激烈程度比较高的时候，它的开销还是比较大，但是你会发生这种激烈程度非常高的情况只是理论，实际生产环境很难遇到。况且JIT很聪明，这种操作往往能非常大的优化。
+
+为了确保正常更新，可能得将CAS操作放到for循环里，从语法结构上来看，使用**CAS**比使用锁更加复杂，得考虑失败的情况（锁会挂起线程，直到恢复）；但是基于**CAS**的原子操作，在性能上基本超过了基于锁的计数器，即使只有很小的竞争或者不存在竞争！
+
+在轻度到中度的争用情况下，非阻塞算法的性能会超越阻塞算法，因为 CAS 的多数时间都在第一次尝试时就成功，而发生争用时的开销也不涉及**线程挂起**和**上下文切换**，只多了几个循环迭代。没有争用的 CAS 要比没有争用的锁便宜得多（这句话肯定是真的，因为没有争用的锁涉及 CAS 加上额外的处理，加锁至少需要一个CAS，在有竞争的情况下，需要操作队列，线程挂起，上下文切换），而争用的 CAS 比争用的锁获取涉及更短的延迟。
+
+CAS的缺点是它使用调用者来处理竞争问题，通过重试、回退、放弃，而锁能自动处理竞争问题，例如阻塞。
+
+原子变量可以看做更好的volatile类型变量。
+
+AtomicInteger在JDK8里面做了改动。
+
+```
+public final int getAndIncrement() {
+    return unsafe.getAndAddInt(this, valueOffset, 1);
+}
+```
+
+JDK7里面的实现如下：
+
+```
+public final int getAndAdd(int delta) {
+       for(;;) {
+           intcurrent= get();
+           intnext=current+delta;
+           if(compareAndSet(current,next))
+               returncurrent;
+        }
+    }
+```
+
+Unsafe是经过特殊处理的，不能理解成常规的java代码，区别在于：
+
+- 1.8在调用getAndAddInt的时候，如果系统底层支持fetch-and-add，那么它执行的就是native方法，使用的是fetch-and-add；
+
+
+- 如果不支持，就按照上面的所看到的getAndAddInt方法体那样，以java代码的方式去执行，使用的是compare-and-swap；
+
+这也正好跟openjdk8中Unsafe::getAndAddInt上方的注释相吻合：
+
+```
+// The following contain CAS-based Java implementations used on
+// platforms not supporting native instructions
+```
+### 15.3 原子变量类
+
+J.U.C的AtomicXXX
+
+例如一个AtomictReference的使用如下：
+
+```
+public class CasNumberRange {
+    @Immutable
+            private static class IntPair {
+        // INVARIANT: lower <= upper
+        final int lower;
+        final int upper;
+ 
+        public IntPair(int lower, int upper) {
+            this.lower = lower;
+            this.upper = upper;
+        }
+    }
+ 
+    private final AtomicReference<IntPair> values =
+            new AtomicReference<IntPair>(new IntPair(0, 0));
+ 
+    public int getLower() {
+        return values.get().lower;
+    }
+ 
+    public int getUpper() {
+        return values.get().upper;
+    }
+ 
+    public void setLower(int i) {
+        while (true) {
+            IntPair oldv = values.get();
+            if (i > oldv.upper)
+                throw new IllegalArgumentException("Can't set lower to " + i + " > upper");
+            IntPair newv = new IntPair(i, oldv.upper);
+            if (values.compareAndSet(oldv, newv))
+                return;
+        }
+    }
+ 
+    public void setUpper(int i) {
+        while (true) {
+            IntPair oldv = values.get();
+            if (i < oldv.lower)
+                throw new IllegalArgumentException("Can't set upper to " + i + " < lower");
+            IntPair newv = new IntPair(oldv.lower, i);
+            if (values.compareAndSet(oldv, newv))
+                return;
+        }
+    }
+}
+```
+
+#### 15.3.2 性能比较：锁与原子变量
+
+略
+
+### 15.4 非阻塞算法
+
+Lock-free算法，可以实现栈、队列、优先队列或者散列表。
+
+#### 15.4 非阻塞的栈
+
+Trebier算法，1986年提出的。
+
+```
+ public class ConcurrentStack <E> {
+    AtomicReference<Node<E>> top = new AtomicReference<Node<E>>();
+ 
+    public void push(E item) {
+        Node<E> newHead = new Node<E>(item);
+        Node<E> oldHead;
+        do {
+            oldHead = top.get();
+            newHead.next = oldHead;
+        } while (!top.compareAndSet(oldHead, newHead));
+    }
+ 
+    public E pop() {
+        Node<E> oldHead;
+        Node<E> newHead;
+        do {
+            oldHead = top.get();
+            if (oldHead == null)
+                return null;
+            newHead = oldHead.next;
+        } while (!top.compareAndSet(oldHead, newHead));
+        return oldHead.item;
+    }
+ 
+    private static class Node <E> {
+        public final E item;
+        public Node<E> next;
+ 
+        public Node(E item) {
+            this.item = item;
+        }
+    }
+}
+```
+
+#### 15.4.2 非阻塞的链表
+
+有点复杂哦，实际J.U.C的ConcurrentLinkedQueue也是参考了这个由Michael and Scott，1996年实现的算法。
+
+```
+public class LinkedQueue <E> {
+ 
+    private static class Node <E> {
+        final E item;
+        final AtomicReference<LinkedQueue.Node<E>> next;
+ 
+        public Node(E item, LinkedQueue.Node<E> next) {
+            this.item = item;
+            this.next = new AtomicReference<LinkedQueue.Node<E>>(next);
+        }
+    }
+ 
+    private final LinkedQueue.Node<E> dummy = new LinkedQueue.Node<E>(null, null);
+    private final AtomicReference<LinkedQueue.Node<E>> head
+            = new AtomicReference<LinkedQueue.Node<E>>(dummy);
+    private final AtomicReference<LinkedQueue.Node<E>> tail
+            = new AtomicReference<LinkedQueue.Node<E>>(dummy);
+ 
+    public boolean put(E item) {
+        LinkedQueue.Node<E> newNode = new LinkedQueue.Node<E>(item, null);
+        while (true) {
+            LinkedQueue.Node<E> curTail = tail.get();
+            LinkedQueue.Node<E> tailNext = curTail.next.get();
+            if (curTail == tail.get()) {
+                if (tailNext != null) {
+                    // Queue in intermediate state, advance tail
+                    tail.compareAndSet(curTail, tailNext);
+                } else {
+                    // In quiescent state, try inserting new node
+                    if (curTail.next.compareAndSet(null, newNode)) {
+                        // Insertion succeeded, try advancing tail
+                        tail.compareAndSet(curTail, newNode);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### 15.4.3 原子域更新
+
+AtomicReferenceFieldUpdater,一个基于反射的工具类，它能对指定类的指定的volatile引用字段进行原子更新。(注意这个字段不能是private的) 
+
+通过调用AtomicReferenceFieldUpdater的静态方法newUpdater就能创建它的实例，该方法要接收三个参数： 
+
+* 包含该字段的对象的类 
+* 将被更新的对象的类 
+* 将被更新的字段的名称 
+
+```
+AtomicReferenceFieldUpdater updater=AtomicReferenceFieldUpdater.newUpdater(Dog.class,String.class,"name");  
+        Dog dog1=new Dog();  
+        updater.compareAndSet(dog1,dog1.name,"test") ;  
+        System.out.println(dog1.name);  
+  
+class Dog  {  
+     volatile  String name="dog1";  
+  
+}  
+```
+
+#### 15.4.4 ABA问题
+
+AtomicStampedReference //TODO
+
+
+
+## 第16章 Java内存模型
 

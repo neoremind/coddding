@@ -58,9 +58,9 @@ public class LongestSubstring {
         int start = 0, end = 0;
         int minLen = Integer.MIN_VALUE;
         while (end < s.length()) {
-            if (a[s.charAt(end)] == 0) {
+            //if (a[s.charAt(end)] == 0) {
                 minLen = Math.max(minLen, end - start + 1);
-            }
+            //}
             a[s.charAt(end)]++;
             end++;
             while (end < s.length() && a[s.charAt(end)] > 0) {

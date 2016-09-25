@@ -6304,7 +6304,7 @@ int[] a = new int[256];
 int start = 0, end = 0;
 int minLen = Integer.MIN_VALUE;
 while (end < s.length())
-    if (a[s.charAt(end)] == 0) //还没有重复的，则增长minLen
+    //if (a[s.charAt(end)] == 0) //去掉这个条件是OK的，因为后面的while保证了下一次进入循环前面一定没有重复的，还没有重复的，则增长minLen
         minLen = Math.max(minLen, end - start + 1);
     a[s.charAt(end)]++;  //记数
     end++;

@@ -78,11 +78,11 @@ public class MinimumSizeSubarraySum {
         int minLen = Integer.MAX_VALUE;
         int sum = 0;
         for (; end < nums.length; end++) {
-            if (sum < s) {
+            if (sum < s) {  //上一把小于s我就加
                 sum += nums[end];
             }
 
-            while (sum >= s) {
+            while (sum >= s) { //条件满足正好是刚刚超过，就计算下长度，然后找前一个start位置刚好小于s
                 minLen = Math.min(end - start + 1, minLen);
                 sum -= nums[start];
                 start++;

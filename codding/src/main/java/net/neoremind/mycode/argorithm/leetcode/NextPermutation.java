@@ -2,6 +2,8 @@ package net.neoremind.mycode.argorithm.leetcode;
 
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -70,13 +72,31 @@ public class NextPermutation {
     @Test
     public void test() {
         int[] nums = new int[] {1, 2, 3, 4, 5, 6, 7};
-        new Permutation().permute(nums); //和Permutation的顺序不一样！！！
+        //new Permutation().permute(nums); //和Permutation的顺序不一样！！！
         int[] p = new int[] {1, 2, 7, 3, 4, 6, 5};
         nextPermutation(p);
         assertThat(p, Matchers.is(new int[] {1, 2, 7, 3, 5, 4, 6}));
 
         p = new int[] {1, 2, 7, 4, 6, 3, 5};
         nextPermutation(p);
-        assertThat(p, Matchers.is(new int[] {1, 2, 7, 4, 3, 6, 5}));
+        assertThat(p, Matchers.is(new int[] {1, 2, 7, 4, 6, 5, 3}));
+
+        p = new int[] {1, 2, 3, 4};
+        nextPermutation(p);
+        assertThat(p, Matchers.is(new int[] {1, 2, 4, 3}));
+
+        p = new int[] {1, 2, 4, 3};
+        nextPermutation(p);
+        assertThat(p, Matchers.is(new int[] {1, 3, 2, 4}));
+
+        p = new int[] {1, 3, 2, 4};
+        nextPermutation(p);
+        assertThat(p, Matchers.is(new int[] {1, 3, 4, 2}));
+
+        int[] x = new int[] {1, 2, 3, 4};
+        for (int i = 0; i < 24; i++) {
+            nextPermutation(x);
+            System.out.println(Arrays.toString(x));
+        }
     }
 }

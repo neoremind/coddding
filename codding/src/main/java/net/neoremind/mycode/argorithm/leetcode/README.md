@@ -5559,10 +5559,41 @@ return nums[lo] == target ? lo : -1;
 
 M, Array
 
+如果自己可以手写出来全排列，那么就有利于分析，例如下面的1，2，3，4全排列序列，等于4!=24个。
+
+```
+[1, 2, 3, 4]
+[1, 2, 4, 3]
+[1, 3, 2, 4]
+[1, 3, 4, 2]
+[1, 4, 2, 3]
+[1, 4, 3, 2]
+[2, 1, 3, 4]
+[2, 1, 4, 3]
+[2, 3, 1, 4]
+[2, 3, 4, 1]
+[2, 4, 1, 3]
+[2, 4, 3, 1]
+[3, 1, 2, 4]
+[3, 1, 4, 2]
+[3, 2, 1, 4]
+[3, 2, 4, 1]
+[3, 4, 1, 2]
+[3, 4, 2, 1]
+[4, 1, 2, 3]
+[4, 1, 3, 2]
+[4, 2, 1, 3]
+[4, 2, 3, 1]
+[4, 3, 1, 2]
+[4, 3, 2, 1]
+```
+
 ```
 1,2,3 → 1,3,2
 3,2,1 → 1,2,3
 1,1,5 → 1,5,1
+
+这是个标准步骤最好记忆下来。
 
 //1.找到最后一个升序位置pos
 int pos = -1;
@@ -5586,6 +5617,8 @@ for (int i = num.length - 1; i > pos; i--)
 
 //4.反排pos之后的数
 reverse(num, pos + 1, num.length - 1);
+
+reverse用two pointer while(left < right)即可
 ```
 
 
@@ -5700,6 +5733,7 @@ while (currIndex <= tailIndex)
         nums[currIndex] = nums[tailIndex--];
         continue;
     currIndex++;
+return tailIndex + 1;
 ```
 
 
@@ -5809,7 +5843,7 @@ PriorityQueue<ListNode> priorityQueue = new PriorityQueue<>(lists.length, new Co
 ListNode dummy = new ListNode(0);
 ListNode curr = dummy;
 for (ListNode node : lists) {
-    if (node != null) {
+    if (node != null) {  //注意考虑为空的corner case
         priorityQueue.add(node);
     }
 }
@@ -5818,7 +5852,7 @@ while (!priorityQueue.isEmpty()) {
     ListNode node = priorityQueue.poll();
     curr.next = node;
     curr = curr.next;
-    if (node.next != null) {
+    if (node.next != null) {  //注意考虑为空的corner case
         priorityQueue.add(node.next);
     }
 }

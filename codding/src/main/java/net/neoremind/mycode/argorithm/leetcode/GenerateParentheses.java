@@ -44,6 +44,9 @@ public class GenerateParentheses {
         return list;
     }
 
+    /**
+     * 利用了string的不可变特性
+     */
     public void backtrack(List<String> list, String str, int open, int close, int max) {
         System.out.println(String.format("backtrack{%s, %d, %d}", str, open, close));
         if (str.length() == max * 2) {

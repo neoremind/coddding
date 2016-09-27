@@ -5918,7 +5918,7 @@ M, Backtracking
 1）基本思想就是不断的添加左括号 (，直到添加不了了，然后补右括号。
 2）推一栈帧，补齐一个右括号)，然后剩下的继续如栈，重复1的操作。
 
-这个步骤比较抽象，较难理解:-(
+下面利用了string的不可变特性，也可以使用char[]。
 
 ```
 public List<String> generateParenthesis(int n) {
@@ -5958,7 +5958,7 @@ while (l1 != null && l2 != null) {
         curr.next = l2;
         l2 = l2.next;
     }
-    curr = curr.next;
+    curr = curr.next;  // dont forget!
 }
 
 if (l1 != null) {

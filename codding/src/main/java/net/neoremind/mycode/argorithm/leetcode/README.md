@@ -1344,7 +1344,8 @@ int findSubstring(string s){
 这道题目的思想就是滑动窗口的概念，
 * 1）start/end固定起点
 * 2）固定start，滑动end，维护一个刚好>=s的窗口，记录这个长度是一个解
-*3）把窗口的左边往前移动，维持一个刚好小于s的窗口，因为要给end向前走的可能，继续这个窗口。 （证明这个要想象为什么不会错过start，因为第二步是刚好>=s就停止的了窗口，所以错过的start绝对不可能是起点，因为有他们没有他们都一样）
+* 3）把窗口的左边往前移动，维持一个刚好小于s的窗口，因为要给end向前走的可能，继续这个窗口。
+（证明这个要想象为什么不会错过start，因为第二步是刚好>=s就停止的了窗口，所以错过的start绝对不可能是起点，因为有他们没有他们都一样）
 ```
 start/end
    2,      3,     1,      2,      4,     3
@@ -5975,15 +5976,24 @@ return dummy.next;
 E, Stack, String
 
 ```
-foreach c in s
-    if c is open brackets like [ { (
-        push c to stack
-    else
-       if stack is empty
-           return false
-       if stack.pop is NOT pair to c
-           return false
-return stack is empty true or else false
+char[] brackets = new char[] {'[', ']'};
+char[] braces = new char[] {'{', '}'};
+Set<Character> openSet = new HashSet<Character>(3);
+openSet.add('[');
+openSet.add('{');
+Stack<Character> stack = new Stack<Character>();
+for (char c : s.toCharArray()) {
+    if (openSet.contains(c)) {
+        stack.push(c);
+    } else {
+        if (stack.isEmpty())
+            return false;
+        Character top = stack.pop();
+        if (!(brackets[0] == top && c == brackets[1]) && !(braces[0] == top && c == braces[1]) ...)
+            return false;
+    }
+}
+return stack.empty();
 ```
 
 ### [19. Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
@@ -6056,6 +6066,8 @@ M, Array, Two pointers
 * 从后往前定住最后一个，然后从前往后定住一个，中间的遍历找。
 * 找到了，那么为了去重，要跳过从前往后重复的元素，以及从后往前重复的元素。这样就不用维护Set了。
 
+//todo 二分查找会不会优化最内层循环的性能？
+
 ```
 right = nums.length - 1;
 left = 0;
@@ -6104,7 +6116,7 @@ M, Array Two Pointers
 i = 0
 j = end
 while i and j not meet
-    max = MAX(area(i,j) ,max)
+    max = MAX(area(j-i,min(h[i], h[j])) ,max)  // 注意宽度是j-i没有+1！
     if height[i] < height[j]
         i = i + 1
     if height[i] > height[j]
@@ -6131,8 +6143,9 @@ int div = 1;
 while (x / div >= 10)
     div *= 10;
 
-while (x != 0)
-    int left = x / div;int right = x % 10;
+while (x != 0)   // 必须等于0，不能>=10，否则无法解决10000021这种case。
+    int left = x / div;
+    int right = x % 10;
     if (left != right) return false;
     x = (x % div) / 10;
     div /= 100;
@@ -6258,6 +6271,7 @@ foreach n in array m and array n
 3）如果k=1，那么直接取arr1和arr2的头元素比较，小的就是要找的。
 
 ```
+// 这里的k代表第几个，而不是索引，所以我们都只需要计算第几个，而不是索引，索引在比较的时候才-1.
 double findKth(int[] arr1, int[] arr2, int start1, int start2, int len1, int len2, int k) {
     if (len1 > len2) {
         return findKth(arr2, arr1, start2, start1, len2, len1, k);

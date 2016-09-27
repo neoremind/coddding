@@ -66,6 +66,9 @@ public class PalindromeNumber {
 
         System.out.println(isPalindrome(-101));
         assertThat(isPalindrome(-101), is(false));
+
+        System.out.println(isPalindrome(1000021));
+        assertThat(isPalindrome(1000021), is(false));
     }
 
 }

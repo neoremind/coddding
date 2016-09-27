@@ -56,6 +56,8 @@ public class PermutationII {
 
     /**
      * 这个函数是个技巧，第一自己跟自己比的时候不判断是否相同，只判断后面的数和固定的数比较
+     *
+     * 这个方法会挪动到最后的那个1再开始全排列。
      */
     private boolean isNotSame(int[] nums, int i, int j) {
         for (int k = i; k < j; k++) {

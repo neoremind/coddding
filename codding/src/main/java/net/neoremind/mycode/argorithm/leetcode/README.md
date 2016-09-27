@@ -4549,6 +4549,34 @@ start form n - 1
 ```
 So, 2982(10base) = 4041000(!base)
 
+```
+int fact(int x) {
+    int s = 1;
+    for (int i = 1; i <= x; i++)
+        s *= i;
+    return s;
+}
+
+public String getPermutation(int n, int k) {
+    // Note: The Solution object is instantiated only once and is reused by each test case.
+    ArrayList<Character> chars = new ArrayList<Character>();
+    for (int i = '1'; i < ('1' + n); i++) {  //1..9 inclusive
+        chars.add((char) i);
+    k -= 1;
+    char[] t = new char[n];
+    int l = 0;
+    for (int i = n - 1; i > 0; i--) {
+        int f = fact(i);
+        int c = k / f;
+        t[l++] = chars.get(c);
+        chars.remove(c);
+        k %= f;
+    }
+    t[n - 1] = chars.get(0);  //avoid sub 0
+    return new String(t);
+}
+```
+
 怎么把这个4041000还原回来看这个帖子吧，[点击此](http://leetcode.tgic.me/permutation-sequence/index.html)。
 
 同时联想这个题它是取余数不断的缩小，那么将十进制的数字转成其他进制，比如二进制、八进制、十六进制，在纸上的计算学会了。
@@ -4980,6 +5008,10 @@ M, Backtracking
 
 和46非常类似。在继续DFS之前要判断下，第一自己跟自己比的时候不判断是否相同，只判断后面的数和固定的数比较。从start即i开始往后看，算法的基本思路是从start开始依次和后面的数字交换，然后递归全排列，后面的数字就是j，如果j在之前交换过了，就没必要做了，否则就重复了。
 
+1,1,1,2,2
+
+这个方法会挪动到最后的那个1再开始全排列。
+
 ```
 private boolean isNotSame(int[] nums, int i, int j) {
     for (int k = i; k < j; k++) {
@@ -5039,10 +5071,40 @@ public void doPermuation(int[] nums, int m, int len) {
         for (int i = m; i < len; i++) {
             swap(nums, i, m);
             doPermuation(nums, m + 1, len);
-            swap(nums, i, m);
+            swap(nums, i, m);  //还原，和进来的时候一样。
         }
     }
 }
+```
+
+例如1，2，3，4的结果如下，这个结果和题目31. Next Permutation的结果不一样，不是自然的排序，注意从[1, 3, 4, 2]到
+[1, 4, 3, 2]是2和依次后面交换的结果，而next permutation的下一个是[1, 4, 2, 3]。
+
+```
+[1, 2, 3, 4]
+[1, 2, 4, 3]
+[1, 3, 2, 4]
+[1, 3, 4, 2]
+[1, 4, 3, 2]
+[1, 4, 2, 3]
+[2, 1, 3, 4]
+[2, 1, 4, 3]
+[2, 3, 1, 4]
+[2, 3, 4, 1]
+[2, 4, 3, 1]
+[2, 4, 1, 3]
+[3, 2, 1, 4]
+[3, 2, 4, 1]
+[3, 1, 2, 4]
+[3, 1, 4, 2]
+[3, 4, 1, 2]
+[3, 4, 2, 1]
+[4, 2, 3, 1]
+[4, 2, 1, 3]
+[4, 3, 2, 1]
+[4, 3, 1, 2]
+[4, 1, 3, 2]
+[4, 1, 2, 3]
 ```
 
 ### [45. Jump Game II](https://leetcode.com/problems/jump-game-ii/)

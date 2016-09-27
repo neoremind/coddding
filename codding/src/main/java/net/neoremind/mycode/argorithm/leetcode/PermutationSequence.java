@@ -1,6 +1,11 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
  * The set [1,2,3,…,n] contains a total of n! unique permutations.
@@ -148,7 +153,7 @@ public class PermutationSequence {
     public String getPermutation(int n, int k) {
         // Note: The Solution object is instantiated only once and is reused by each test case.
         ArrayList<Character> chars = new ArrayList<Character>();
-        for (int i = '1'; i < ('1' + n); i++) {
+        for (int i = '1'; i < ('1' + n); i++) {  //1..9 inclusive
             chars.add((char) i);
         }
         k -= 1;
@@ -161,8 +166,30 @@ public class PermutationSequence {
             chars.remove(c);
             k %= f;
         }
-        t[n - 1] = chars.get(0);
+        t[n - 1] = chars.get(0);  //avoid sub 0
         return new String(t);
     }
+
+    @Test
+    public void test() {
+        assertThat(getPermutation(4, 1), Matchers.is("1234"));
+        assertThat(getPermutation(4, 2), Matchers.is("1243"));
+        assertThat(getPermutation(4, 3), Matchers.is("1324"));
+        assertThat(getPermutation(4, 4), Matchers.is("1342"));
+        assertThat(getPermutation(4, 5), Matchers.is("1423"));
+        assertThat(getPermutation(4, 6), Matchers.is("1432"));
+        assertThat(getPermutation(4, 7), Matchers.is("2134"));
+        assertThat(getPermutation(4, 8), Matchers.is("2143"));
+        assertThat(getPermutation(4, 9), Matchers.is("2314"));
+        assertThat(getPermutation(4, 10), Matchers.is("2341"));
+        assertThat(getPermutation(4, 11), Matchers.is("2413"));
+        assertThat(getPermutation(4, 12), Matchers.is("2431"));
+        assertThat(getPermutation(4, 13), Matchers.is("3124"));
+        assertThat(getPermutation(4, 14), Matchers.is("3142"));
+        assertThat(getPermutation(4, 15), Matchers.is("3214"));
+        assertThat(getPermutation(4, 16), Matchers.is("3241"));
+        assertThat(getPermutation(4, 17), Matchers.is("3412"));
+    }
+
 
 }

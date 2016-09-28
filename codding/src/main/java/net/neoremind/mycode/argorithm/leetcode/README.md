@@ -4389,9 +4389,12 @@ from i to x
 二分的模板需要稍加修改，这里注意判断mid^2>x需要考虑溢出的情况，改为mid>x/2
 ```
 // 处理0的情况
+if (0 == x)
+    return 0;
 int left = 1;
 int right = x;
-while (left <= right) {
+int ans = -1;
+while (left <= right)
     int mid = left + (right - left) / 2;
     if (mid <= x / mid) {
         left = mid + 1;
@@ -4399,7 +4402,6 @@ while (left <= right) {
     } else {
         right = mid - 1;
     }
-}
 return ans;
 ```
 
@@ -4616,6 +4618,10 @@ E, String
 ```
 s = s.trim();
 return s.substring(s.lastIndexOf(" ") + 1, s.length()).length();
+
+substring javadoc:
+@param      beginIndex   the beginning index, inclusive.
+@param      endIndex     the ending index, exclusive.
 ```
 
 ### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
@@ -5008,9 +5014,9 @@ M, Backtracking
 
 和46非常类似。在继续DFS之前要判断下，第一自己跟自己比的时候不判断是否相同，只判断后面的数和固定的数比较。从start即i开始往后看，算法的基本思路是从start开始依次和后面的数字交换，然后递归全排列，后面的数字就是j，如果j在之前交换过了，就没必要做了，否则就重复了。
 
-1,1,1,2,2
+1,3,1,2
 
-这个方法会挪动到最后的那个1再开始全排列。
+保证第二个1不再和第一个1交换。
 
 ```
 private boolean isNotSame(int[] nums, int i, int j) {
@@ -5328,6 +5334,8 @@ if (i > start && nums[i] == nums[i - 1]) {
     continue; // skip duplicates
 }
 ```
+和题目47不重复数组全排列有些不同，因为全排列没有先排序好，所有需要for循环来判断，从curr往最先前面看，而这个只用比邻居。
+
 同时，回溯的时候的start要+1，因为不允许重复使用某个数字了，注意结尾参数是`i+1`。一切都是套路！！
 ```
 backtrack(list, tempList, nums, remain - nums[i], i + 1);

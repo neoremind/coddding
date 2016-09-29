@@ -58,7 +58,7 @@ public class SearchA2DMatrixII {
 
     boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int target) {
         System.out.println(String.format("Search from (%d, %d) to (%d, %d)", stX, edX, stY, edY));
-        if (stX >= edX || stY >= edY) {
+        if (stX >= edX || stY >= edY) { //可以是==
             return false;
         }
 

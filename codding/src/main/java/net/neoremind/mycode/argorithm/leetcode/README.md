@@ -848,7 +848,7 @@ center == target. return true.
 
 ```
 boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int target) {
-    if (stX >= edX || stY >= edY)
+    if (stX >= edX || stY >= edY)  //可以是==
         return false;
     int max = matrix[edX - 1][edY - 1];
     int min = matrix[stX][stY];

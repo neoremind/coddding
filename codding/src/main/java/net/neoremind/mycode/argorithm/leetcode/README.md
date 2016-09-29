@@ -1,5 +1,85 @@
 # Leetcode records
 
+### [403. Frog Jump](https://leetcode.com/problems/frog-jump/)
+
+H, Dynamic Programming
+
+ 第一次写代码错误的解读了：
+`If the frog's last jump was k units, then its next jump must be either k - 1, k, or k + 1 units.`
+
+认为如果frog是第K跳，则下次最多跳K-1，K，K+1的位置。其实是上次的跳跃结果。。。faint :-(。所以用了backtrack的模板，照着自己的理解是正确的，但是按照本题目的意思是不对的。
+
+其实按照backtrack模板，解决本题目也是OK的，下面的解法更加巧妙，首先分析下DFS的解法。
+
+```
+例如示例：
+[0,1,3,5,6,8,12,17]
+
+There are a total of 8 stones.
+The first stone at the 0th unit, second stone at the 1st unit,
+third stone at the 3rd unit, and so on...
+The last stone at the 17th unit.
+
+Return true. The frog can jump to the last stone by jumping
+1 unit to the 2nd stone, then 2 units to the 3rd stone, then
+2 units to the 4th stone, then 3 units to the 6th stone,
+4 units to the 7th stone, and 5 units to the 8th stone.
+_ _   _   _ _   _         _              _
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+|_|   |   | |   |
+ 1    |   | |   |
+  |___|   | |   |
+    2     | |   |
+      |___| |   |
+        2   |   |
+         |__|   |
+           1    |
+            |___|
+              2  ===> [1,2,3] furtherest to 11 not 12 so backtrack
+
+在5的位置“跳力”是[1,2,3]，那么下次可以选择跳到6和8，如果是6则如上跳不出去了，所以需要DFS选择8继续，如下图所示即可以跳出去。
+_ _   _   _ _   _         _              _
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+|_|   |   |     |         |              |
+ 1    |   |     |         |              |
+  |___|   |     |         |              |
+    2     |     |         |              |
+      |___|     |         |              |
+        2       |         |              |
+          |_____|         |              |
+             3            |              |
+                |_________|              |
+                     4                   |
+                          |______________|
+                                  5
+
+此时如果8不是下一个数字，而是9，那么也跳不出去，那么返回的结论就是跳不出去了。
+```
+
+代码如下：
+```
+public boolean canCross(int[] stones) {
+    if (stones[1] > 1)
+        return false;
+    return dfs(stones, 0, 0);
+}
+
+boolean dfs(int[] stones, int index, int lastStep) {
+    for (int i = index + 1; i < stones.length; i++) {
+        if (stones[i] - stones[index] < lastStep - 1) {
+            continue;
+        if (stones[i] - stones[index] > lastStep + 1) {
+            return false;
+        if (dfs(stones, i, stones[i] - stones[index])) {
+            return true;
+    }
+    return index == stones.length - 1;
+}
+```
+
+这个解法在leetcode会TLE，所以需要做一个dp[][]来存储在i为位置，如果前一步lastStep步下能否有解，避免无谓的深入下去。
+
+
 ### [371. Sum of Two Integers](https://leetcode.com/problems/sum-of-two-integers/)
 
 E, Bit Manipulation

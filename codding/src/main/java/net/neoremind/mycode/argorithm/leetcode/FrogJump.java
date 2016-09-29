@@ -4,13 +4,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-
-import net.neoremind.mycode.argorithm.leetcode.support.TreeNode;
-import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
  * 403. Frog Jump  QuestionEditorial Solution  My Submissions
@@ -51,78 +47,89 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
  * <p>
  * Return false. There is no way to jump to the last stone as
  * the gap between the 5th and 6th stone is too large.
+ * <p>
+ * 这个是在理解题目意义错误的情况下做的Backtrack+DFS的方式。
+ * <p>
+ * 第一次写代码错误的解读了：
+ * If the frog's last jump was k units, then its next jump must be either k - 1, k, or k + 1 units.
+ * <p>
+ * 认为如果frog是第K跳，则下次最多跳K-1，K，K+1的位置。
+ * <p>
+ * 其实是上次的跳跃结果。。。faint :-(
+ * <p>
+ * https://leetcode.com/problems/frog-jump/
  *
  * @author zhangxu
  */
+@Deprecated
 public class FrogJump {
 
     @Test
     public void test() {
-        int[] stones = new int[] {0, 1, 3, 5, 6, 8, 12, 16};
+        int[] stones = new int[] {0, 1, 3, 5, 6, 8, 12, 17};
         assertThat(canCross(stones), is(true));
 
-        //        stones = new int[] {0, 1, 2};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 3};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 4};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 5};
-        //        assertThat(canCross(stones), is(false));
-        //
-        //        stones = new int[] {0, 1, 3, 4};
-        //        assertThat(canCross(stones), is(false));
-        //
-        //        stones = new int[] {0, 1, 3, 5};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 3, 6};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 3, 7};
-        //        assertThat(canCross(stones), is(true));
-        //
-        //        stones = new int[] {0, 1, 3, 9};
-        //        assertThat(canCross(stones), is(false));
+        stones = new int[] {0, 1, 2, 3, 4, 8, 9, 11};
+        assertThat(canCross(stones), is(true));
     }
 
     public boolean canCross(int[] stones) {
         if (stones[1] > 1) {
             return false;
         }
-        int max = 0;
-        for (int stone : stones) {
-            max = Math.max(stone, max);
-        }
-        int[] path = new int[max + 1];
-        for (int stone : stones) {
-            path[stone] = 1;
-        }
-        return helper(path, 2, 1);
+        return dfs(stones, 2, 1, 1);
     }
 
-    boolean helper(int[] path, int step, int idx) {
-        System.out.println("step:" + step + ", idx=" + idx);
-        if (idx > path.length - 1 || path[idx] != 1) {
-            System.out.println("idx=" + idx + " which is invalid, so backtrack");
-            return false;
-        }
-        int[] nexts = getNexts(step, idx);
-        System.out.println("nexts may be:" + Arrays.toString(nexts));
-        if (idx == path.length - 1) {
+    boolean dfs(int[] stones, int step, int idx, int position) {
+        System.out.println("step:" + step + ", idx=" + idx + ", position=" + position);
+        List<Stone> nexts = getNexts(stones, step, idx, position);
+        System.out.println("nexts may be:" + nexts);
+        if (idx == stones.length - 1) {
+            System.out.println("got to end!");
             return true;
         }
-        boolean canJumpToEnd = helper(path, step + 1, nexts[0]) ||
-                helper(path, step + 1, nexts[1]) ||
-                helper(path, step + 1, nexts[2]);
+        if (nexts.isEmpty()) {
+            System.out.println("no further, backtrack..");
+            return false;
+        }
+        boolean canJumpToEnd = false;
+        for (Stone next : nexts) {
+            if (canJumpToEnd) {
+                break;
+            }
+            canJumpToEnd = dfs(stones, step + 1, next.idx, next.position);
+        }
         return canJumpToEnd;
     }
 
-    int[] getNexts(int step, int idx) {
-        return new int[] {idx + step - 1, idx + step, idx + step + 1};
+    List<Stone> getNexts(int[] path, int step, int idx, int position) {
+        List<Stone> nexts = new ArrayList<>(3);
+        for (int i = idx + 1; i < path.length; i++) {
+            if (path[i] == position + step - 1 ||
+                    path[i] == position + step ||
+                    path[i] == position + step + 1) {
+                nexts.add(new Stone(i, path[i]));
+            }
+        }
+        return nexts;
+    }
+
+    class Stone {
+        int idx;
+        int position;
+
+        Stone(int idx, int position) {
+            this.idx = idx;
+            this.position = position;
+        }
+
+        @Override
+        public String toString() {
+            return "Stone{" +
+                    "idx=" + idx +
+                    ", position=" + position +
+                    '}';
+        }
     }
 
 }

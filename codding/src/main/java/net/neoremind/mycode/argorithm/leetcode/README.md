@@ -3500,6 +3500,29 @@ while (true) {
 return result;
 ```
 
+更容易记忆的解法，用queue来实现。
+
+```
+if (root == null) return new ArrayList<>(0);
+List<List<Integer>> result = new ArrayList<>();
+Queue<TreeNode> queue = new LinkedList<>();
+queue.offer(root);
+while (!queue.isEmpty()) {
+    List<TreeNode> level = new ArrayList<>();
+    while (!queue.isEmpty()) {
+        level.add(queue.poll());
+    }
+    result.add(level.stream().map(n -> n.val).collect(Collectors.toList()));  //JDK8 API
+    for (TreeNode node : level) {
+        if (node.left != null)
+            queue.offer(node.left);
+        if (node.right != null)
+            queue.offer(node.right);
+    }
+}
+return result;
+```
+
 ### [101. Symmetric Tree](https://leetcode.com/problems/symmetric-tree/)
 
 E, Tree Depth-first Search Breadth-first Search
@@ -3666,6 +3689,7 @@ n=3
 1        2
 ```
 所以总结出递推公式，可以用动态规划来解决。
+```
 Taking 1~n as root respectively:
 1 as root: # of trees = F(0) * F(n-1) // F(0) == 1
 2 as root: # of trees = F(1) * F(n-2)
@@ -3675,6 +3699,7 @@ n-1 as root: # of trees = F(n-2) * F(1)
 n as root: # of trees = F(n-1) * F(0)
 
 So, the formulation is: F(n) = F(0) * F(n-1) + F(1) * F(n-2) + F(2) * F(n-3) + ... + F(n-2) * F(1) + F(n-1) * F(0)
+```
 
 ```
 F(0) = 1
@@ -3964,6 +3989,35 @@ return max;
 ∏∏∏
 ∏∏∏
 012
+```
+
+题目中延展后的数组如下：
+```
+   ∏
+  ∏∏
+  ∏∏
+  ∏∏ ∏
+∏ ∏∏∏∏
+∏∏∏∏∏∏
+012345
+
+left= [0,0,2,3,2,5]
+right=[0,5,3,3,5,5]
+max  =[2,6,10,6,8,3]
+```
+
+实际这利用了memory记忆式算法，往左延展的时候可以“跳跃”的来。
+```
+   ∏
+∏  ∏
+∏∏ ∏∏
+∏∏∏∏∏∏
+∏∏∏∏∏∏∏
+∏∏∏∏∏∏∏
+0123456
+
+left=[0,0,0,3,3,3,?]
+下一个位置?应该是多少，首选<5>跳到<3>，<3>到<2>，<2>到<0>，三步即可计算出?位置的最左延展。
 ```
 
 ```

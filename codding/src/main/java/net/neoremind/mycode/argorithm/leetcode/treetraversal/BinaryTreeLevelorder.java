@@ -4,7 +4,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,31 @@ public class BinaryTreeLevelorder {
             level = newLevel;
             if (level.isEmpty()) {
                 break;
+            }
+        }
+        return result;
+    }
+
+    public List<List<Integer>> traverse2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>(0);
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            List<TreeNode> level = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                level.add(queue.poll());
+            }
+            result.add(level.stream().map(n -> n.val).collect(Collectors.toList()));
+            for (TreeNode node : level) {
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
             }
         }
         return result;

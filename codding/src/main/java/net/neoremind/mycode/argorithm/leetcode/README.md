@@ -3406,6 +3406,25 @@ private static void levelOrderBottom(List<TreeNode> level, List<List<Integer>> r
 }
 ```
 
+使用Queue的解法如下：
+```
+private static void levelOrderBottom2(Queue<TreeNode> queue, List<List<Integer>> result) {
+    while (!queue.isEmpty()) {
+        List<TreeNode> level = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            level.add(queue.poll());
+        }
+        for (TreeNode node : level)
+            if (node.left != null)
+                queue.offer(node.left);
+            if (node.right != null)
+                queue.offer(node.right);
+        levelOrderBottom2(queue, result);
+        result.add(level.stream().map(n -> n.val).collect(Collectors.toList()));
+    }
+}
+```
+
 ### [106. Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
 
 和105类似，只不过postorder遍历尾巴是根节点。不再赘述。

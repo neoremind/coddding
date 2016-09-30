@@ -4,7 +4,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -67,6 +69,36 @@ public class BinaryTreeLevelorderII {
             levelOrderBottom(newLevel, result);
         }
         result.add(levelValues);
+    }
+
+    public List<List<Integer>> levelOrderBottom2(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>(0);
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        levelOrderBottom2(queue, result);
+        return result;
+    }
+
+    private static void levelOrderBottom2(Queue<TreeNode> queue, List<List<Integer>> result) {
+        while (!queue.isEmpty()) {
+            List<TreeNode> level = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                level.add(queue.poll());
+            }
+            for (TreeNode node : level) {
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            levelOrderBottom2(queue, result);
+            result.add(level.stream().map(n -> n.val).collect(Collectors.toList()));
+        }
     }
 
     /**

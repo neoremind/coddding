@@ -80,6 +80,99 @@ boolean dfs(int[] stones, int index, int lastStep) {
 这个解法在leetcode会TLE，所以需要做一个dp[][]来存储在i为位置，如果前一步lastStep步下能否有解，避免无谓的深入下去。
 
 
+### [395. Longest Substring with At Least K Repeating Characters](https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/)
+
+M
+
+初步感觉和
+* 3. Longest Substring Without Repeating Characters
+* 76. Minimum Window Substring
+* 209. Minimum Size Subarray Sum
+* 59. Longest Substring with At Most Two Distinct Characters
+* 340. Longest Substring with At Most K Distinct Characters
+比较类似，但是仔细分析无法用sliding window来解决。
+
+首先暴露求解brute force下，遍历从0到len-k的位置，然后没有字符加入到计数的int[26]个字母中，叫做counter，下一个字符也在
+counter中找到索引+1，如果发现counter中不等于0的索引都大于k，那么就形成了一个解，计算长度，下一次那个i就从最长的那个记录开始，不要从i++
+开始了，否则会TLE。
+```
+int i = 0;int res = 0;
+while (i + k < s.length()) {
+    int[] counter = new int[26];
+    int maxIdx = i;
+    for (int j = i; j < s.length(); j++) {
+        int charIdx = s.charAt(j) - 'a';
+        counter[charIdx]++;
+        boolean isAllGreaterOrEqualK = true;
+        for (int m = 0; m < 26; m++) {
+            if (counter[m] != 0 && counter[m] < k)
+                isAllGreaterOrEqualK = false;
+                break;
+        }
+        if (isAllGreaterOrEqualK)
+            res = Math.max(res, j - i + 1);
+            maxIdx = j;
+    }
+    i = maxIdx + 1;
+}
+return res;
+```
+
+一个改进的算法是不用每次遍历counter了，而是用mask来做，如果其小于k，我们将mask的对应位改为1，如果大于等于k，将mask对应位改为0。然后看mask是否为0，是的话就更新res结果。
+```
+int i = 0;int res = 0;
+while (i + k < s.length()) {
+    int[] counter = new int[26];
+    int mask = 0;
+    int maxIdx = i;
+    for (int j = i; j < s.length(); j++) {
+        int charIdx = s.charAt(j) - 'a';
+        counter[charIdx]++;
+        if (counter[charIdx] < k) {
+            mask |= (1 << charIdx);  //变成1的办法！
+        } else {
+            mask &= (~(1 << charIdx));  //变成0的办法！
+        }
+        if (mask == 0)
+            res = Math.max(res, j - i + 1);
+            maxIdx = j;
+    }
+    i = maxIdx + 1;
+}
+return res;
+```
+
+第三种解法就是利用DAC的思想，找到“断点”，分别计算两边的满足题目的长度。
+```
+char[] str = s.toCharArray();
+return helper(str, 0, s.length(), k);
+
+private int helper(char[] str, int start, int end, int k) {
+    if (end < start)
+        return 0;
+    if (end - start < k)
+        return 0;//substring length shorter than k.
+    int[] count = new int[26];
+    for (int i = start; i < end; i++)
+        int idx = str[i] - 'a';
+        count[idx]++;
+    for (int i = 0; i < 26; i++) {
+        if (count[i] == 0)
+            continue;//i+'a' does not exist in the string, skip it.
+        if (count[i] < k) {
+            for (int j = start; j < end; j++) {
+                if (str[j] == i + 'a') {
+                    int left = helper(str, start, j, k);
+                    int right = helper(str, j + 1, end, k);
+                    return Math.max(left, right);
+                }
+            }
+        }
+    }
+    return end - start;
+```
+
+
 ### [371. Sum of Two Integers](https://leetcode.com/problems/sum-of-two-integers/)
 
 E, Bit Manipulation

@@ -306,6 +306,7 @@
 
 [345. Reverse Vowels of a String](README.md#345-reverse-vowels-of-a-string)
 
+[395. Longest Substring with At Least K Repeating Characters]()
 
 ##Divide and Conquer
 

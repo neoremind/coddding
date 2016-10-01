@@ -25,7 +25,7 @@ package net.neoremind.mycode.argorithm.leetcode;
  * https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/
  * <p>
  * https://discuss.leetcode.com/topic/57372/java-3ms-divide-and-conquer-recursion-solution/2
- *
+ * <p>
  * http://www.cnblogs.com/grandyang/p/5852352.html
  *
  * @author zhangxu
@@ -67,26 +67,59 @@ public class LongestSubstringWithAtLeastKRepeatingCharacters {
     }
 
     /**
-     * class Solution {
-     public:
-     int longestSubstring(string s, int k) {
-     int res = 0, i = 0, n = s.size();
-     while (i + k < n) {
-     int m[26] = {0}, mask = 0, max_idx = i;
-     for (int j = i; j < n; ++j) {
-     int t = s[j] - 'a';
-     ++m[t];
-     if (m[t] < k) mask |= (1 << t);
-     else mask &= (~(1 << t));
-     if (mask == 0) {
-     res = max(res, j - i + 1);
-     max_idx = j;
-     }
-     }
-     i = max_idx + 1;
-     }
-     return res;
-     }
-     };
+     * 是{@link #longestSubstringBruteForce(String, int)}的改进
      */
+    public int longestSubstring2(String s, int k) {
+        int i = 0;
+        int res = 0;
+        while (i + k < s.length()) {
+            int[] counter = new int[26];
+            int mask = 0;
+            int maxIdx = i;
+            for (int j = i; j < s.length(); j++) {
+                int charIdx = s.charAt(j) - 'a';
+                counter[charIdx]++;
+                if (counter[charIdx] < k) {
+                    mask |= (1 << charIdx);
+                } else {
+                    mask &= (~(1 << charIdx));  //变成0的办法
+                }
+                if (mask == 0) {
+                    res = Math.max(res, j - i + 1);
+                    maxIdx = j;
+                }
+            }
+            i = maxIdx + 1;
+        }
+        return res;
+    }
+
+    /**
+     * 这种也是AC的
+     */
+    public int longestSubstringBruteForce(String s, int k) {
+        int i = 0;
+        int res = 0;
+        while (i + k < s.length()) {
+            int[] counter = new int[26];
+            int maxIdx = i;
+            for (int j = i; j < s.length(); j++) {
+                int charIdx = s.charAt(j) - 'a';
+                counter[charIdx]++;
+                boolean isAllGreaterOrEqualK = true;
+                for (int m = 0; m < 26; m++) {
+                    if (counter[m] != 0 && counter[m] < k) {
+                        isAllGreaterOrEqualK = false;
+                        break;
+                    }
+                }
+                if (isAllGreaterOrEqualK) {
+                    res = Math.max(res, j - i + 1);
+                    maxIdx = j;
+                }
+            }
+            i = maxIdx + 1;
+        }
+        return res;
+    }
 }

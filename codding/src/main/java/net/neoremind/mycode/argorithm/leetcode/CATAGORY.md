@@ -53,6 +53,8 @@
 
 [66. Plus One](README.md#66-plus-one)
 
+[73. Set Matrix Zeroes]()
+
 [74. Search a 2D Matrix](README.md#74-search-a-2d-matrix)
 
 [75. Sort Colors](README.md#75-sort-colors)

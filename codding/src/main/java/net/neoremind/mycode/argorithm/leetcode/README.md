@@ -290,9 +290,12 @@ return new String(str);
 
 5）比较巧妙的是还可以用分治算法
 ```
+int length = s.length();
+if (length <= 1)
+    return s;
 String left = s.substring(0, length / 2);
 String right = s.substring(length / 2, length);
-return reverse(right) + reverse(left);
+return reverse5(right) + reverse5(left);
 ```
 
 ### [342. Power of Four](https://leetcode.com/problems/power-of-four/)
@@ -2337,12 +2340,38 @@ long getSign(char[] str, int start)
 
 M, Array
 
-因此不要陷入数字计算的陷阱里，而是想着用字符串比较或者使用jdk的函数式编程思想
+一开始的想法就是排序，大思路首先正确，就是需要实现自己的排序策略。可以使用各种排序算法，比如选择、快排等。
+但是排序的策略，应该利用int转为str来比较的思路。
+一直陷入，两个int，应该如何从高位比较到低位，当时的想法是比较高位，直到发现不同的位，则比较不同的位。 例如，384 > 3125 但是这里有一个坑，就是384 > 3842，因为 1）有公共最长前缀384， 2）公共最长前缀已经到了末尾 3）另外一个数字末尾这个2比首位3小 这三个条件极其难写算法去实现，会有很多边界条件和额外的计算量。 因此不要陷入数字计算的陷阱里，而是想着用字符串比较或者使用jdk的函数式编程思想（例如largestNumber2(int[])）
 
 ```
 String[] array = Arrays.stream(num).mapToObj(String::valueOf).toArray(String[]::new);
 Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
 return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
+//Arrays.stream(array).reduce("", (x, y) -> x.equals("0") ? y : x + y);
+```
+
+传统的写法如下：
+```
+if (nums == null || nums.length == 0)
+    return "";
+String[] numsStr = new String[nums.length];
+for (int i = 0; i < nums.length; i++)
+    numsStr[i] = nums[i] + "";
+Arrays.sort(numsStr, (o1, o2) -> (o2 + o1).compareTo(o1 + o2));
+StringBuilder sb = new StringBuilder();
+for (String str : numsStr)
+    sb.append(str);
+if (sb.charAt(0) == '0') //corner case，解决[0,0]的问题
+    return "0";
+return sb.toString();
+```
+
+注意这里的比较，compareTo的javadoc写的很清楚：Compares two strings lexicographically.
+```
+String[] tests = {"34", "3"};
+// 343 > 334 因此compareTo返回1，那么就说明s1比s2大，也就是34>3，因此排序后数组是[3, 34]，但是实际我们要的是34，3，这样组成的数字更大，所以先比较s2+s1
+Arrays.sort(tests, (String s1, String s2) -> (s1 + s2).compareTo(s2 + s1));
 ```
 
 ### [173. Binary Search Tree Iterator](https://leetcode.com/problems/binary-search-tree-iterator/)
@@ -2390,8 +2419,7 @@ E, Math
 int len = s.length();
 int res = 0;
 for (int i = 0; i < len; i++)
-    res *= 26;
-    res += (s.charAt(i) - '@');
+    res = res * 26 + (s.charAt(i) - 'A') + 1;
 return res;
 ```
 
@@ -2457,6 +2485,12 @@ while(n > 0)
     result.insert(0, (char)('A' + n % 26));
     n /= 26;
 return result.toString();
+
+assertThat(convertToTitle(1), Matchers.is("A"));
+assertThat(convertToTitle(26), Matchers.is("Z"));
+assertThat(convertToTitle(52), Matchers.is("AZ"));
+assertThat(convertToTitle(53), Matchers.is("BA"));
+assertThat(convertToTitle(54), Matchers.is("BB"));
 ```
 
 ### [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/)
@@ -2498,6 +2532,17 @@ M, Array Dynamic Programming
 max * newnumber, min*newnumber, newnumber这三个肯定会出现max和min就得判断下。
 
 ```
+-2 3 -4 5 -6
+
+max min res
+-2  -2  -2
+3   -6  3    (3 > -2> -2*3)
+24  -12 24  (-6*-4 > -4 > 3*-4)
+120 -60 120  (24*5 > 5 > -12*5)
+360  -720 360   (-6*-60 > -6 > 120 * -6)
+```
+
+```
 int res = nums[0];
 int max = nums[0];
 int min = nums[0];
@@ -2520,7 +2565,7 @@ M, String
 * 2. handle s.length == 0
 * 3. trim inner multiple spaces
     // barrier - 1 is the trimmed ending index
-    // like 316题 RemoveDuplicatesFromSortedArray
+    // like 316题 RemoveDuplicatesFromSortedArray 中间空格的办法
     int barrier = 1;
     for (int i = 1; i < str.length; i++)
         if (str[i] == ' ' && str[i] == str[i - 1])
@@ -2538,6 +2583,13 @@ M, String
 H, Design
 
 一次性写的框架差不多，有一些边界条件还需要处理好。
+
+重要的数据结构：
+* Map<Integer, Node> map;
+* Node包括key，value，prev，next
+* put方法先检查是否存在key，存在则moveAhead，需要考虑head和tail的情况；如果不存在，则put map，更新size，
+如果是第一次插入head和tail相连，其他情况则new node作为head，然后检查size，是否需要deleteLRU。
+* get方法需要moveAhead。
 
 ```
 public class LRUCache {
@@ -2594,6 +2646,8 @@ public class LRUCache {
             return;
         if (tail == target)
             tail = target.prev;
+             head = target;
+             return;
         target.prev.next = target.next;
         target.next.prev = target.prev;
         tail.next = target;

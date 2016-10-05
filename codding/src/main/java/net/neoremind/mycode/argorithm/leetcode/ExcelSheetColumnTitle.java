@@ -1,5 +1,10 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
+import static org.junit.Assert.assertThat;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
  * Given a positive integer, return its corresponding column title as appear in an Excel sheet.
  * <p>
@@ -42,6 +47,15 @@ public class ExcelSheetColumnTitle {
         }
 
         return result.toString();
+    }
+
+    @Test
+    public void test() {
+        assertThat(convertToTitle(1), Matchers.is("A"));
+        assertThat(convertToTitle(26), Matchers.is("Z"));
+        assertThat(convertToTitle(52), Matchers.is("AZ"));
+        assertThat(convertToTitle(53), Matchers.is("BA"));
+        assertThat(convertToTitle(54), Matchers.is("BB"));
     }
 
 }

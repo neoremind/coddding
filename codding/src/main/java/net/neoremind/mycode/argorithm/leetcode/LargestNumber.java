@@ -42,6 +42,11 @@ public class LargestNumber {
 
     @Test
     public void testLargestNumber() {
+        String[] tests = {"34", "3"};
+        // 343 > 334 因此compareTo返回1，那么就说明s1比s2大，也就是34>3，因此排序后数组是[3, 34]，但是实际我们要的是34，3，这样组成的数字更大，所以先比较s2+s1
+        Arrays.sort(tests, (String s1, String s2) -> (s1 + s2).compareTo(s2 + s1));
+        System.out.println(Arrays.toString(tests));
+
         int[] nums = new int[] {34, 30};
         String str = largestNumber(nums);
         System.out.println(str);
@@ -62,6 +67,7 @@ public class LargestNumber {
         String[] array = Arrays.stream(num).mapToObj(String::valueOf).toArray(String[]::new);
         Arrays.sort(array, (String s1, String s2) -> (s2 + s1).compareTo(s1 + s2));
         return Arrays.stream(array).reduce((x, y) -> x.equals("0") ? y : x + y).get();
+        // Arrays.stream(array).reduce("", (x, y) -> x.equals("0") ? y : x + y);
     }
 
     public String largestNumber(int[] nums) {

@@ -118,6 +118,8 @@ public class LRUCacheDesign {
             }
             if (tail == target) {
                 tail = target.prev;
+                head = target;
+                return;
             }
             target.prev.next = target.next;
             target.next.prev = target.prev;

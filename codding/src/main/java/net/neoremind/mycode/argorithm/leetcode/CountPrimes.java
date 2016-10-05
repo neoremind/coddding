@@ -33,6 +33,20 @@ public class CountPrimes {
 
     public int countPrimes2(int n) {
         int count = 0;
+        boolean[] flag = new boolean[n];  // true represents that number is not prime
+        for (int i = 2; i < n; i++) {
+            if (!flag[i]) {
+                count++;
+                for (int j = i; j < n; j = j + i) {
+                    flag[j] = true;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countPrimes3(int n) {
+        int count = 0;
         for (int i = 2; i < n; i++) {
             boolean isPrime = true;
             for (int j = 2; j <= Math.sqrt(i); j++) {
@@ -54,6 +68,8 @@ public class CountPrimes {
         assertThat(countPrimes(999983), Matchers.is(78497));
         assertThat(countPrimes2(100), Matchers.is(25));
         assertThat(countPrimes2(999983), Matchers.is(78497));
+        assertThat(countPrimes3(100), Matchers.is(25));
+        assertThat(countPrimes3(999983), Matchers.is(78497));
     }
 
 }

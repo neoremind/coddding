@@ -38,13 +38,9 @@ public class RepeatedDNASequences {
         char[] str = s.toCharArray();
         for (int i = 0; i <= str.length - 10; i++) {
             long sign = getSign(str, i);
-            if (map.containsKey(sign)) {
-                map.put(sign, map.get(sign) + 1);
-                if (map.get(sign) > 1) {
-                    res.add(new String(str, i, 10));
-                }
-            } else {
-                map.put(sign, 1);
+            map.put(sign, map.getOrDefault(sign, 0) + 1);
+            if (map.get(sign) > 1) {
+                res.add(new String(str, i, 10));
             }
         }
         return new ArrayList<>(res);
@@ -54,7 +50,7 @@ public class RepeatedDNASequences {
         long sign = 0;
         for (int i = start; i < start + 10; i++) {
             sign |= (str[i] - 'A');
-            sign <<= 6;
+            sign <<= 5;
         }
         return sign;
     }

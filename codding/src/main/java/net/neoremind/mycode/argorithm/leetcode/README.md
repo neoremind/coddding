@@ -364,9 +364,19 @@ int dfs(int i, int j, int m, int n, int[][] matrix, int[][] records) {
 
 E, Math
 
+递归：
 ```
 if (n <= 0) return false;
 return (n == 1) || (n % 3 == 0 && isPowerOfThree(n / 3));
+```
+
+非递归：
+```
+if (n > 1) {
+    while (n % 3 == 0)
+        n /= 3;
+}
+return n == 1;
 ```
 
 ### [322. Coin Change](https://leetcode.com/problems/coin-change/)
@@ -1487,6 +1497,105 @@ M, Dynamic Programming
 
 和题目198类似，这道题就是在上一题的基础上加了一个条件，变成了环，所以如果抢了第一家，就不能抢最后一家。所以我们可以分别计算抢了从第二家到最后一家与抢从第一家到倒数第二家的最大值，取两个值中更大的那个就是结果。
 
+### [211. Add and Search Word - Data structure design](https://leetcode.com/problems/add-and-search-word-data-structure-design/)
+
+M, Backtracking Trie Design
+
+利用[208. Implement Trie (Prefix Tree)](https://github
+.com/neoremind/coddding/blob/master/codding/src/main/java/net/neoremind/mycode/argorithm/leetcode/README.md#208-implement-trie-prefix-tree)
+构造的字典树（前缀树）来实现，只需要修改search方法即可，使用dfs的backtrack来不断的搜索，实际就是剪枝的过程。
+
+遇到'.'，那么就遍历所有的节点的child，skip这个几点的char验证，如果dfs下面任何一个是合法的，则返回true。
+
+```
+// Your WordDictionary object will be instantiated and called as such:
+// WordDictionary wordDictionary = new WordDictionary();
+// wordDictionary.addWord("bad");
+// wordDictionary.search("b.d");
+
+public class WordDictionary {
+    Trie trie = new Trie();
+    public void addWord(String word) {
+        trie.insert(word);
+    }
+    public boolean search(String word) {
+        return trie.search(word);
+    }
+
+    class TrieNode {
+        char content;
+        LinkedList<TrieNode> children = new LinkedList<>();
+        boolean isEnd;
+        int count;
+        public TrieNode() {
+        }
+        public TrieNode(char c) {
+            this.content = c;
+        }
+        public TrieNode subTrieNode(char c) {
+            for (TrieNode child : children) {
+                if (child.content == c) {
+                    return child;
+                }
+            }
+            return null;
+        }
+    }
+
+    class Trie {
+        private TrieNode root;
+        public Trie() {
+            root = new TrieNode();
+        }
+        public void insert(String word) {
+            if (word == null || word.length() == 0)
+                return;
+            TrieNode curr = root;
+            for (char c : word.toCharArray()) {
+                TrieNode node = curr.subTrieNode(c);
+                if (node == null) {
+                    node = new TrieNode(c);
+                    curr.children.add(node);
+                }
+                node.count++;
+                curr = node;
+            }
+            curr.isEnd = true;
+        }
+
+        public boolean search(String word) {
+            if (word == null || word.length() == 0)
+                return false;
+            return dfs(word.toCharArray(), 0, root);
+        }
+
+        public boolean dfs(char[] str, int idx, TrieNode node) {
+            if (idx >= str.length) {
+                if (node.isEnd) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            char target = str[idx];
+            if (target == '.') {
+                for (TrieNode child : node.children) {
+                    if (dfs(str, idx + 1, child)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                TrieNode child = node.subTrieNode(target);
+                if (child == null) {
+                    return false;
+                }
+                return dfs(str, idx + 1, child);
+            }
+        }
+    }
+}
+```
 
 ### [210. Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
 
@@ -1934,7 +2043,22 @@ for (int k = 2; j <= Math.sqrt(n); k++)
 考虑更加好的方法，[参考链接](http://www.mkyong.com/java/how-to-determine-a-prime-number-in-java/)
 2 is prime... cross out it's multiples，需要删除掉4，6，8，10...
 
+基本版本，
+```
+int count = 0;
+boolean[] flag = new boolean[n];  // true represents that number is not prime
+for (int i = 2; i < n; i++) {
+    if (!flag[i]) {
+        count++;
+        for (int j = i; j < n; j = j + i) {
+            flag[j] = true;
+        }
+    }
+}
+return count;
+```
 
+然后再优化，节约32倍的存储空间。
 ```
 int[] notPrime = new int[n / 32 + 1];  //为了节省空间用bitmap存储，notPrime[0]表示0-31的质数，notPrime[1]表示31-63的质数，然后用位与位或
 for (int i = 2; i < n; i++) {
@@ -2153,7 +2277,7 @@ void dfs(char[][] grid, boolean[][] visited, int i, int j, int rows, int cols)
 
 M, Tree Depth-first Search Breadth-first Search
 
-仿佛站在右边能看到的节点list。还是DFS的backtrack。
+仿佛站在右边能看到的节点list。还是DFS的backtrack。可以看做是preorder的travers，只不过是反着来的，从右往左，而且有条件的添加元素到res中。
 ```
    1            <---
  /   \
@@ -2213,6 +2337,15 @@ for (int i = 0; i < nums.length; i++)
 return max;
 ```
 
+示例：
+```
+1 5 3 2 6
+1 5 5 7 11
+  *     *
+
+偷星星的店收益最大
+```
+
 
 ### [191. Number of 1 Bits](https://leetcode.com/problems/number-of-1-bits/)
 
@@ -2248,6 +2381,13 @@ public int hammingWeight2(int n) {
         n = n >>> 1;  //>>退出不了循环
     }
     return res;
+}
+
+// 也可以写成
+for (int i = 0; i < 32; i++) {
+    if (((n >>> (31 - i)) & 1) == 1) {
+        res++;
+    }
 }
 
 //方法3：bit位操作
@@ -2323,7 +2463,7 @@ M, Hash Table Bit Manipulation
 ```
 for (int i = 0; i <= str.length - 10; i++)
     get sign of str[i..i+10]
-    if exist in hashmap than incr count
+    if exist in hashmap than incr count  //注意使用getOrDefault
         if count > 1 then add to a set for distinction
     else put (sign, count=1) to the map
 

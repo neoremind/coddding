@@ -68,6 +68,19 @@ public class BasicBitTest {
         assertThat(~15 + 1, is(-15));
     }
 
+    @Test
+    public void testFindRightMost1Bit() {
+        int x = 10;
+        System.out.println(Integer.toBinaryString(x));
+        int res = x & -x;
+        assertThat(res, is(2));
+
+        x = 768;
+        System.out.println(Integer.toBinaryString(x));
+        res = x & -x;
+        assertThat(res, is(256));
+    }
+
     /**
      * 求绝对值
      * <p>

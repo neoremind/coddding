@@ -1,5 +1,8 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import net.neoremind.mycode.argorithm.leetcode.support.TreeLinkNode;
 
 /**
@@ -35,6 +38,37 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeLinkNode;
  * @see PopulatingNextRightPointersInEachNode
  */
 public class PopulatingNextRightPointersInEachNodeII {
+
+    public void connectBFS(TreeLinkNode root) {
+        if (root == null) {
+            return;
+        }
+        Queue<TreeLinkNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeLinkNode head = null;
+            TreeLinkNode curr = null;
+            while (!queue.isEmpty()) {
+                TreeLinkNode node = queue.poll();
+                if (curr == null) {
+                    curr = node;
+                    head = curr;
+                } else {
+                    curr.next = node;
+                    curr = curr.next;
+                }
+            }
+            while (head != null) {
+                if (head.left != null) {
+                    queue.offer(head.left);
+                }
+                if (head.right != null) {
+                    queue.offer(head.right);
+                }
+                head = head.next;
+            }
+        }
+    }
 
     public void connect(TreeLinkNode root) {
         TreeLinkNode head = root;

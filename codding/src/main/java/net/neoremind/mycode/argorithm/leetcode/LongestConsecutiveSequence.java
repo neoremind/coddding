@@ -134,6 +134,10 @@ public class LongestConsecutiveSequence {
         assertThat(longestConsecutive(nums), Matchers.is(3));
         assertThat(longestConsecutive2(nums), Matchers.is(3));
 
+        nums = new int[] {-1, 1, 0};
+        assertThat(longestConsecutive(nums), Matchers.is(3));
+        assertThat(longestConsecutive2(nums), Matchers.is(3));
+
         nums = new int[] {7, 8, 1, 2, 3, 6, 9};
         assertThat(longestConsecutive(nums), Matchers.is(4));
         assertThat(longestConsecutive2(nums), Matchers.is(4));

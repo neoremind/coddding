@@ -820,6 +820,49 @@ if (num != 1)
 return num == 1;
 ```
 
+### [260. Single Number III](https://leetcode.com/problems/single-number-iii/)
+
+M, Bit Manipulation
+
+two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
+
+用(E) Single Number (M) Single Number II的那种解法不行了。考虑如下巧妙的解法：
+```
+// Pass 1 :
+// Get the XOR of the two numbers we need to find
+int diff = 0;
+for (int num : nums)
+    diff ^= num;
+// Get its last set bit  这一步非常的重要，会返回某个数字的最后一个1出现的位置，也就是right-most 1!!!!!
+diff &= -diff;
+
+// Pass 2 :
+int[] rets = {0, 0}; // this array stores the two numbers we will return
+for (int num : nums)
+{
+    if ((num & diff) == 0) { // the bit is not set  // 这right-most两个数有分歧，那么就异或所有符合条件的数字肯定可以过滤出两个数字
+        rets[0] ^= num;
+    }
+    else { // the bit is set
+        rets[1] ^= num;
+    }
+}
+return rets;
+```
+
+寻找right-most bit的过程如下，例如：
+```
+int x = 10; //1010
+int res = x & -x;
+assertThat(res, is(2));
+x = 768; //1100000000
+int res = x & -x;
+assertThat(res, is(256));
+```
+
+另外请复习如下的[基础知识](http://neoremind.com/2014/09/java%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B%E5%AD%98%E5%82%A8%E4%B8%8E%E8%BF%90%E7%AE%97%E7%9F%A5%E8%AF%86/)
+
+
 ### [257. Binary Tree Paths](https://leetcode.com/problems/binary-tree-paths/)
 
 E, Tree Depth-first Search
@@ -3016,7 +3059,7 @@ for (int i = 0; i < nums.length; i++) {
     if (map.containsKey(num + 1)) {
         uf.union(i, map.get(num + 1));
     }
-    if (map.containsKey(num - 1)) {
+    if (map.containsKey(num - 1)) {  //不是else if
         uf.union(i, map.get(num - 1));
     }
     map.put(num, i);
@@ -3041,6 +3084,16 @@ class UF {
     int find(int p) {
         while (p != s[p]) {
             p = s[p];
+        }
+        // 下面是路径压缩path compression的写法，在Number of Islands II中非常有用，否则会TLE
+        int root = p;
+        while (root != s[root]) {
+            root = s[root];
+        }
+        while (p != root) {
+            int newp = s[p];
+            s[p] = root;
+            p = newp;
         }
         return p;
     }
@@ -3078,7 +3131,7 @@ E,  Two Pointers String
 ```
 if (s.isEmpty()) { return true;}
 int head = 0, tail = s.length() - 1;
-while(head <= tail) {
+while(head <= tail) {  //注意小于等于，而不是!=
     cHead = s.charAt(head);
     cTail = s.charAt(tail);
     if (!Character.isLetterOrDigit(cHead))
@@ -3097,7 +3150,17 @@ return true;
 
 H, Tree Depth-first Search
 
-返回树中任意两点路径的最大值。只要两点间有路径联通就可以。有点难理解。//TODO
+返回树中任意两点路径的最大值。只要两点间有路径联通就可以。有点难理解。For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path does not need to go through the root.
+
+如下图所示，局部上面4-2-5构成了一个局部的最长连通，值为11，而对于1来说，需要取5-2这个路径，而不是4-2。
+```
+    1
+   / \
+  2   3
+ / \  /\
+4   5 6 7
+```
+
 ```
 int max;
 
@@ -3109,7 +3172,7 @@ public int maxPathSum(TreeNode root) {
 
 private int maxPathDown(TreeNode node) {
     if (node == null) return 0;
-    int left = Math.max(0, maxPathDown(node.left));//？
+    int left = Math.max(0, maxPathDown(node.left));
     int right = Math.max(0, maxPathDown(node.right));
     max = Math.max(max, left + right + node.val);
     return Math.max(left, right) + node.val;
@@ -3287,6 +3350,34 @@ public void connect(TreeLinkNode root) {
         }
         prev = null;
         head = nextLevelHead;
+    }
+}
+```
+
+后续参考level order遍历写了一个BFS更好理解：
+```
+if (root == null) return;
+Queue<TreeLinkNode> queue = new LinkedList<>();
+queue.offer(root);
+while (!queue.isEmpty()) {
+    TreeLinkNode head = null;
+    TreeLinkNode curr = null;
+    while (!queue.isEmpty()) {
+        TreeLinkNode node = queue.poll();
+        if (curr == null) {
+            curr = node;
+            head = curr;
+        } else {
+            curr.next = node;
+            curr = curr.next;
+        }
+    }
+    while (head != null) {
+        if (head.left != null)
+             queue.offer(head.left);
+        if (head.right != null)
+             queue.offer(head.right);
+        head = head.next;
     }
 }
 ```

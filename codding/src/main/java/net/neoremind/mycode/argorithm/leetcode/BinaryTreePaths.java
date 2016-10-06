@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -58,17 +59,18 @@ public class BinaryTreePaths {
     }
 
     String toPathString(List<Integer> tempList) {
-        if (tempList == null || tempList.size() == 0) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tempList.size(); i++) {
-            sb.append(tempList.get(i));
-            if (i != tempList.size() - 1) {
-                sb.append("->");
-            }
-        }
-        return sb.toString();
+        return tempList.stream().map(String::valueOf).collect(Collectors.joining("->"));
+//        if (tempList == null || tempList.size() == 0) {
+//            return "";
+//        }
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < tempList.size(); i++) {
+//            sb.append(tempList.get(i));
+//            if (i != tempList.size() - 1) {
+//                sb.append("->");
+//            }
+//        }
+//        return sb.toString();
     }
 
     /**

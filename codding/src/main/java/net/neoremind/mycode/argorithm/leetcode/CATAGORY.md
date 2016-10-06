@@ -676,6 +676,8 @@
 
 [208. Implement Trie (Prefix Tree)](README.md#208-implement-trie-prefix-tree)
 
+[211. Add and Search Word - Data structure design]()
+
 [225. Implement Stack using Queues](README.md#225-implement-stack-using-queues)
 
 [232. Implement Queue using Stacks](README.md#232-implement-queue-using-stacks)
@@ -710,7 +712,7 @@
 
 ##Binary Search Tree
 
-[220. Contains Duplicate III](README.md#220-contains-duplicate-iii) //SORT / TODO
+[220. Contains Duplicate III](README.md#220-contains-duplicate-iii)
 
 [315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 

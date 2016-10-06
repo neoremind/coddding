@@ -1388,6 +1388,153 @@ if(right > left && top > bottom) { //使用Math.min或者max计算边界的重�
 return area1 + area2 - overlap;
 ```
 
+### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
+
+M, Binary Search Tree
+
+看数组中是否存在i，j，满足
+* i, j的举例最多是k
+* nums[i]，nums[j]的差最大是t
+
+解法1：brute force
+
+遍历数字，找一个固定的window，长度为k，然后去遍历这个小window和头元素的大小，如果绝对值在k之内（包含），则返回true。
+
+会存在一个case是比如-1 - Integer.MIN，这会溢出，所以要用long。该暴力破解会TLE，时间复杂度是O(NK)。
+
+```
+注意三点
+1）j=i+1
+2）j - i <= k
+3）j < nums.length，放在上面的i < nums.length无法防止k>nums.length的情况
+4）绝对值要用long，避免减法溢出
+for (int i = 0; i < nums.length; i++)
+    for (int j = i + 1; j - i <= k && j < nums.length; j++)
+        if (Math.abs((long) nums[i] - (long) nums[j]) <= t)
+            return true;
+return false;
+```
+
+解法2：BST
+
+那么有没有什么好的办法，在第一种解法的基础上，优化时间复杂度呢，如果K很大，就会退化为O(N^2)，这是无法接受的，
+在K上做文章，使之将为logK，这个是一个很大提高，那么内层循环的查询遍历，可以使用BST平衡树，比如AVL，red-black tree之类的。
+
+这里使用了TreeSet里面的floor和ceiling方法，非常巧妙，floor找尽可能大的，ceiling找尽可能小的，同时要避免找到自己，所以加上>=自己或者<=自己的条件。
+
+这个BST要维护一个大小，就是k，超过了k就需要删除掉nums[i - k]，保证这课树的元素的举例都在k之内（包含）。
+
+```
+if (nums == null || nums.length == 0 || k <= 0) return false;
+
+TreeSet<Long> bst = new TreeSet<>();
+for (int i = 0; i < nums.length; i++) {
+    /**
+     * Returns the greatest key less than or equal to the given key,
+     * or {@code null} if there is no such key.
+     */
+    Long floor = bst.floor((long) nums[i] + t);
+    /**
+     * Returns the least key greater than or equal to the given key,
+     * or {@code null} if there is no such key.
+     */
+    Long ceiling = bst.ceiling((long) nums[i] - t);
+    if ((floor != null && floor >= nums[i]) || (ceiling != null && ceiling <= nums[i])) {
+        return true;
+    }
+    bst.add((long) nums[i]);
+    if (bst.size() > k) {
+        bst.remove((long) nums[i - k]);
+    }
+}
+return false;
+```
+
+解法3：bucket桶排序思想
+
+这种解法有点突破，比解法2的性能还要好，在LC可以打败82%，而解法只能30%。
+
+使用桶的思想如下，一个bucket sort如下：
+```
+int[] bucket = new int[maxVal + 1];
+for (int i = 0; i < a.length; i++) {
+    bucket[a[i]]++;
+}
+int outPos = 0;
+for (int i = 0; i < bucket.length; i++) {
+    for (int j = 0; j < bucket[i]; j++) {
+        a[outPos++] = i;
+    }
+}
+```
+
+关于桶排序需要了解的如下：
+```
+桶排序的时间和空间复杂度如下：
+
+Time
+Worst case (n^2)
+Best case  O(n + k)
+Average case  O(n + k)
+
+Space:
+O(n+k) auxiliary
+
+集中桶排序的分类：
+Counting sort: buckets hold only a single value，1对1
+Bucket sort: buckets hold a range of values，1个桶N个元素，基于range来
+Radix sort: buckets hold values based on digits within their values
+
+-----  -----  -----  -----     -----
+| 1 |  | 2 |  | 3 |  | 4 | ... | N |
+|   |  |   |  |   |  |   |     |   |
+|   |  |   |  |   |  |   |     |   |
+-----  -----  -----  -----     -----
+
+  ^      ^      ^      ^         ^
+  |      |      |      |
+
+  4     11     23      37
+  9     12     26
+ 21
+
+来了一个数字先找自己的桶，放进入，然后桶内部的数据比较小，可以随意排序，如果桶和数字都是1对1的，那么是最快的，但是需要牺牲很多空间。
+理论上bucketSize越大，桶排序就会越快。
+
+一个实际的代码如下：http://www.growingwiththeweb.com/2015/06/bucket-sort.html
+```
+
+回到这道题，因为数字的是很大的，甚至有可能是Integer.MAX_VALUE，因此这样会太浪费空间，其实我们不需要最终的排序结果，
+只需要找有没有两个元素符合我们的要求，这样我们可以把桶的size设为t，如果有两个元素都在一个桶里肯定就是距离小于t了，
+当然还得考虑相邻的两个桶里的元素也可能复合要求，因此也得把邻居们和自己的里的数字计算下。
+
+另外要维护的小window是k大小，因此一旦超过k就得从桶里删除掉最早插入的那个。
+
+由于桶可能会非常的稀疏，因此采用Map，而不是顺序数据结构来解决。
+
+bucket当中的key就是经过归一化处理的，必须大于0，然后“除以”桶的大小，可以保证基于range的分区落桶，
+一旦在window内有数字在相同的桶里面，或者在相邻的桶里并且举例小于等于t，则返回true
+
+```
+if (k < 1 || t < 0) return false;
+Map<Long, Long> bucket = new HashMap<>();
+for (int i = 0; i < nums.length; i++) {
+    long mappedValue = (long) nums[i] - Integer.MIN_VALUE;
+    long hashedKey = mappedValue / ((long) t + 1);
+    if (bucket.containsKey(hashedKey) ||
+            (bucket.containsKey(hashedKey - 1) && mappedValue - bucket.get(hashedKey - 1) <= t) ||
+            (bucket.containsKey(hashedKey + 1) && bucket.get(hashedKey + 1) - mappedValue <= t)) {
+        return true;
+    }
+    bucket.put(hashedKey, mappedValue);
+    if (bucket.size() > k) {
+        bucket.remove(((long) nums[i - k] - Integer.MIN_VALUE) / ((long) t + 1));
+    }
+}
+return false;
+```
+
+
 ### [215. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
 
 M, Heap Divide and Conquer

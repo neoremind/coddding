@@ -144,7 +144,6 @@ public class CountOfSmallerNumbersAfterSelf {
     public void test() {
         int[] a = new int[] {1, 2};
         assertThat(countSmaller(a), Matchers.is(Lists.newArrayList(0, 0)));
-        assertThat(countSmaller2(a), Matchers.is(Lists.newArrayList(0, 0)));
 
         a = new int[] {2, 1};
         assertThat(countSmaller(a), Matchers.is(Lists.newArrayList(1, 0)));
@@ -157,6 +156,7 @@ public class CountOfSmallerNumbersAfterSelf {
 
         a = new int[] {5, 2, 6, 1};
         assertThat(countSmaller(a), Matchers.is(Lists.newArrayList(2, 1, 1, 0)));
+        assertThat(countSmaller2(a), Matchers.is(Lists.newArrayList(0, 0)));
 
         a = new int[] {5, 2, 6, 5, 1};
         assertThat(countSmaller(a), Matchers.is(Lists.newArrayList(2, 1, 2, 1, 0)));

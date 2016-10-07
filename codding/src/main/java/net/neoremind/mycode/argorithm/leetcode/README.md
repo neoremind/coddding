@@ -498,6 +498,47 @@ int findIndex(int target, List<Integer> sorted) {
 
 方法4：树状数组 （Binary Indexed Tree / Fenwick Tree）
 
+```
+List<Integer> res = new LinkedList<Integer>();
+    if (nums == null || nums.length == 0) {
+        return res;
+    }
+    // find min value and minus min by each elements, plus 1 to avoid 0 element
+    int min = Integer.MAX_VALUE;
+    int max = Integer.MIN_VALUE;
+    for (int i = 0; i < nums.length; i++) {
+        min = (nums[i] < min) ? nums[i] : min;
+    }
+    int[] nums2 = new int[nums.length];
+    for (int i = 0; i < nums.length; i++) {
+        nums2[i] = nums[i] - min + 1;  //从开始
+        max = Math.max(nums2[i], max);
+    }
+    int[] tree = new int[max + 1];
+    for (int i = nums2.length - 1; i >= 0; i--) {
+        res.add(0, get(nums2[i] - 1, tree));  //-1是为了找比它小的数字
+        update(nums2[i], tree);
+    }
+    return res;
+}
+
+private int get(int i, int[] tree) {
+    int num = 0;
+    while (i > 0) {
+        num += tree[i];
+        i -= i & (-i);
+    }
+    return num;
+}
+
+private void update(int i, int[] tree) {
+    while (i < tree.length) {
+        tree[i]++;
+        i += i & (-i);
+    }
+}
+```
+
 非常巧妙和简单。详细的BIT的使用见题目307. Range Sum Query - Mutable
 
 [top coder对于BIT的学习，非常值得一看](https://www.topcoder.com/community/data-science/data-science-tutorials/binary-indexed-trees/)
@@ -560,6 +601,35 @@ class NumArray {
 ```
 
 方法2：Segament Tree
+
+```
+[1,3,5]
+                         [0, 2, sum=9]
+                        /           \
+               [0, 1,sum=4]         [2, 2,sum=5]
+                /         \
+        [0, 0,sum=1]    [1, 1,sum=3]
+
+
+[1,3,5,7,9]
+                                       [0, 4,sum=25]
+                                      /            \
+                           [0, 2,sum=9]           [3, 4,sum=16]
+                           /         \             /           \
+                  [0, 1,sum=4]    [2, 2,sum=5] [3, 3,sum=7]   [4, 4,sum=9]
+                   /     \
+        [0, 0,sum=1]   [1, 1,sum=3]
+
+
+[1,3,5,7,9,11]
+                                        [0, 5,sum=36]
+                                      /              \
+                           [0, 2,sum=9]               [3, 5,sum=27]
+                           /         \                 /           \
+                  [0, 1,sum=4]    [2, 2,sum=5]   [3, 4,sum=16]   [5, 5,sum=11]
+                   /     \                       /          \
+        [0, 0,sum=1]   [1, 1,sum=3]      [3, 3,sum=7]   [4, 4,sum=9]
+```
 
 ```
 class SegmentTreeNode {
@@ -672,6 +742,11 @@ public int getResult(SegmentTreeNode root, int start, int end) {
 ### [300. Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
 
 M, Dynamic Programming, Binary Search
+
+另外和[128. Longest Consecutive Sequence](https://github.com/neoremind/coddding/blob/master/codding/src/main/java/net/neoremind/mycode/argorithm/leetcode/README.md)
+不一样，本题只要求是递增的，并非连续，因此并查集并不行。
+
+本地因为要保证元素的原始顺序，因此排序是不可行的，唯一的想法就是DP。
 
 找到状态转移方程的，例如N个数的序列是：
 ```
@@ -3361,6 +3436,9 @@ void helper(TreeNode root, List<Integer> tempList, List<Integer> result) {
 H, Array Union Find
 
 这和动态规划的两个LCS问题（Longest Common Subsequence不连续）和（Longest Common Substring连续）不是一个LCS问题。
+
+另外和[300. Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/)
+也不一样，因为这个要求连续，300题只要求是递增的。因此并查集并不行。
 
 方法1：排序后遍历，lc可以接受，O(NlogN)
 ```

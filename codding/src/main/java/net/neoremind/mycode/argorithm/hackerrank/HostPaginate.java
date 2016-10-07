@@ -34,7 +34,7 @@ public class HostPaginate {
         if (results == null || results.length == 0) {
             return new String[] {""};
         }
-        List<Host> hosts = Arrays.stream(results).map(r -> new Host(r)).collect(Collectors.toList());
+        List<Host> hosts = Arrays.stream(results).map(Host::new).collect(Collectors.toList());
         HostPool hostPool = new HostPool(hosts);
 
         Dummy dummy = new Dummy("0,D,D,D");
@@ -68,7 +68,7 @@ public class HostPaginate {
             hostPool.revert();
         }
 
-        return res.stream().map(h -> h.getContent()).toArray(String[]::new);
+        return res.stream().map(Host::getContent).toArray(String[]::new);
     }
 
     /**

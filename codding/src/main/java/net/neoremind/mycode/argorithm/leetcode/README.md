@@ -2972,6 +2972,97 @@ M, String
 * 7. return new String(str, 0, barrier);
 ```
 
+### [147. Insertion Sort List](https://leetcode.com/problems/insertion-sort-list/)
+
+M, Linked List Sort
+
+想清楚了，举几个例子做，这种list的操作绝对可以一次性AC，dummy节点太有用了！
+
+```
+if (head == null || head.next == null)
+    return head;
+ListNode dummy = new ListNode(0);
+dummy.next = head;
+ListNode pre = head;
+ListNode curr = head.next;
+while (curr != null) {
+    ListNode nextAfterCurr = curr.next;
+    ListNode ins = dummy;
+    while (ins.next.val < curr.val) {
+        ins = ins.next;
+    }
+    if (ins.next == curr) {
+        pre = curr;
+    } else {
+        pre.next = curr.next;
+        curr.next = ins.next;
+        ins.next = curr;
+    }
+    curr = nextAfterCurr;
+}
+return dummy.next;
+```
+
+另外附上基本的三种排序算法，
+
+* 冒泡排序
+
+连Obama都说过最慢的。。。
+
+效率最低的排序算法，连Obama都说这是worst solution。每一趟排序都做交换，把大的（或者小的）值往后排，这样经过一趟排序后，最大的值就跟泡泡一样浮到了最后面，经过n-i趟后，最后的i个元素是排序好的。
+```
+for (int i = 0; i < array.length; i++) {
+    for (int j = 0; j < array.length - i - 1; j++) {
+        if (array[j] > array[j + 1]) { // 把大的值交换到后面
+            swap(j, j + 1, array);
+        }
+    }
+}
+```
+
+* 选择排序
+
+n趟遍历，每一趟都往后找，找一个最小的元素，和这一趟的起点元素交换， 这样n-i趟后，就会有前i个元素就是排序好的，本例中始终找最小的。
+
+```
+for (int i = 0; i < array.length - 1; i++) {
+    int min = i;
+    for (int j = i + 1; j < array.length; j++) {
+        if (array[j] < array[min]) {
+            min = j;
+        }
+    }
+    if (i != min) {
+        swap(i, min, array);
+    }
+}
+```
+
+* 插入排序
+
+每一趟都重新确认一个起点，暂时叫做所谓的“新人”，新人初来乍到，总得找个安身之所， 所以就和前面已经按照顺序就坐的“老人”们比较，依次往前比，大的依次靠后“挪动”，直到这个新来的 刚刚大于前面的兄弟，就是他的座次了，“插入”到这里即可。
+
+这里注意：不断的重复这个过程，越往后挪动的兄弟可能越多，就会越慢了
+
+```
+for (int i = 1; i < array.length; i++) {
+    int currentValue = array[i];
+    int position = i;
+    for (int j = i - 1; j >= 0; j--) {
+        if (array[j] > currentValue) {
+            array[j + 1] = array[j];
+            position -= 1;
+        } else {
+            break;
+        }
+    }
+
+    array[position] = currentValue;
+}
+```
+
+
+
 ### [146. LRU Cache](https://leetcode.com/problems/lru-cache/)
 
 H, Design

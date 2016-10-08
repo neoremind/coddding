@@ -4584,6 +4584,54 @@ nums1[0] = nums2[0]
 [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 ```
 
+### [87. Scramble String](https://leetcode.com/problems/scramble-string/)
+
+H, Dynamic Programming String
+
+搅拌字符串，是学习递归的一个非常好的典型例子。
+
+所谓搅拌字符串，就是在任意的非叶子节点，交换左右两个子树。
+
+```
+    rgeat
+   /    \
+  rg    eat
+ / \    /  \
+r   g  e   at
+           / \
+          a   t
+```
+那么great和rgeat是一对Scramble String。
+
+```
+if (s1 == null || s2 == null) return s1 == s2;
+if (s1.equals(s2)) {
+    return true;  //非常重要！退出条件
+}
+if (s1.length() != s2.length()) return false;
+int[] count = new int[26];
+for (int i = 0; i < s1.length(); i++) {
+    count[s1.charAt(i) - 'a']++;
+    count[s2.charAt(i) - 'a']--;
+}
+for (int i = 0; i < 26; i++) {
+    if (count[i] != 0)
+        return false;
+}
+int len = s1.length();
+for (int i = 1; i < len; i++) {
+    if (isScramble(s1.substring(0, i), s2.substring(0, i)) &&
+            isScramble(s1.substring(i), s2.substring(i))) {
+        return true;
+    }
+    if (isScramble(s1.substring(0, i), s2.substring(len - i)) &&
+            isScramble(s1.substring(i), s2.substring(0, len - i))) {
+        return true;
+    }
+}
+return false;
+```
+
 ### [86. Partition List](https://leetcode.com/problems/partition-list/)
 
 M, Linked List Two Pointers

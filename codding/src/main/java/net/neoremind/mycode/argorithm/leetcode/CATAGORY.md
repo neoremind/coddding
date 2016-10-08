@@ -300,6 +300,8 @@
 
 [76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
+[87. Scramble String]()
+
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
 
 [125. Valid Palindrome](README.md#125-valid-palindrome)

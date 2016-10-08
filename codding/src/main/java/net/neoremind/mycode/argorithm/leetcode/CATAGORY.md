@@ -304,6 +304,8 @@
 
 [151. Reverse Words in a String](README.md#151-reverse-words-in-a-string)
 
+[340. Longest Substring with At Most K Distinct Characters]()
+
 [344. Reverse String](README.md#344-reverse-string)
 
 [345. Reverse Vowels of a String](README.md#345-reverse-vowels-of-a-string)

@@ -320,6 +320,33 @@ E, Bit Manipulation
 return num > 0 && (num & (num - 1)) == 0 && (num & 0x55555555) != 0;
 ```
 
+### [340. Longest Substring with At Most K Distinct Characters]()
+
+PAID
+
+非常经典的sliding window解决方案，还有另外一道题目159. Longest Substring with At Most Two Distinct Characters，解决了这道，上面那个就OK了。
+
+```
+int[] flag = new int[256];
+int counter = 0;
+int start = 0;
+char[] str = s.toCharArray();
+int maxLen = 0;
+for (int end = 0; end < str.length; end++) {
+    if (flag[str[end]] == 0)
+        counter++;
+    flag[str[end]]++;
+    while (counter > k) {
+        flag[str[start]]--;
+        if (flag[str[start]] == 0)
+            counter--;
+        start++;
+    }
+    maxLen = Math.max(maxLen, end - start + 1);
+}
+return maxLen;
+```
+
 ### [329. Longest Increasing Path in a Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)
 
 H, Depth-first Search Topological Sort Memoization

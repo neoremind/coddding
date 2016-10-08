@@ -294,6 +294,8 @@
 
 [67. Add Binary](README.md#67-add-binary)
 
+[71. Simplify Path]()
+
 [72. Edit Distance](README.md#72-edit-distance)
 
 [76. Minimum Window Substring](README.md#76-minimum-window-substring)
@@ -443,6 +445,8 @@
 [20. Valid Parentheses](README.md#20-valid-parentheses)
 
 [42. Trapping Rain Water](README.md#42-trapping-rain-water)
+
+[71. Simplify Path]()
 
 [84. Largest Rectangle in Histogram](README.md#84-largest-rectangle-in-histogram)
 

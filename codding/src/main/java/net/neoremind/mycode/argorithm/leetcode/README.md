@@ -5188,6 +5188,32 @@ d[i][j] = d[i-1][j-1] if word1[i-1]=word2][j-1]
 d[i][j] = min(d[i-1][j-1] + 1, d[i-1][j] + 1, d[i][j-1] + 1)
 ```
 
+### [71. Simplify Path](https://leetcode.com/problems/simplify-path/)
+
+M, Stack String
+
+非常简单，写对了，注意处理edge case，像..，.，//之类的。使用stack来处理..，最后用java8的stream来优雅处理。
+
+```
+if (path == null || path.length() == 0) return path;
+String[] strs = path.split("/");
+Stack<String> stack = new Stack<String>();
+for (String str: strs) {
+    if (str.equals("") || str.equals(".")) {
+        continue;
+    }else if (str.equals("..")) {
+        if (!stack.isEmpty())
+            stack.pop();
+    } else {
+        stack.push(str);
+    }
+}
+String[] res = new String[stack.size()];
+for (int i = stack.size() - 1; i >= 0; i--)
+    res[i] = stack.pop();
+return Arrays.stream(res).collect(Collectors.joining("/", "/", ""));
+```
+
 ### [70. Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
 
 E, DP

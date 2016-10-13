@@ -9,12 +9,12 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 
 /**
  * Given a binary tree, determine if it is height-balanced.
- * <p/>
+ * <p>
  * For this problem, a height-balanced binary tree is defined as a binary tree in which the depth of the two subtrees
  * of every node never differ by more than 1.
- * <p/>
+ * <p>
  * Hide Tags: Tree, Depth-first Search
- * <p/>
+ * <p>
  * 给定一棵二叉树，判定它是否为平衡二叉树。
  * 算法分析：
  * 平衡二叉树（Balanced Binary Tree）又被称为AVL树（有别于AVL算法），
@@ -61,9 +61,25 @@ public class BalancedBinaryTree {
 
     }
 
+    /**
+     * <pre>
+     *           6
+     *         /   \
+     *        4     9
+     *       /\     / \
+     *      2  5   8   10
+     *     / \  \       \
+     *    1  3  5        5
+     *   /
+     *  5
+     * </pre>
+     */
     public static void main(String[] args) {
         int[] arr = new int[] {4, 2, 7, 1, 3, 6, 9};
         TreeNode tree = TreeNodeHelper.init(arr);
+        assertThat(isBalanced(tree), Matchers.is(true));
+
+        tree = TreeNodeHelper.init("6,4,9,2,5,8,10,1,3,#,5,#,#,#,5,5");
         assertThat(isBalanced(tree), Matchers.is(true));
     }
 

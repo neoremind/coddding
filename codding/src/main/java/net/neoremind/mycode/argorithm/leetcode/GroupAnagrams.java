@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -38,6 +39,7 @@ public class GroupAnagrams {
             char[] ca = s.toCharArray();
             Arrays.sort(ca);
             String keyStr = String.valueOf(ca);
+            // 改成map.putIfAbsent(keyStr, new ArrayList<String>());也可以
             if (!map.containsKey(keyStr)) {
                 map.put(keyStr, new ArrayList<String>());
             }
@@ -46,9 +48,24 @@ public class GroupAnagrams {
         return new ArrayList<List<String>>(map.values());
     }
 
+    /**
+     * 性能比较差
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams2(String[] strs) {
+        return Arrays.stream(strs).collect(Collectors.groupingBy(s -> {
+            char[] c = s.toCharArray();
+            Arrays.sort(c);
+            return String.valueOf(c);
+        })).values().stream().collect(Collectors.toList());
+    }
+
     @Test
     public void test() {
         String[] strs = {"eat", "tea", "tan", "ate", "nat", "bat"};
         assertThat(groupAnagrams(strs).size(), is(3));
+        assertThat(groupAnagrams2(strs).size(), is(3));
     }
 }

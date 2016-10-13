@@ -217,6 +217,8 @@
 
 [326. Power of Three](README.md#326-power-of-three)
 
+[367. Valid Perfect Square]()
+
 
 ##Two Pointers
 [3. Longest Substring Without Repeating Characters](README.md#3-longest-substring-without-repeating-characters)
@@ -364,6 +366,7 @@
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
+[367. Valid Perfect Square]()
 
 ##Dynamic Programming
 
@@ -400,6 +403,8 @@
 [213. House Robber II](README.md#213-house-robber-ii)
 
 [264. Ugly Number II](README.md#264-ugly-number-ii)
+
+[279. Perfect Squares]()
 
 [300. Longest Increasing Subsequence](README.md#300-longest-increasing-subsequence)
 

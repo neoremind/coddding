@@ -61,6 +61,17 @@ public class MinimumDepthOfBinaryTree {
      *     / \     \
      *    1  3     7
      * </pre>
+     * <pre>
+     *           6
+     *         /   \
+     *        4     9
+     *       /\     / \
+     *      2  5   8   10
+     *     / \  \       \
+     *    1  3  5        5
+     *   /
+     *  5
+     * </pre>
      */
     @Test
     public void test() {
@@ -73,6 +84,10 @@ public class MinimumDepthOfBinaryTree {
         assertThat(minDepth(root), is(3));
 
         root = TreeNodeHelper.init("6,4,9,2,#,7,10,1,3,#,8");
+        System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
+        assertThat(minDepth(root), is(3));
+
+        root = TreeNodeHelper.init("6,4,9,2,5,8,10,1,3,#,5,#,#,#,5,5");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         assertThat(minDepth(root), is(3));
     }

@@ -224,6 +224,35 @@ for (Integer num : nums1) {
 }
 ```
 
+### [367. Valid Perfect Square](https://leetcode.com/problems/valid-perfect-square/)
+
+M, Binary Search Math
+
+标准的二分，注意处理溢出情况。
+
+和[题目Sqrt](https://github.com/neoremind/coddding/blob/master/codding/src/main/java/net/neoremind/mycode/argorithm/leetcode/README.md#69-sqrtx)一样
+
+```
+if (num < 1) {
+    return false;
+}
+long left = 1, right = num;// long type to avoid 2147483647 case
+
+while (left <= right) {
+    long mid = left + (right - left) / 2;
+    long t = mid * mid;
+    if (t > num) {
+        right = mid - 1;
+    } else if (t < num) {
+        left = mid + 1;
+    } else {
+        return true;
+    }
+}
+
+return false;
+```
+
 ### [347. Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)
 
 M, Hash Table Heap
@@ -443,7 +472,6 @@ M, sort
 //TODO
 
 quick select思想，中位数在中间，左边全是比他小的，右边全是比他大的。然后依次交换。
-
 
 ### [315. Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)
 
@@ -851,6 +879,115 @@ while (i < j)
     else
         i++;
 ```
+
+### [279. Perfect Squares](https://leetcode.com/problems/perfect-squares/)
+
+M, Dynamic Programming Breadth-first Search Math
+
+1）初始化一个数字，n+1大小，递增，假设都是只有1这个因子
+
+2）找到离n最近的那个平方数，用Math.sqrt来。
+
+3）写动态规划的递推公式：
+```
+for every square less than i
+   dp[i] = min(dp[i], dp[i - square] + 1)
+```
+4）返回最后的dp[n]即可。
+
+举例来说：
+```
+* n    combination     count
+* 1 => 1                1
+* 2 => 1 + 1            2
+* 3 => 1 + 1 + 1        3
+* 4 => 4                1
+* 5 => 4 + 1            2
+* 6 => 4 + 1 + 1        3
+* 7 => 4 + 1 + 1 + 1    4
+* 8 => 4 + 4            2
+* 9 => 9                1
+* 10 => 9 + 1           2
+* 11 => 9 + 1 + 1       3
+* 12 => 4 + 4 + 4       3
+* 13 => 9 + 4           2
+* 14 => 9 + 4 + 1       3
+* 15 => 9 + 4 + 1 + 1   4
+* 16 => 16              1
+```
+
+比如12，
+
+sqrt(12) = 3，
+
+当先尝试减去3的平方，12 - 3^3 = 3，然后就是dp[3] + 1 = 3 + 1 = 4
+
+当先尝试减去2的平方，12 - 2^2 = 8，然后就是dp[8] + 1 = 2 + 1 = 3
+
+当先尝试减去1的平方，12 - 1^1 = 11，然后就是dp[11] + 1 = 3 + 1 = 4
+
+那么最小的就是减去2的平方，所以等于3，而不是4。
+
+如果按照贪心算法greedy来实现，那么结果就是不对的。
+
+这个和找零[coin change](https://github.com/neoremind/coddding/blob/master/codding/src/main/java/net/neoremind/mycode/argorithm/leetcode/README.md#322-coin-change)是一个类型的问题。代码如下：
+
+```
+int[] dp = new int[n + 1];
+for (int i = 0; i <= n; i++)
+    dp[i] = i;
+for (int i = 0; i <= n; i++) {
+    int m = (int) Math.sqrt(i);
+    for (int j = m; j >= 1; j--) {
+        int square = j * j;
+        if (i >= square) {
+            dp[i] = Math.min(dp[i], dp[i - square] + 1);
+        }
+    }
+}
+return dp[n];
+```
+
+```
+/**
+ * 补充问题，输出某个数字的所有perfect square组合，使用回溯方法
+ */
+public List<List<Integer>> getAllValid(int n) {
+    List<List<Integer>> res = new ArrayList<>();
+    backtrack(res, new ArrayList<>(), n);
+    return res.stream().distinct().collect(Collectors.toList());
+}
+
+void backtrack(List<List<Integer>> res, List<Integer> temp, int n) {
+    if (n == 0) {
+        List<Integer> result = new ArrayList<>(temp);
+        Collections.sort(result, (a, b) -> Integer.compare(b, a));
+        if (!res.contains(result)) {
+            res.add(result);
+        }
+    } else {
+        int m = (int) Math.sqrt(n);
+        for (int j = m; j >= 1; j--) {
+            int square = j * j;
+            if (n >= square) {
+                temp.add(square);
+                backtrack(res, temp, n - square);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+}
+
+例如16：
+[9, 4, 1, 1, 1]
+[9, 1, 1, 1, 1, 1, 1, 1]
+[4, 4, 4, 4]
+[4, 4, 4, 1, 1, 1, 1]
+[4, 4, 1, 1, 1, 1, 1, 1, 1, 1]
+[4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+```
+
 
 ### [268. Missing Number](https://leetcode.com/problems/missing-number/)
 
@@ -1364,96 +1501,6 @@ public int top() { return queue.peek(); }
 public boolean empty() { return queue.isEmpty(); }
 ```
 
-### [222. Count Complete Tree Nodes](https://leetcode.com/problems/count-complete-tree-nodes/)
-
-M, Tree Binary Search
-
-完全二叉树的数量=2^N-1，否则就单独计算左右子树+1.
-```
-public int countNodes(TreeNode root)
-    int rightDepth = rightDepth(root);
-    int leftDepth = leftDepth(root);
-    if (leftDepth == rightDepth)
-        return (1 << leftDepth) - 1;
-    else
-        return 1 + countNodes(root.left) + countNodes(root.right);
-
-int rightDepth(TreeNode root)
-    int res = 0;
-    while (root != null) {
-        res++;
-        root = root.right;
-    return res;
-
-//left same as right
-```
-
-### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
-
-M, Binary Search Tree
-
-//TODO
-
-### [219. Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/)
-
-E, Array Hash table
-
-```
-for (int i = 0; i < nums.length; i++)
-    if (map.containsKey(nums[i]))
-        if (Math.abs(map.get(nums[i]) - i) <= k) return true;
-    map.put(nums[i], i);
-return false;
-```
-
-### [217. Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)
-
-E, Array Hash table
-
-方法1：使用set
-
-方法2：排序之后，比较i和i-1
-
-
-### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
-
-M, Backtracking, Array
-
-给一个k，表示数组大小，然后从1-9中挑出不重复的数字，使这些数字的和等于target，即n。和题目39，40非常类似，只不过给定的数组是[1..9]，并且只允许挑固定k个数字，不允许重复。
-
-Example:
-```
-Input: k = 3, n = 9
-```
-Output:
-```
-[[1,2,6], [1,3,5], [2,3,4]]
-```
-
-模板和N-Queens完全一样，这是解决回溯问题的标准模板。一切都是套路！！
-
-```
-public List<List<Integer>> combinationSum3(int k, int n) {
-    List<List<Integer>> list = new ArrayList<>();
-    backtrack(list, new ArrayList<>(), k, n, 1);
-    return list;
-}
-
-private void backtrack(List<List<Integer>> list, List<Integer> tempList, int k, int remain, int currDigit) {
-    if (k < 0 || remain < 0) {
-        return;
-    } else if (remain == 0 && k == 0) {  // 去掉这个K==0就会输出各种组合，不会保证有K个数字
-        list.add(new ArrayList<>(tempList));
-    } else {
-        for (int i = currDigit; i < 10; i++) {
-            tempList.add(i);
-            backtrack(list, tempList, k - 1, remain - i, i + 1);
-            tempList.remove(tempList.size() - 1);
-        }
-    }
-}
-```
-
 ### [224. Basic Calculator](https://leetcode.com/problems/basic-calculator/)
 
 H, Stack  Math
@@ -1493,6 +1540,30 @@ int area2 = (G - E) * (H - F);
 if(right > left && top > bottom) { //使用Math.min或者max计算边界的重合
     overlap = (right - left) * (top - bottom);
 return area1 + area2 - overlap;
+```
+
+### [222. Count Complete Tree Nodes](https://leetcode.com/problems/count-complete-tree-nodes/)
+
+M, Tree Binary Search
+
+完全二叉树的数量=2^N-1，否则就单独计算左右子树+1.
+```
+public int countNodes(TreeNode root)
+    int rightDepth = rightDepth(root);
+    int leftDepth = leftDepth(root);
+    if (leftDepth == rightDepth)
+        return (1 << leftDepth) - 1;
+    else
+        return 1 + countNodes(root.left) + countNodes(root.right);
+
+int rightDepth(TreeNode root)
+    int res = 0;
+    while (root != null) {
+        res++;
+        root = root.right;
+    return res;
+
+//left same as right
 ```
 
 ### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
@@ -1639,6 +1710,67 @@ for (int i = 0; i < nums.length; i++) {
     }
 }
 return false;
+```
+
+
+### [219. Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/)
+
+E, Array Hash table
+
+```
+for (int i = 0; i < nums.length; i++)
+    if (map.containsKey(nums[i]))
+        if (Math.abs(map.get(nums[i]) - i) <= k) return true;
+    map.put(nums[i], i);
+return false;
+```
+
+### [217. Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)
+
+E, Array Hash table
+
+方法1：使用set
+
+方法2：排序之后，比较i和i-1
+
+
+### [216. Combination Sum III](https://leetcode.com/problems/combination-sum-iii/)
+
+M, Backtracking, Array
+
+给一个k，表示数组大小，然后从1-9中挑出不重复的数字，使这些数字的和等于target，即n。和题目39，40非常类似，只不过给定的数组是[1..9]，并且只允许挑固定k个数字，不允许重复。
+
+Example:
+```
+Input: k = 3, n = 9
+```
+Output:
+```
+[[1,2,6], [1,3,5], [2,3,4]]
+```
+
+模板和N-Queens完全一样，这是解决回溯问题的标准模板。一切都是套路！！
+
+```
+public List<List<Integer>> combinationSum3(int k, int n) {
+    List<List<Integer>> list = new ArrayList<>();
+    backtrack(list, new ArrayList<>(), k, n, 1);
+    return list;
+}
+
+private void backtrack(List<List<Integer>> list, List<Integer> tempList, int k, int remain, int currDigit) {
+    if (k < 0 || remain < 0) {
+        return;
+    } else if (remain == 0 && k == 0) {  // 去掉这个K==0就会输出各种组合，不会保证有K个数字
+        list.add(new ArrayList<>(tempList));
+    } else {
+        for (int i = currDigit; i < 10; i++) {
+            tempList.add(i);
+            backtrack(list, tempList, k - 1, remain - i, i + 1);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+}
 ```
 
 
@@ -4049,6 +4181,13 @@ public int minDepth(TreeNode root) {
 }
 ```
 
+发散下，max depth如下，不用中间的步骤。
+```
+if (root == null) {
+    return 0;
+}
+return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+```
 
 ### [110. Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree/)
 
@@ -4076,6 +4215,23 @@ public static int getHeight(TreeNode root) {
     if (Math.abs(left - right) > 1)
         return -1;
     return Math.max(left, right) + 1;
+```
+
+如果题目是检查一棵树是否平衡，平衡是指任意两个叶子节点到root的距离之差不大于1.
+
+判断平衡就利用111题目中的max depth - min depth <=1 来判断。
+
+下面的树满足本题的要求，是一个balanced binary tree，但是他不平衡。
+```
+                 6
+               /   \
+              4     9
+             /\     / \
+            2  5   8   10
+           / \  \       \
+          1  3  5        5
+         /
+        5
 ```
 
 
@@ -6024,7 +6180,32 @@ Anagrams:由颠倒字母顺序而构成的字
 
 然后输出散列表.values();
 
-可以尝试使用JDK8的stream API。
+可以尝试使用JDK8的stream API，但是AC后的性能比较差。
+```
+return Arrays.stream(strs).collect(Collectors.groupingBy(s -> {
+    char[] c = s.toCharArray();
+    Arrays.sort(c);
+    return String.valueOf(c);
+})).values().stream().collect(Collectors.toList());
+```
+
+```
+if (strs == null || strs.length == 0)
+    return new ArrayList<List<String>>(0);
+Map<String, List<String>> map = new HashMap<String, List<String>>();
+//Arrays.sort(strs);
+for (String s : strs) {
+    char[] ca = s.toCharArray();
+    Arrays.sort(ca);
+    String keyStr = String.valueOf(ca);
+    // 改成map.putIfAbsent(keyStr, new ArrayList<String>());也可以
+    if (!map.containsKey(keyStr)) {
+        map.put(keyStr, new ArrayList<String>());
+    }
+    map.get(keyStr).add(s);
+}
+return new ArrayList<List<String>>(map.values());
+```
 
 ### [48. Rotate Image](https://leetcode.com/problems/rotate-image/)
 

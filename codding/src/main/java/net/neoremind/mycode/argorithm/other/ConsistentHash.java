@@ -15,6 +15,9 @@ import org.apache.commons.codec.digest.Md5Crypt;
  * http://www.tom-e-white.com/2007/11/consistent-hashing.html
  * <p>
  * http://blog.csdn.net/cywosp/article/details/23397179/
+ * <p>
+ * 其实仔细想想如果不用红黑树TreeMap做虚拟节点，或者干脆是一个不带有虚拟节点的一致性哈希实现，
+ * 用有序数组就够用了，二分查找也是O(logN)，但是对于添加节点和删除节点就不那么自由了。
  */
 public class ConsistentHash<T> {
 

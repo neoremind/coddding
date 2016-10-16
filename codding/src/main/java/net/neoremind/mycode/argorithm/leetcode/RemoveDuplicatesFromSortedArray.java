@@ -21,6 +21,26 @@ import org.junit.Test;
  * <p>
  * Array Two Pointers
  * Show Similar Problems
+ * <p>
+ * 记住i总是和slow-1比较，不相等或者大于才两个都往前进
+ * <pre>
+ *     [ 1    2    3    3    3    4    4   5   6 ]
+ *           slow
+ *            i
+ *               slow
+ *                 i
+ *                    slow
+ *                     i
+ *                          i
+ *    [ 1    2    3    4    3    4    4   5   6 ]
+ *                         slow  i
+ *                                    i
+ *   [ 1    2    3    4    5    4    4   5   6 ]
+ *                             slow      i
+ *   [ 1    2    3    4    5    6    4   5   6 ]
+ *                                  slow
+ *                                           i
+ * </pre>
  *
  * @author zhangxu
  * @see https://leetcode.com/problems/remove-duplicates-from-sorted-array/

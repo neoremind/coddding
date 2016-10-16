@@ -1566,6 +1566,47 @@ int rightDepth(TreeNode root)
 //left same as right
 ```
 
+### [221. Maximal Square](https://leetcode.com/problems/maximal-square/)
+
+M, Dynamic Programming
+
+和[题目85-(H) Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/)非常的类似，和直方图题目84联系紧密，
+但是这个题目完全不一样，是一个动态规划的问题。
+
+最大的正方形是其三个邻居的最小值+1.
+
+比如
+```
+0 1 1 1
+0 1 1 1
+0 1 1 1
+
+dp矩阵是
+0 1 1 1
+0 1 2 2
+0 1 2 3
+```
+
+```
+if (matrix == null || matrix.length == 0) {
+    return 0;
+int result = 0;
+int[][] dp = new int[matrix.length][matrix[0].length];
+for (int i = 0; i < matrix.length; i++) {
+    for (int j = 0; j < matrix[0].length; j++) {
+        if (i == 0 || j == 0) {
+            dp[i][j] = matrix[i][j] - '0';
+        } else {
+            if (matrix[i][j] == '1') {
+                dp[i][j] = Math.min(dp[i - 1][j], Math.min(dp[i - 1][j - 1], dp[i][j - 1])) + 1;
+            }
+        }
+        result = Math.max(result, dp[i][j] * dp[i][j]);
+    }
+}
+return result;
+```
+
 ### [220. Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
 
 M, Binary Search Tree
@@ -4731,6 +4772,38 @@ begin      tail             last   curr
    |_______________________/|
 ```
 
+### [91. Decode Ways](https://leetcode.com/problems/decode-ways/)
+
+M, Dynamic Programming String
+
+题目的要求不是和excel那道题似的考虑进位，而是直接A-Z的映射，没有AB这一说，因此不要理解错误题目！
+
+动态规划：
+
+从当前的数字往前看1个数组，如果数字不等于0，那么就等于前面的所有排列。
+往前看两个数字，如果数字在10和26之间，则可以找到一个字母，则等于前面所有的排列，否则就是0，这根本构不成一个合法的解析数字。
+
+这就是递推公式。
+
+```
+if (s == null || s.isEmpty() || s.charAt(0) == '0')
+    return 0;
+
+int[] dp = new int[s.length() + 1];
+dp[0] = 1;
+dp[1] = 1;
+
+for (int i = 2; i <= s.length(); i++) {
+    int num = Integer.parseInt(s.substring(i - 2, i));
+    int twoStepsBehind = (num <= 26 && num >= 10) ? dp[i - 2] : 0;
+    int oneStepBehind = (Integer.parseInt(s.substring(i - 1, i)) != 0) ? dp[i - 1] : 0;
+    dp[i] = twoStepsBehind + oneStepBehind; // can reach here by either hopping 2 steps or 1 step
+}
+
+return dp[s.length()];
+```
+
+
 ### [90. Subsets II](https://leetcode.com/problems/subsets-ii/)
 
 M, Backtracking, Array
@@ -4902,6 +4975,71 @@ curr1.next = dummy2.next;
 return dummy1.next;
 ```
 
+### [85. Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/)
+
+H,  Array Hash Table Stack Dynamic Programming
+
+承接84题，可以利用84题的简化这个题目。
+
+实际就是把每一层看做一个直方图histogram，然后求最大area。每一层的最大aream再挑最大的。
+
+下面是自己一次性写的实现。
+```
+public int maximalRectangle(char[][] matrix) {
+    int max = 0;
+    for (int i = 0; i < matrix.length; i++) {
+        int[] heights = getHistogram(matrix, i);
+        System.out.println("calc :" + Arrays.toString(heights));
+        max = Math.max(max, largestRectangleInHistogram(heights));
+        System.out.println("sub max :" + largestRectangleInHistogram(heights));
+    }
+    return max;
+}
+
+int[] getHistogram(char[][] matrix, int row) {
+    int[] heights = new int[matrix[0].length];
+    boolean[] hasEnd = new boolean[matrix[0].length];
+    for (int i = row; i >= 0; i--) {
+        for (int j = 0; j < matrix[0].length; j++) {
+            if (matrix[i][j] == '1' && !hasEnd[j]) {
+                heights[j]++;
+            } else {
+                hasEnd[j] = true;
+            }
+        }
+    }
+    return heights;
+}
+
+int largestRectangleInHistogram(int[] heights) {
+    int maxArea = 0;
+    Stack<Integer> stack = new Stack<>();
+    for (int i = 0; i <= heights.length; i++) {
+        int h;
+        if (i == heights.length) {
+            h = 0;
+        } else {
+            h = heights[i];
+        }
+        if (stack.isEmpty() || h >= heights[stack.peek()]) {
+            stack.push(i);
+        } else {
+            int lastHighIdx = stack.pop();
+            int area;
+            if (!stack.isEmpty()) {
+                area = heights[lastHighIdx] * (i - 1 - stack.peek());
+            } else {
+                area = heights[lastHighIdx] * i;
+            }
+            maxArea = Math.max(maxArea, area);
+            i--;
+        }
+    }
+    return maxArea;
+}
+```
+
+
 ### [84. Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/)
 
 H, Array Stack
@@ -4992,7 +5130,66 @@ void helper(int[] heights, int[] left, int[] right)
         right[i] = k;
 ```
 
-方法3：[利用stack](https://discuss.leetcode.com/topic/7599/o-n-stack-based-java-solution) //TODO
+方法3：[利用stack](https://discuss.leetcode.com/topic/7599/o-n-stack-based-java-solution)
+
+O(n) stack based JAVA solution
+
+太精巧的解法了。
+
+* 栈存index
+* 最后放0.
+* 单调递增入栈
+* 小于栈顶出栈，计算最大面积，max=(i - 1 - 栈顶idx)*高度，这就是它能包围的最大的区域，i保持不动。
+* 注意如果栈为空，那么max=i * 高度
+
+```
+int len = heights.length;
+Stack<Integer> stack = new Stack<>();
+int maxArea = 0;
+for (int i = 0; i <= len; i++) {
+    int h;
+    if (i == len) {
+        h = 0;
+    } else {
+        h = heights[i];
+    }
+    if (stack.isEmpty() || h >= heights[stack.peek()]) {
+        stack.push(i);
+    } else {
+        int tp = stack.pop();
+        maxArea = Math.max(maxArea, heights[tp] * (stack.isEmpty() ? i : i - 1 - stack.peek()));
+        i--;
+    }
+}
+return maxArea;
+```
+
+```
+    ∏   -6
+ ∏  ∏   -5
+ ∏  ∏   -4
+∏∏  ∏∏  -3
+∏∏∏∏∏∏  -2
+∏∏∏∏∏∏∏  -1
+0123456
+
+1. stack is empty, push 0 to stack, stack = [0]
+2. nums[1] >= stack.peek, push 1 to stack, stack = [0, 1]
+3. nums[2] >= stack.peek, push 2 to stack, stack = [0, 1, 2]
+4. nums[3] < stack.peek, max area = pop stack which is nums[2] * (i - 1 - stack.peek 1) = 5, keep i not move,
+5. nums[3] < stack.peek, max area = pop stack which is nums[1] * (i - 1 - stack.peek 0) = 6, keep i not move
+6. nums[3] >= stack.peek 0, push 3 to stack, stack = [0, 3]
+7. nums[4] >= stack.peek 3, push 4 to stack, stack = [0, 3, 4]
+8. nums[5] >= stack.peek 4, push 5 to stack, stack = [0, 3, 4, 5]
+9. nums[6] < stack.peek, max area = pop stack which is nums[5] * (i - 1 - stack.peek 4) = 6, keep i not move
+10.nums[6] >= stack.peek 4, push 6 to stack, stack = [0, 3, 4, 6]
+11.out of bound which is 0 < stack.peek, max area = pop stack which is nums[6] * (i - 1 - stack.peek 4) = 6
+12.out of bound which is 0 < stack.peek, max area = pop stack which is nums[4] * (i - 1 - stack.peek 3) = 8
+13.out of bound which is 0 < stack.peek, max area = pop stack which is nums[3] * (i - 1 - stack.peek 0) = 12
+14.out of bound which is 0 < stack.peek, max area = pop stack which is nums[0] * (stack is empty so i) = 7
+```
+
+一个很好的解释[http://www.cnblogs.com/lichen782/p/leetcode_Largest_Rectangle_in_Histogram.html](http://www.cnblogs.com/lichen782/p/leetcode_Largest_Rectangle_in_Histogram.html)
 
 
 ### [83. Remove Duplicates from Sorted List](https://leetcode.com/problems/remove-duplicates-from-sorted-list/)
@@ -5041,6 +5238,23 @@ while (head != null)
     }
     head = head.next;
 return dummy.next;
+```
+
+### [80. Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/)
+
+M, Array Two Pointers
+
+和题目26用的模板一模一样，都是基于这里i和slow-N比较，如大于才共同进步
+```
+if (nums.length < 3)
+    return 2;
+int slow = 2;
+for (int i = 2; i < nums.length; i++) {
+    if (nums[i] > nums[slow - 2]) {
+        nums[slow++] = nums[i];
+    }
+}
+return slow;
 ```
 
 
@@ -7042,6 +7256,27 @@ return tailIndex + 1;
 E, Array, Two pointers
 
 双指针，维护一个slow指针，一旦相同就i++，slow原地不动，等着大的i赋值过来，最后返回的length就是slow，时间复杂度是O(N)，如果每次都移动那么就是O(N!)。
+
+记住i总是和slow-1比较，不相等或者大于才两个都往前进
+```
+       [ 1    2    3    3    3    4    4   5   6 ]
+             slow
+              i
+                 slow
+                   i
+                      slow
+                       i
+                            i
+       [ 1    2    3    4    3    4    4   5   6 ]
+                            slow  i
+                                       i
+       [ 1    2    3    4    5    4    4   5   6 ]
+                                 slow      i
+       [ 1    2    3    4    5    6    4   5   6 ]
+                                      slow
+                                               i
+```
+
 
 ```
 if (nums.length < 2) {

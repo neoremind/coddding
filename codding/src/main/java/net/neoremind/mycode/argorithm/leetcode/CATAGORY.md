@@ -63,7 +63,11 @@
 
 [79. Word Search](README.md#79-word-search)
 
+[80. Remove Duplicates from Sorted Array II]()
+
 [84. Largest Rectangle in Histogram](README.md#84-largest-rectangle-in-histogram)
+
+[85. Maximal Rectangle]()
 
 [88. Merge Sorted Array](README.md#88-merge-sorted-array)
 
@@ -245,6 +249,8 @@
 
 [76. Minimum Window Substring](README.md#76-minimum-window-substring)
 
+[80. Remove Duplicates from Sorted Array II]()
+
 [86. Partition List](README.md#86-partition-list)
 
 [88. Merge Sorted Array](README.md#88-merge-sorted-array)
@@ -384,6 +390,8 @@
 
 [72. Edit Distance](README.md#72-edit-distance)
 
+[221. Maximal Square]()
+
 [95. Unique Binary Search Trees II](README.md#95-unique-binary-search-trees-ii)
 
 [96. Unique Binary Search Trees](README.md#96-unique-binary-search-trees)
@@ -458,6 +466,8 @@
 [71. Simplify Path]()
 
 [84. Largest Rectangle in Histogram](README.md#84-largest-rectangle-in-histogram)
+
+[85. Maximal Rectangle]()
 
 [94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
 

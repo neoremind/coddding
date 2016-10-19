@@ -988,6 +988,112 @@ void backtrack(List<List<Integer>> res, List<Integer> temp, int n) {
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ```
 
+### [269. Alien Dictionary]()
+
+PAID, Graph BFS DFS
+
+给一串字符串，是按照字典序排列的，求这个顺序。
+```
+[
+  "wrt",
+  "wrf",
+  "er",
+  "ett",
+  "rftt"
+]
+```
+The correct order is: "wertf".
+
+注意这里是字典序，因此每个单词都需要从第一个字符比较，不一样则输出X->Y的一个边，构造两个顶点，然后必须立即break掉。构造一个邻接矩阵的图，然后用BFS，找拓扑排序
+
+```
+根据题目构造图如下，
+
+                   |---> r---------> t ----------->f
+        w---->e----
+
+
+adjacency list如下：
+       r=Vertex{ch=r, indegree=1, neighbour=[t]}
+       t=Vertex{ch=t, indegree=1, neighbour=[f]}
+       e=Vertex{ch=e, indegree=1, neighbour=[r]}
+       f=Vertex{ch=f, indegree=1, neighbour=[]}
+       w=Vertex{ch=w, indegree=0, neighbour=[e]}
+
+稍微修改下条件，在er前面加入tf，如"wrt", "wrf", "tf", "er", "ett", "rftt"，构造一个环，仍然可以识别抛出一个异常
+                   |---> r---------> t ----------->f
+        w---->e----                  |
+             ^                       |
+             |-----------------------
+
+
+adjacency list如下：
+       r=Vertex{ch=r, indegree=1, neighbour=[t]}
+       t=Vertex{ch=t, indegree=2, neighbour=[f, e]}
+       e=Vertex{ch=e, indegree=1, neighbour=[r]}
+       f=Vertex{ch=f, indegree=1, neighbour=[]}
+       w=Vertex{ch=w, indegree=0, neighbour=[t]}
+```
+
+```
+class Vertex {
+    char ch;
+    int indegree;
+    ArrayList<Character> neighbour = new ArrayList<>();
+
+    Vertex(char ch) {
+        this.ch = ch;
+    }
+}
+
+public String alienOrder(String[] words) {
+    Map<Character, Vertex> map = new HashMap<>();
+    //Build the Graph
+    for (int i = 0; i < words.length; i++) {
+        if (i != words.length - 1) {
+            for (int j = 0; j < Math.min(words[i].length(), words[i + 1].length()); j++) {
+                if (words[i].charAt(j) != words[i + 1].charAt(j)) {
+                    char start = words[i].charAt(j);
+                    char end = words[i + 1].charAt(j);
+                    map.putIfAbsent(end, new Vertex(end));
+                    map.putIfAbsent(start, new Vertex(start));
+                    map.get(end).indegree++;
+                    map.get(start).neighbour.add(end);
+                    break;
+                }
+            }
+        }
+    }
+    map.entrySet().forEach(System.out::println);
+    //Topological Sort
+    Queue<Vertex> queue = new LinkedList<>();
+    StringBuilder sb = new StringBuilder();
+
+    int counter = 0;
+    for (Map.Entry<Character, Vertex> e : map.entrySet()) {
+        if (e.getValue().indegree == 0) {
+            sb.append(e.getKey());
+            queue.offer(e.getValue());
+            counter++;
+        }
+    }
+    while (!queue.isEmpty()) {
+        Vertex v = queue.poll();
+        for (Character ch : v.neighbour) {
+            if (--map.get(ch).indegree == 0) {
+                queue.offer(map.get(ch));
+                counter++;
+                sb.append(ch);
+            }
+        }
+    }
+    if (counter != map.size()) {
+        throw new RuntimeException("Cyclic exists!");
+    }
+    return sb.toString();
+}
+```
+
 
 ### [268. Missing Number](https://leetcode.com/problems/missing-number/)
 
@@ -5824,6 +5930,81 @@ while (left <= right)
 return ans;
 ```
 
+### [68. Text Justification](https://leetcode.com/problems/text-justification/)
+
+H, String
+
+```
+1）遍历words，累计单词长度+空格数量 <= maxWidth就一直继续。
+2）超过了maxWidth，证明这几个单词可以构成一行，分两种情况
+ 2.1）只有一个单词，全部在左边，右边补空格。
+ 2.2）多个单词利用 {maxWidth - wordLen / wordNum - 1} 计算空格间隙
+ 2.2）多个单词利用 {maxWidth - wordLen % wordNum - 1} 计算多余的空格
+3）用sb加单词，最后一个单词没有空格。所以注意i = len - 1的情况
+4）同时记录一个last表示这一批结束的index。还原一个sb用sb.setLength(0)。
+
+5）上面都技术了，那么就只剩下最后一行了，题目要求最后一行不用补空格，所以按规矩一个单词，一个空格添加
+6）使用maxWidht - sb.length来补其他空格。
+```
+
+```
+if (words == null || words.length == 0) {
+    return Collections.emptyList();
+}
+List<String> res = new ArrayList<>();
+int wordLen = 0;
+int wordNum = 0;
+int last = 0;
+List<String> subWords = new ArrayList<>();
+for (int i = 0; i < words.length; i++) {
+    String currWord = words[i];
+    if (currWord.length() + wordLen + wordNum <= maxWidth) {
+        subWords.add(currWord);
+        wordLen += currWord.length();
+        wordNum++;
+        continue;
+    }
+    last = i;  //最后一行的一个起点
+    StringBuilder sb = new StringBuilder();
+    if (wordNum == 1) {
+        sb.append(subWords.get(0));
+        appendMultipleSpace(sb, maxWidth - wordLen);
+    } else {
+        int space = (maxWidth - wordLen) / (wordNum - 1);  //计算空格的空格数
+        int extra = (maxWidth - wordLen) % (wordNum - 1);  //计算多余的留白，从第一个单词往后都多加一个space
+        for (int j = 0; j < subWords.size(); j++) {
+            sb.append(subWords.get(j));
+            if (extra > 0) {
+                sb.append(" ");
+                extra--;
+            }
+            if (j != subWords.size() - 1) {
+                appendMultipleSpace(sb, space);
+            }
+        }
+    }
+    i--;
+    wordLen = 0;
+    wordNum = 0;
+    subWords.clear();
+    res.add(sb.toString());
+}
+
+// 处理最后一行
+StringBuilder sb = new StringBuilder();
+for (int k = last; k < words.length; k++) {
+    sb.append(words[k]);
+    if (k != words.length - 1) {  //最后一个单词不要加空格，方式"a"这种情况，从而多加了一个。
+        sb.append(" ");
+    }
+}
+while (sb.length() < maxWidth) {
+    sb.append(" ");
+}
+res.add(sb.toString());
+return res;
+```
+
 ### [67. Add Binary](https://leetcode.com/problems/add-binary/)
 
 E, Math String
@@ -6588,28 +6769,50 @@ return count
 
 H,Dynamic Programming Backtracking Greedy String
 
-//TODO
-
 一个解如下，中间两个else if中的逻辑还是不太能理解。
 ```
-int i = 0;int j = 0;int starIdx = -1;int match = 0;
+ a b c d e f h h x  <= S
+           a *           h x  <= P
+
+过程如下，tow pointer，i，j
+1）S从头开始，P从头开始
+2）char相等或者P中是?，则i++，j++
+3）如果没有遇到任何*，就不动了，那么肯定是不match了，直接返回false
+4）如果遇到*，记录*的位置starIdx，那么j就一直固定在starIdx+1，等待这S中后面的某个char和其匹配
+5）如果S往后一直没有匹配starIdx+1，那么一直走
+6）直到一个匹配了，那么继续回到#1，i++，j++
+7）如果下一个字符又不匹配了，如上面的例子到了h h 和 h x，后面的h和x不匹配，那么这时候j返回starIdx+1，i从x的位置也就是iIdx+1开始
+8）这时候竟然匹配了，如#6，然后又回到了#1.
+9）最后如果j还剩，除非是*，那么比较j==P.len判断是否match。
+```
+
+```
+int i = 0;
+int j = 0;
+int starIndex = -1;
+int iIndex = -1;
+
 while (i < s.length()) {
-    if (j < p.length() && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '?')) {
-        i++;
-        j++;
+    if (j < p.length() && (p.charAt(j) == '?' || p.charAt(j) == s.charAt(i))) {
+        ++i;
+        ++j;
     } else if (j < p.length() && p.charAt(j) == '*') {
-        starIdx = j;
-        match = i;
+        starIndex = j;
+        iIndex = i;
         j++;
-    } else if (starIdx != -1) {
-        j = starIdx + 1;
-        match++;
-        i = match;
+    } else if (starIndex != -1) {
+        j = starIndex + 1;
+        i = iIndex + 1;
+        iIndex++;
     } else {
         return false;
     }
 }
-while (j < p.length() && p.charAt(j) == '*') {j++;}
+
+while (j < p.length() && p.charAt(j) == '*') {
+    ++j;
+}
+
 return j == p.length();
 ```
 
@@ -7691,6 +7894,61 @@ while i and j not meet
     if height[i] > height[j]
         j = j - 1
 ```
+
+### [10. Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/)
+
+H, Dynamic Programming Backtracking String
+
+首先要理解题意:
+```
+"a"对应"a", 这种匹配不解释了
+任意字母对应".", 这也是正则常见
+0到多个相同字符x,对应"x*", 比起普通正则,这个地方多出来一个前缀x. x代表的是 相同的字符中取一个,比如"aaaab"对应是"a*b"
+"*"还有一个易于疏忽的地方就是它的"贪婪性"要有一个限度.比如"aaa"对应"a*a", 代码逻辑不能一路贪婪到底
+正则表达式如果期望着一个字符一个字符的匹配,是非常不现实的.而"匹配"这个问题,非 常容易转换成"匹配了一部分",整个匹配不匹配,要看"剩下的匹配"情况.这就很好的把 一个大的问题转换成了规模较小的问题:递归
+确定了递归以后,使用java来实现这个问题,会遇到很多和c不一样的地方,因为java对字符 的控制不像c语言指针那么灵活charAt一定要确定某个位置存在才可以使用.
+如果pattern是"x*"类型的话,那么pattern每次要两个两个的减少.否则,就是一个一个 的减少. 无论怎样减少,都要保证pattern有那么多个.比如s.substring(n), 其中n 最大也就是s.length()
+
+(p.charAt(1) == '*')这个条件下需要分两种情况，p直接去掉前两个匹配，
+1）s不去掉，例如s=abc，p=a*bc，下一个递归比较s=abc, p=bc，不OK
+2）s一个个去掉，先去掉a，下一个递归比较s=bc, p=bc，OK了就行
+```
+
+[参考代码](http://www.programcreek.com/2012/12/leetcode-regular-expression-matching-in-java/)
+```
+if (p.length() == 0) {
+    return s.length() == 0;
+} else if (p.length() == 1) {
+    if (s.length() < 1) {
+        return false;
+    }
+    if (s.charAt(0) != p.charAt(0) && p.charAt(0) != '.') {
+        return false;
+    }
+    return isMatch(s.substring(1), p.substring(1)); //避免aa,a的情况
+} else if (p.charAt(1) == '*') {
+    if (isMatch(s, p.substring(2))) {
+        return true;
+    }
+    int i = 0;
+    while (i < s.length() && (s.charAt(i) == p.charAt(0) || p.charAt(0) == '.')) {
+        if (isMatch(s.substring(i + 1), p.substring(2))) {
+            return true;
+        }
+        i++;
+    }
+    return false;
+} else {
+    if (s.length() < 1) {
+        return false;
+    }
+    if (s.charAt(0) != p.charAt(0) && p.charAt(0) != '.') {
+        return false;
+    }
+    return isMatch(s.substring(1), p.substring(1));
+}
+```
+
 
 ### [9. Palindrome Number](https://leetcode.com/problems/palindrome-number/)
 

@@ -304,6 +304,8 @@
 
 [67. Add Binary](README.md#67-add-binary)
 
+[68. Text Justification]()
+
 [71. Simplify Path]()
 
 [72. Edit Distance](README.md#72-edit-distance)
@@ -661,6 +663,8 @@
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
 [257. Binary Tree Paths](README.md#257-binary-tree-paths)
+
+[269. Alien Dictionary]()
 
 [329. Longest Increasing Path in a Matrix]() //
 

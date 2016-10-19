@@ -51,6 +51,9 @@ public class MoveZeroes {
         }
     }
 
+    /**
+     * 最好的
+     */
     public void moveZeroes2(int[] nums) {
         int idx = 0;
         for (int i = 0; i < nums.length; i++) {

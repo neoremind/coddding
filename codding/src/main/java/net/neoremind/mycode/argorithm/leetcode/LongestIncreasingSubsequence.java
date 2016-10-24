@@ -2,6 +2,8 @@ package net.neoremind.mycode.argorithm.leetcode;
 
 import static org.junit.Assert.assertThat;
 
+import java.util.stream.IntStream;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -40,13 +42,7 @@ public class LongestIncreasingSubsequence {
                 }
             }
         }
-        int max = 0;
-        for (int i = 0; i < longest.length; i++) {
-            if (longest[i] > max) {
-                max = longest[i];
-            }
-        }
-        return max;
+        return IntStream.of(longest).max().getAsInt();  //JDK8
     }
 
     @Test

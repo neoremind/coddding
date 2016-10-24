@@ -139,6 +139,7 @@
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
+[358. Rearrange String k Distance Apart]()
 
 ##Linked List
 
@@ -526,6 +527,7 @@
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
+[358. Rearrange String k Distance Apart]()
 
 ##Bit Manipulation
 

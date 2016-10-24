@@ -1,13 +1,10 @@
 package net.neoremind.mycode.argorithm.other;
 
-import static org.junit.Assert.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

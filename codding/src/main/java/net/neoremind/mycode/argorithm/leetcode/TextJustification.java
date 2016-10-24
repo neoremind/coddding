@@ -1,12 +1,9 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
-import static org.junit.Assert.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**

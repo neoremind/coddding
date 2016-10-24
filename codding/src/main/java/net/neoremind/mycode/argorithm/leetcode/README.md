@@ -253,6 +253,56 @@ while (left <= right) {
 return false;
 ```
 
+### [358. Rearrange String k Distance Apart](https://leetcode.com/problems/rearrange-string-k-distance-apart/)
+
+PAID, H
+
+Given a non-empty string str and an integer k, rearrange the string such that the same characters are at least distance k from each other.
+
+All input strings are given in lowercase letters. If it is not possible to rearrange the string, return an empty string "".
+
+Example 1:
+str = "aabbcc", k = 3
+
+Result: "abcabc"
+
+The same letters are at least distance 3 from each other.
+
+使用了贪心、hashmap、优先队列，属于难度较高的题目。首先做一个字符到出现频率的映射，例如
+```
+a -> 3
+b -> 2
+c -> 1
+```
+
+然后建大顶堆，堆上面是a，循环堆不为空，poll出a，加入结果，然后a->2保留在大小为k的pending LIFO中等待“释放”，想象成为
+刑满释放的意思，以为如果他早出来了也许由于他的出现频率很频繁，又被poll出来那么距离肯定不在k之外了。
+
+```
+Map<Character, Integer> char2Freq = new HashMap<>();
+for (char ch : str.toCharArray()) {
+    char2Freq.put(ch, char2Freq.getOrDefault(ch, 0) + 1);
+}
+PriorityQueue<Map.Entry<Character, Integer>> queue = new PriorityQueue<>((o1, o2) -> o2.getValue() - o1.getValue());
+Queue<Map.Entry<Character, Integer>> pending = new LinkedList<>();
+StringBuilder sb = new StringBuilder();
+queue.addAll(char2Freq.entrySet());
+while (!queue.isEmpty()) {
+    Map.Entry<Character, Integer> e = queue.poll();
+    sb.append(e.getKey());
+    pending.add(e);
+    if (pending.size() < k) {
+        continue;
+    }
+    Map.Entry<Character, Integer> firstRelease = pending.poll();
+    firstRelease.setValue(firstRelease.getValue() - 1);
+    if (firstRelease.getValue() > 0) {
+        queue.add(firstRelease);
+    }
+}
+return sb.length() == str.length() ? sb.toString() : "";
+```
+
 ### [347. Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)
 
 M, Hash Table Heap
@@ -1314,6 +1364,44 @@ for (int i = 1; i < intervals.length; i++)
 return true;
 ```
 
+### [251. Flatten 2D Vector]()
+
+PAID
+
+用JDK自带的iterator。
+```
+class Vector2D {
+    List<Iterator<Integer>> its;
+    int curr = 0;
+
+    public Vector2D(List<List<Integer>> vec2d) {
+        this.its = new ArrayList<>();
+        for (List<Integer> l : vec2d) {
+            // 只将非空的迭代器加入数组
+            if (l != null && l.size() > 0) {
+                this.its.add(l.iterator());
+            }
+        }
+    }
+
+    public int next() {
+        Integer res = its.get(curr).next();
+        // 如果该迭代器用完了，换到下一个
+        if (!its.get(curr).hasNext()) {
+            curr++;
+        }
+        return res;
+    }
+
+    public boolean hasNext() {
+        return curr < its.size() && its.get(curr).hasNext();
+    }
+}
+```
+
+扩展的话，可以使用row、col标记，还可以支持remove方法。
+
+
 ### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
 
 M, Binary Search, Divide and Conquer
@@ -1639,6 +1727,32 @@ return result;
 ### [223. Rectangle Area](https://leetcode.com/problems/rectangle-area/)
 
 E, Math
+
+```
+
+        ----------------- C
+       |                 |
+       |                 |
+        -----------------
+      A               ----------------------    -> X axis
+                     |                      |
+                    E ---------------------- G
+
+
+        ----------------- D
+       |                 |
+       |                 |
+        -----------------                     ^ Y axis
+      B               ---------------------- H
+                     |                      |
+                    F ----------------------
+
+关键判断是否overlap：
+1）left=左“边”最大，right=右“边”最小，如果overlap，那么left
+同理,
+2）top=上“边”最小，bottom=下“边”最大，如果overlap，那么top>bottom。
+然后重合的大小就(right - left) * (top - bottom)
+```
 
 ```
 int area1 = (C - A) * (D - B);
@@ -6514,6 +6628,10 @@ function N_queen(row)
             // take queen away
             chessboard[row][col] = false
 ```
+
+回溯的时间复杂度是O(N!) factorial 或者O(2^N) exponential。
+
+这里N皇后是O(N!)，全排列也是O(N!)，01背包是O(2^N)，实际可以把解空间看做一个树，遍历所有到根节点。
 
 ### [50. Pow(x, n)](https://leetcode.com/problems/powx-n/)
 

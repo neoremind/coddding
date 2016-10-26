@@ -7,7 +7,7 @@ import java.util.Stack;
 /**
  * @author zhangxu
  */
-public class Misc1 {
+public class NestedInt {
     private static class NestedIntList {
         private int value;
         private boolean isNumber;

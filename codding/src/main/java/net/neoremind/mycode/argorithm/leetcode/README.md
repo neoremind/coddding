@@ -1,5 +1,54 @@
 # Leetcode records
 
+### [440. K-th Smallest in Lexicographical Order](https://leetcode.com/problems/k-th-smallest-in-lexicographical-order/)
+
+H, 类似题目[386. Lexicographical Numbers](https://leetcode.com/problems/lexicographical-numbers/)
+
+一个字典序排列的数组，找到第k个。
+
+一个数数的过程，参考[链接](https://discuss.leetcode.com/topic/64624/concise-easy-to-understand-java-5ms-solution-with-explaination)
+
+想象成为从node 1开始，最终要用pre-order走到k-1步，这个node就是要找的。
+
+但是数数可以快速的数，首先需要依靠一个数数的函数，数curr -> curr + 1之间的数字有多少steps。
+
+如果steps<=k，那么直接走到curr+1这个node，然后k=k-steps。否则下沉到curr*10，k=k-1.
+
+数下面的子node的方法是，保持left=curr，right=curr+1，例如left=3，right=4，
+那么不断的left<=n，那么steps += Math.min(right - left, n + 1)，left *= 10，right *= 10，
+
+```
+public int findKthNumber2(int n, int k) {
+    return helper(n, k, 1);
+}
+
+int helper(int n, int k, int curr) {
+    if (k == 1) {
+        return curr;
+    }
+    int count = countNumber(n, curr, curr + 1);
+    if (count <= k) {
+        return helper(n, k - count, curr + 1);
+    } else {
+        return helper(n, k - 1, curr * 10);
+    }
+}
+
+/**
+ * 必须为long，避免溢出
+ */
+int countNumber(int n, long left, long right) {
+    int count = 0;
+    while (left <= n) {
+        count += Math.min(n + 1, right) - left;
+        left *= 10;
+        right *= 10;
+    }
+    return count;
+}
+```
+
+
 ### [403. Frog Jump](https://leetcode.com/problems/frog-jump/)
 
 H, Dynamic Programming
@@ -170,6 +219,91 @@ private int helper(char[] str, int start, int end, int k) {
         }
     }
     return end - start;
+```
+
+### [386. Lexicographical Numbers](https://leetcode.com/problems/lexicographical-numbers/)
+
+M，类似的题目[440. K-th Smallest in Lexicographical Order](https://leetcode.com/problems/k-th-smallest-in-lexicographical-order/)
+
+生成字典序的number序列，例如[1,10,11,12,13,2,3,4,5,6,7,8,9]
+
+方法1：
+
+结果就是[1..N]的一个排列而已，按照字典序的排列
+
+这种方法在LC上会TLE
+
+以561为例，
+```
+           [1, 10, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+               11, 110, 111, 112, 113, 114,
+               ....
+               197, 198, 199, 2, 20, 200, 201, 202, 203, 204...]
+```
+算法描述：
+```
+初始curr=1
+
+loop N个数，把curr加入结果
+
+1）如果curr*10不超过N，那么curr扩大10倍。这样可以保证按照1，10，100，1000...这样的节奏前进。
+2）如果curr的最后一位部位9，那么curr++。这里要注意判断curr++不超过N，否则就加错了，会挤掉本该在这个位置的数字。
+3）如果curr的末尾为9，那么就找到最后一个数字不为9的那一位，例如3456999，那么就循环(curr/10 % 10) == 9做判断，
+例如345699
+   34569
+找到34569，那么curr = curr / 10 + 1 = 34567，正好就是下一个数字。
+```
+实现：
+```
+List<Integer> res = new ArrayList<>(n);
+int curr = 1;
+for (int i = 1; i <= n; i++) {
+    res.add(curr);
+    if (curr * 10 <= n) {
+        curr = curr * 10;
+    } else if (curr % 10 != 9 && curr + 1 <= n) {
+        curr++;
+    } else {
+        while ((curr / 10) % 10 == 9) {
+            curr /= 10;
+        }
+        curr = curr / 10 + 1;
+    }
+}
+return res;
+```
+
+方法2：DFS
+
+```
+1 - 9的一个森林，用DFS
+
+                                    1
+                                    /
+                    [10      ,                 11 ...19]
+                    /                          /
+      [100   ,    101,       102 ....  109]  [110-119] ...
+     /            /
+  [1000 - 1009]  [1010- 1019]
+```
+
+```
+public List<Integer> lexicalOrder(int n) {
+    List<Integer> res = new ArrayList<>(n);
+    for (int j = 1; j <= 9; j++) {
+        dfs(res, j, n);
+    return res;
+}
+
+void dfs(List<Integer> res, int num, int n) {
+    if (num > n) {
+        return;
+    }
+    res.add(num);
+    for (int i = 0; i <= 9; i++) {
+        dfs(res, num * 10 + i, n);
+    }
+}
 ```
 
 

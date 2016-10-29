@@ -2324,7 +2324,7 @@ void dfs(char[][] board, String[] words, int i, int j, int row, int col, int ind
 }
 ```
 
-这个解法的问题就是当words集非常大的时候，内部维护了一个toBeAbleToContinueWordsIndex虽然看似搜索效率OK，但是频繁的新建对象，对于又成千山万次的backtrack来说
+这个解法的问题就是当words集非常大的时候，内部维护了一个toBeAbleToContinueWordsIndex虽然看似搜索效率OK，虽然也做到了剪枝，但是频繁的新建对象，对于又成千山万次的backtrack来说
 负担太大，因此考虑空间换时间，可以预先做好一个可以判断是否word合法的解决方案吗？有的，就是优化版本方法2，使用Trie Tree。
 
 优化版本：

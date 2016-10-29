@@ -2278,6 +2278,83 @@ M, Dynamic Programming
 
 和题目198类似，这道题就是在上一题的基础上加了一个条件，变成了环，所以如果抢了第一家，就不能抢最后一家。所以我们可以分别计算抢了从第二家到最后一家与抢从第一家到倒数第二家的最大值，取两个值中更大的那个就是结果。
 
+### [212. Word Search II](https://leetcode.com/problems/word-search-ii/)
+
+H,  Backtracking Trie
+
+类似[Boggle Game](http://www.geeksforgeeks.org/boggle-find-possible-words-board-characters/)，给多个字符串，在board里面找所有的字符串。非常传统的和Word Search一样，用backtrack
+
+```
+int[] d1 = new int[] {-1, 1, 0, 0};int[] d2 = new int[] {0, 0, -1, 1};
+
+public List<String> findWords(char[][] board, String[] words) {
+    Set<String> res = new HashSet<>();
+    int row = board.length; int col = board[0].length;
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            dfs(board, words, i, j, row, col, 0, res, new boolean[row][col], getAllWordsIndex(words.length));
+    return new ArrayList<>(res);
+}
+
+void dfs(char[][] board, String[] words, int i, int j, int row, int col, int index, Set<String> res,
+         boolean[][] visited, List<Integer> wordsIndex) {
+    if (visited[i][j])
+        return;
+    List<Integer> toBeAbleToContinueWordsIndex = new ArrayList<>();
+    for (Integer idx : wordsIndex) {  // idx is word index in String[] words
+        String word = words[idx];
+        if (index < word.length() && word.charAt(index) == board[i][j]) {
+            if (index == word.length() - 1) {
+                res.add(word);
+            } else {
+                toBeAbleToContinueWordsIndex.add(idx);
+            }
+        }
+    }
+    if (toBeAbleToContinueWordsIndex.isEmpty()) {
+        return;
+    visited[i][j] = true;
+    for (int k = 0; k < 4; k++) {
+        int newI = i + d1[k];
+        int newJ = j + d2[k];
+        if (newI < 0 || newI >= row || newJ < 0 || newJ >= col) {
+            continue;
+        dfs(board, words, newI, newJ, row, col, index + 1, res, visited, toBeAbleToContinueWordsIndex);
+    visited[i][j] = false;
+}
+```
+
+这个解法的问题就是当words集非常大的时候，内部维护了一个toBeAbleToContinueWordsIndex虽然看似搜索效率OK，但是频繁的新建对象，对于又成千山万次的backtrack来说
+负担太大，因此考虑空间换时间，可以预先做好一个可以判断是否word合法的解决方案吗？有的，就是优化版本方法2，使用Trie Tree。
+
+优化版本：
+
+只需要修改dfs函数内部，使用trie树判断单词是否在字典里面，非常快了，不用频繁的创建对象。这是Trie树的优势所在。
+```
+void dfs(char[][] board, int i, int j, int row, int col, String temp, Set<String> res, boolean[][] visited, Trie trie) {
+    if (visited[i][j]) {
+        return;
+    }
+    temp += board[i][j];
+    if (!trie.startsWith(temp)) {
+        return;
+    }
+    if (trie.search(temp)) {
+        res.add(temp);
+    }
+    visited[i][j] = true;
+    for (int k = 0; k < 4; k++) {
+        int newI = i + d1[k];
+        int newJ = j + d2[k];
+        if (newI < 0 || newI >= row || newJ < 0 || newJ >= col) {
+            continue;
+        }
+        dfs(board, newI, newJ, row, col, temp, res, visited, trie);
+    }
+    visited[i][j] = false;
+}
+```
+
 ### [211. Add and Search Word - Data structure design](https://leetcode.com/problems/add-and-search-word-data-structure-design/)
 
 M, Backtracking Trie Design

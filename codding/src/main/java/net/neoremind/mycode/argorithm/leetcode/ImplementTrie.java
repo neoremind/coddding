@@ -114,7 +114,7 @@ class Trie {
     // that starts with the given prefix.
     public boolean startsWith(String prefix) {
         if (prefix == null || prefix.length() == 0) {
-            return false;
+            return true; //???
         }
         TrieNode curr = root;
         for (char c : prefix.toCharArray()) {

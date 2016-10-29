@@ -457,6 +457,8 @@
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
 
+[212. Word Search II]()
+
 [216. Combination Sum III](README.md#216-combination-sum-iii)
 
 
@@ -728,6 +730,7 @@
 
 [208. Implement Trie (Prefix Tree)](README.md#208-implement-trie-prefix-tree)
 
+[212. Word Search II]()
 
 ##Binary Indexed Tree
 

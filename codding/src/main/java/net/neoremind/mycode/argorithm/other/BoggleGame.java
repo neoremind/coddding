@@ -24,7 +24,9 @@ import com.google.common.collect.Lists;
  * http://www.geeksforgeeks.org/boggle-find-possible-words-board-characters/
  *
  * @author zhangxu
+ * @see net.neoremind.mycode.argorithm.leetcode.WordSearchII
  */
+//TODO 当words非常多的时候backtrack效率会很低，考虑使用更好的搜索算法，使用Trie Tree
 public class BoggleGame {
 
     List<String> findWords(char[][] board, List<String> dict) {

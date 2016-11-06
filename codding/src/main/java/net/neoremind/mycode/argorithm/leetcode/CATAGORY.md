@@ -135,6 +135,8 @@
 
 [219. Contains Duplicate II](README.md#219-contains-duplicate-ii)
 
+[242. Valid Anagram]()
+
 [347. Top K Frequent Elements](README.md#347-top-k-frequent-elements)
 
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)

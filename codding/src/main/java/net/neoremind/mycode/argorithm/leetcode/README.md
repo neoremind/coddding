@@ -1535,6 +1535,18 @@ class Vector2D {
 
 扩展的话，可以使用row、col标记，还可以支持remove方法。
 
+### [242. Valid Anagram](https://leetcode.com/problems/valid-anagram/)
+
+E, Hash Table Sort
+
+```
+int[] alphabet = new int[26];
+for (int i = 0; i < s.length(); i++) alphabet[s.charAt(i) - 'a']++;
+for (int i = 0; i < t.length(); i++) alphabet[t.charAt(i) - 'a']--;
+for (int i : alphabet) if (i != 0) return false;
+return true;
+```
+
 
 ### [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
 

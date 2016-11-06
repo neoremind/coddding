@@ -393,8 +393,6 @@
 
 [72. Edit Distance](README.md#72-edit-distance)
 
-[221. Maximal Square]()
-
 [95. Unique Binary Search Trees II](README.md#95-unique-binary-search-trees-ii)
 
 [96. Unique Binary Search Trees](README.md#96-unique-binary-search-trees)
@@ -407,11 +405,17 @@
 
 [123. Best Time to Buy and Sell Stock III](README.md#123-best-time-to-buy-and-sell-stock-iii)
 
+[139. Word Break]()
+
+[140. Word Break II]()
+
 [152. Maximum Product Subarray](README.md#152-maximum-product-subarray)
 
 [198. House Robber](README.md#198-house-robber)
 
 [213. House Robber II](README.md#213-house-robber-ii)
+
+[221. Maximal Square]()
 
 [264. Ugly Number II](README.md#264-ugly-number-ii)
 
@@ -456,6 +460,8 @@
 [90. Subsets II](README.md#90-subsets-ii)
 
 [93. Restore IP Addresses](README.md#93-restore-ip-addresses)
+
+[140. Word Break II]()
 
 [212. Word Search II]()
 
@@ -657,6 +663,10 @@
 [130. Surrounded Regions](README.md#130-surrounded-regions)
 
 [133. Clone Graph]() //
+
+[139. Word Break]()
+
+[140. Word Break II]()
 
 [199. Binary Tree Right Side View](README.md#199-binary-tree-right-side-view)
 

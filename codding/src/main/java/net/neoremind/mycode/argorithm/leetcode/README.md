@@ -3898,6 +3898,161 @@ while (runner.next != null && runner.next.next != null) {
 return false;
 ```
 
+### [140. Word Break II](https://leetcode.com/problems/word-break-ii/)
+
+H, Dynamic Programming Backtracking
+
+是139题的延续，这次要输出所有的断句可能。还是分两种方法，DFS和DP。
+
+方法1，DP。
+
+利用139题的DP解法，在断句的地方记录一个StepWrapper数组，里面含有可以到这个位置的所有的前面的“跳跃点”。
+
+利用回溯，实际就是一个组合combination的过程，找出所有的可能。
+
+```
+public List<String> wordBreak(String s, Set<String> wordDict) {
+    boolean[] dp = new boolean[s.length() + 1];
+    StepWrapper[] record = new StepWrapper[s.length() + 1];
+    dp[0] = true;
+    for (int i = 0; i < s.length(); i++) {
+        if (!dp[i]) {
+            continue;
+        }
+        for (String word : wordDict) {
+            int end = i + word.length();
+            if (end <= s.length() && s.substring(i, end).equals(word)) {
+                dp[end] = true;
+                if (record[end] == null) {
+                    record[end] = new StepWrapper();
+                }
+                record[end].steps.add(new Step(record[i], word, i, end));
+            }
+        }
+    }
+    if (!dp[s.length()]) {
+        return Collections.emptyList();
+    }
+    List<String> res = new ArrayList<>();
+    backtrack(record[s.length()], res, new ArrayList<>());
+    return res;
+}
+
+void backtrack(StepWrapper s, List<String> res, List<String> temp) {
+    if (s == null) {
+        List<String> copy = new ArrayList<>(temp);
+        Collections.reverse(copy);
+        res.add(copy.stream().collect(Collectors.joining(" ")));
+    } else {
+        for (Step step : s.steps) {
+            temp.add(step.str);
+            backtrack(step.prev, res, temp);
+            temp.remove(temp.size() - 1);
+        }
+    }
+}
+
+class StepWrapper {
+    List<Step> steps = new ArrayList<>();
+}
+class Step {
+    StepWrapper prev;
+    String str;
+    int start;
+    int end;
+}
+```
+
+方法2，DFS。
+
+```
+public List<String> wordBreakDFS(String s, Set<String> wordDict) {
+    return DFS(s, wordDict, new HashMap<String, LinkedList<String>>());
+}
+
+List<String> DFS(String s, Set<String> wordDict, HashMap<String, LinkedList<String>> map) {
+    if (map.containsKey(s))
+        return map.get(s);
+
+    LinkedList<String> res = new LinkedList<>();
+    if (s.length() == 0) {
+        res.add("");
+        return res;
+    }
+    for (String word : wordDict) {
+        if (s.startsWith(word)) {
+            List<String> sublist = DFS(s.substring(word.length()), wordDict, map);
+            for (String sub : sublist) {
+                res.add(word + (sub.isEmpty() ? "" : " ") + sub);
+            }
+        }
+    }
+    map.put(s, res);
+    return res;
+}
+```
+
+### [139. Word Break](https://leetcode.com/problems/word-break/)
+
+判断是否能从set字典里找出一些单词，把给定的字符串给断开。例如，下面就是一个可以的例子：
+```
+s = "leetcode",
+dict = ["leet", "code"].
+```
+
+[参考链接](http://www.programcreek.com/2012/12/leetcode-solution-word-break/)
+
+方法1，DFS暴力破解。TLE。
+
+```
+public boolean wordBreak(String s, Set<String> wordDict) {
+    return dfs(s, wordDict, 0);
+}
+
+boolean dfs(String s, Set<String> wordDict, int start) {
+    if (start == s.length()) {
+        return true;
+    }
+    for (String word : wordDict) {
+        int end = start + word.length();
+        if (end <= s.length() && s.substring(start, end).equals(word)) {
+            if (dfs(s, wordDict, end)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+```
+
+方法2，DP。
+
+这是最快的beat 78%.
+```
+DP递推式：
+boolean[] dp;
+dp[i+1] = dp[j] && s.substring(j, i+1) is in dict, j in [0, i]
+Time: O(string length * dict size).
+```
+
+```
+boolean[] dp = new boolean[s.length() + 1];
+dp[0] = true;
+for (int i = 0; i < s.length(); i++) {
+    if (!dp[i]) {
+        continue;
+    }
+    for (String word : wordDict) {
+        int end = i + word.length();
+        if (end <= s.length() && s.substring(i, end).equals(word)) {
+            dp[end] = true;
+        }
+    }
+}
+return dp[s.length()];
+```
+
+
 ### [137. Single Number II](https://leetcode.com/problems/single-number-ii/)
 
 M, Bit Manipulation

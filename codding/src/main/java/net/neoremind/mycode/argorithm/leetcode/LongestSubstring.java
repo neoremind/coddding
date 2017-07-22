@@ -59,10 +59,10 @@ public class LongestSubstring {
         int minLen = Integer.MIN_VALUE;
         while (end < s.length()) {
             //if (a[s.charAt(end)] == 0) {
-                minLen = Math.max(minLen, end - start + 1);
+            minLen = Math.max(minLen, end - start + 1);
             //}
             a[s.charAt(end)]++;
-            end++;
+            end++;  //巧妙的往前看一个
             while (end < s.length() && a[s.charAt(end)] > 0) {
                 a[s.charAt(start)]--;
                 start++;
@@ -112,6 +112,36 @@ public class LongestSubstring {
             if (max < currMax) {
                 max = currMax;
             }
+        }
+        return max;
+    }
+
+    /**
+     * 2017-07-21重新做这道题的一个笨方法，但是效率还可以
+     * 和{@link #lengthOfLongestSubstring(String)}类似的思路，太冗余了就是
+     * 提交了5次才通过的。faint。
+     */
+    public static int lengthOfLongestSubstring4(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        int len = s.length();
+        int max = 0;
+        int lowBounder = 0;
+        Map<Integer, Integer> memorized = new HashMap<>(); // specify size if needed
+        for (int i = 0; i < len; i++) {
+            int key = s.charAt(i);
+            // System.out.println("i=" + i + ", key=" + key + ", max=" + max);
+            Integer p = memorized.get(key);
+            if (p != null && p >= lowBounder) {  //p >= lowBounder很重要，否则无法处理abcabc这样的case
+                lowBounder = p + 1;
+                // System.out.println("fount dum at " + i + ", lowerBound = " + lowBounder);
+            } else {
+                //  System.out.println("proceed, lowBounder=" + lowBounder);
+                max = Math.max(max, i - lowBounder + 1);
+            }
+            memorized.put(key, i);
+            //System.out.println("--------");
         }
         return max;
     }

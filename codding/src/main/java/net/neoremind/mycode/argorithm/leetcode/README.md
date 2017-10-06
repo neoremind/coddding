@@ -1132,6 +1132,20 @@ for (int i = 0; i <= n; i++) {
 return dp[n];
 ```
 
+另外一种简单的写法：
+```
+// 递推式 d[i] = min(d[i - j*j] + 1), j in [0, i] && j * j <= i
+int[] dp = new int[n + 1];
+Arrays.fill(dp, Integer.MAX_VALUE);
+dp[0] = 0;
+for (int i = 1; i <= n; i++) {
+    for (int j = 1; j * j <= i; j++) {
+        dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+    }
+}
+return dp[n];
+```
+
 ```
 /**
  * 补充问题，输出某个数字的所有perfect square组合，使用回溯方法

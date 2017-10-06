@@ -48,6 +48,13 @@ public class MinimumPathSum {
                 {1, 2, 3, 4}
         };
         assertThat(minPathSum(grid), Matchers.is(12));
+
+        grid = new int[][] {
+                {1, 4, 3, 4},
+                {1, 6, 1, 2},
+                {1, 2, 2, 7}
+        };
+        System.out.println(minPathSum(grid));
     }
 
 }

@@ -1,10 +1,23 @@
 package net.neoremind.mycode;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
 import java.util.Random;
 
 public class HelloWorld {
 
     public static void main(String[] args) {
+        List<Integer> list = Lists.newArrayList(0, 1, 2, 3, 4, 5);
+        List<Integer> list1 = Lists.newArrayList();
+        for (int i = 3; i < list.size(); i++) {
+            list1.add(list.get(i));
+        }
+        System.out.println(list1);
+        List<Integer> list2 = Lists.newArrayList();
+        list2.addAll(list.subList(3, list.size()));
+        System.out.println(list2);
+
         System.out.println("hello world");
         System.out.println(1 << 31);
 

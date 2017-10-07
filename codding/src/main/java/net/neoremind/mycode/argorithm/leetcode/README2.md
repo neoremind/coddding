@@ -43,6 +43,26 @@ private boolean solve(ArrayList<Double> nums) {
 }
 ```
 
+### [542. 01 Matrix](https://leetcode.com/problems/01-matrix/description/)
+
+M, 有一点技巧的BFS,用DFS很难写，我的第一个解法是DFS的需要很多临时辅助变量。
+
+BFS很合适，一个技巧是一次性把所有元素加入queue，然后置所有1为-1好比较大小。C++如下：
+
+```
+while (q.size()) {
+    point temp = q.front();
+    q.pop();
+    int x = temp.first;
+    int y = temp.second;
+    for (int i=0; i<4; i++) {
+        int xx = x + d[i].first;
+        int yy = y + d[i].second;
+        if (xx>=0 && xx<rows && yy>=0 && yy<clos && ret[xx][yy]==-1) {
+            ret[xx][yy] = ret[x][y] + 1;
+            q.push(point(xx,yy));
+```
+
 ### [505. The Maze II]()  
 
 LOCK, M, 
@@ -144,6 +164,40 @@ public boolean dfs(int[][] maze, int m, int n, int[] start, int[] dest, boolean[
         Point next = getNextPoint(start[0], start[1], maze, m, n, DIRECTION[i][0], DIRECTION[i][1]);
         if (dfs(maze, m, n, new int[]{next.x, next.y}, dest, visited)) {
             return true;
+    return false;
+```
+
+### [464. Can I Win](https://leetcode.com/problems/can-i-win/description/)
+
+M, 轮流拿数字，直到拿到指定的target为赢，问是否可以一定赢。和nim game类似。
+
+一般这类题目，都可以用DFS解决，使用模板
+```
+dfs()
+  if ok return true/false
+  for every state next
+     add
+     if dfs() return true
+     remove
+  return false
+```
+
+```
+boolean helper(List<Integer> numbers, int desiredTotal, boolean[] used, Map<String, Boolean> mem) {
+    String key = encode(numbers);
+    if (mem.containsKey(key)) {
+        return mem.get(key);
+    if (desiredTotal <= 0) {
+        return false;
+    for (int i = 0; i < numbers.size(); i++) {
+        int temp = numbers.get(i);
+        numbers.remove(i);
+        if (!helper(numbers, desiredTotal - temp, used, mem)) {
+            mem.put(key, true);
+            numbers.add(i, temp);
+            return true;
+        numbers.add(i, temp);
+    mem.put(key, false);
     return false;
 ```
 
@@ -361,6 +415,97 @@ private TreeNode buildTree(Deque<String> nodes) {
         node.left = buildTree(nodes);
         node.right = buildTree(nodes);
         return node;
+```
+
+### [294. Flip Game II]
+
+M，和can i win类似的题目。
+
+```
+public boolean canWin(String s) {
+    for (int i = 1; i < s.length(); i++) {
+        if (s.charAt(i) == '+' && s.charAt(i - 1) == '+' && !canWin(s.substring(0, i - 1) + "--" + s.substring(i + 1))) {
+            return true;
+    return false;
+}
+```
+
+### [293. Flip Game]
+
+E，下一个状态的所有选择。
+
+```
+for (int i = 1; i < s.length(); i++) {
+    if (s.charAt(i) == '+' && s.charAt(i - 1) == '+') {
+        res.add(s.substring(0, i - 1) + "--" + s.substring(i + 1));
+```
+
+### [292. Nim Game](https://leetcode.com/articles/nim-game/)
+
+E, 两个人玩游戏，在一堆石头里面捡石子，可以捡1，2，3个石子，
+假设两个人都是clever and have optimal strategies的策略，问当还剩几个石子的时候，我肯定可以赢。
+
+这和Can I win以及flip game II很类似，都是有点技巧的游戏类型题目。
+
+方法1：DFS，会TLE
+```
+public boolean canWinNim(int n) {
+    if (n <= 3) return true;
+    for (int i = 1; i <= 3; i++) {
+        if (!canWinNim(n - i)) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+方法2：DP，一般这类题目能用DFS，都能用DP来解决，避免重复的计算。
+```
+public boolean canWinNim2(int n) {
+    if (n <= 3) return true;
+    boolean[] dp = new boolean[n + 1];
+    dp[1] = true;
+    dp[2] = true;
+    dp[3] = true;
+    for (int i = 4; i <= n; i++) {
+        for (int j = 1; j <= 3; j++) {
+            if (!dp[i - j]) {
+                dp[i] = true;
+            }
+        }
+    }
+    return dp[n];
+}
+```
+
+DP可以用bit map来解决space问题。
+```
+public boolean canWinNim3(int n) {
+    if (n <= 3) return true;
+    int[] dp = new int[n / 32 + 1];
+    encode(1, dp);
+    encode(2, dp);
+    encode(3, dp);
+    for (int i = 4; i <= n; i++) {
+        for (int j = 1; j <= 3; j++) {
+            if (!isSet(i - j, dp)) {
+                encode(i, dp);
+    return isSet(n, dp);
+}
+
+void encode(int n, int[] dp) {
+    dp[n / 32] |= 1 << (n % 32);
+
+boolean isSet(int x, int[] dp) {
+    return (dp[x / 32] & (1 << (x % 32))) != 0;
+```
+
+方法3：最简单的归纳法。
+```
+public boolean canWinNim4(int n) {
+    return n % 4 != 0;
+}
 ```
 
 ### [286. Walls and Gates](https://leetcode.com/problems/walls-and-gates)

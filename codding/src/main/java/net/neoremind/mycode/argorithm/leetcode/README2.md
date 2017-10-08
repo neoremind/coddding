@@ -201,6 +201,32 @@ boolean helper(List<Integer> numbers, int desiredTotal, boolean[] used, Map<Stri
     return false;
 ```
 
+### [394. Decode String](https://leetcode.com/problems/decode-string/description/)
+
+M, `s = "2[abc]3[cd]ef", return "abcabccdcdcdef".` 另外一道对应的471. Encode String with Shortest Length比较难，用DP。
+
+```
+while (i < chars.length) {
+    if (Character.isDigit(c)) {
+        while循环找数字
+        stack.push(digit.toString());
+    } else if (c == '[') {
+        stack.push(String.valueOf(c));
+        i++;
+    } else if (c == ']') {
+        第一次stack.pop();出字符串
+        第二次stack.pop();出[
+        第三次String number = stack.pop();出repeated次数
+        再次stack.pop();出前面用于处理3[2x[ab]i]这种x开头的情况
+        stack.push(repeatedStr.toString());
+        i++;
+    } else if (c >= 'a' && c <= 'z') {
+        把字符串全部连接起来用stringbuilder
+        再次stack.pop();出前面用于处理3[2[ab]i]这种i结尾的情况
+        stack.push(alpha.toString());
+stack全部pop出来倒序输出即可
+```
+
 ### [317. Shortest Distance from All Buildings](https://leetcode.com/problems/shortest-distance-from-all-buildings)
 
 LOCK, H 

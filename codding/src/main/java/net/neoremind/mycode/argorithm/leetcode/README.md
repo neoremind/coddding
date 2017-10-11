@@ -4458,7 +4458,7 @@ E,  Two Pointers String
 ```
 if (s.isEmpty()) { return true;}
 int head = 0, tail = s.length() - 1;
-while(head <= tail) {  //注意小于等于，而不是!=
+while(head <= tail) {  //注意小于等于，而不是!=,<也可以的
     cHead = s.charAt(head);
     cTail = s.charAt(tail);
     if (!Character.isLetterOrDigit(cHead))
@@ -7247,6 +7247,8 @@ public void doPermuation(int[] nums, int m, int len) {
 [4, 1, 3, 2]
 [4, 1, 2, 3]
 ```
+
+时间复杂度，n^2 < 2^n < n!，2^n是subsets，n!是全排列。
 
 ### [45. Jump Game II](https://leetcode.com/problems/jump-game-ii/)
 

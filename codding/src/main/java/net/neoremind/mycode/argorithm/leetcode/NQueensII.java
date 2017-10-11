@@ -82,6 +82,9 @@ public class NQueensII {
         return true;
     }
 
+    /**
+     * 时间复杂度是N!，所以到了14!就已经很慢了。
+     */
     @Test
     public void test() {
         assertThat(totalNQueens(4), Matchers.is(2));

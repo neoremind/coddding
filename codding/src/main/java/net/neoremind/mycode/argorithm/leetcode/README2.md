@@ -612,6 +612,23 @@ private ListNode helper(ListNode node, int val) {
         return helper(temp, val);
 ```
 
+### [131. Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/description/)
+
+M, aab分割成所有的回文串，标准的backtracking。复用isPalindrome那道题的字符串。
+
+```
+void helper(String s, int index, int len, List<List<String>> res, List<String> temp) {
+    if (index == len) {
+        res.add(new ArrayList<>(temp));
+    } else {
+        for (int i = index; i < len; i++) {
+            String sub = s.substring(index, i + 1);
+            if (isPalindrome(sub)) {
+                temp.add(sub);
+                helper(s, i + 1, len, res, temp);
+                temp.remove(temp.size() - 1);
+```
+
 
 ### [103. Binary Tree Zigzag Level Order Traversal](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/)
 

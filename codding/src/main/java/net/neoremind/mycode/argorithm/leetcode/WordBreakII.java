@@ -131,17 +131,17 @@ public class WordBreakII {
         System.out.println(wordBreak(s, wordDict));
         System.out.println(wordBreakDFS(s, wordDict));
 
-        s = "todayisagoodday";
-        wordDict = Sets.newHashSet("today", "cereal", "breakfast", "day", "is", "tv", "good", "z", "a");
-        System.out.println(wordBreak(s, wordDict));
-        System.out.println(wordBreakDFS(s, wordDict));
-
-        s =
-                "aaaaaaaaaaaaaaaaaaaaaaaab";
-        wordDict = Sets.newHashSet("a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa",
-                "aaaaaaaaab");
-        System.out.println(wordBreak(s, wordDict));
-        System.out.println(wordBreakDFS(s, wordDict));
+//        s = "todayisagoodday";
+//        wordDict = Sets.newHashSet("today", "cereal", "breakfast", "day", "is", "tv", "good", "z", "a");
+//        System.out.println(wordBreak(s, wordDict));
+//        System.out.println(wordBreakDFS(s, wordDict));
+//
+//        s =
+//                "aaaaaaaaaaaaaaaaaaaaaaaab";
+//        wordDict = Sets.newHashSet("a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa",
+//                "aaaaaaaaab");
+//        System.out.println(wordBreak(s, wordDict));
+//        System.out.println(wordBreakDFS(s, wordDict));
 
         s = "a";
         wordDict = Sets.newHashSet();

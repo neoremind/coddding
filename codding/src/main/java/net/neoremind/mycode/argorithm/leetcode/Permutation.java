@@ -62,7 +62,9 @@ public class Permutation {
 
     /**
      * http://blog.csdn.net/sbitswc/article/details/36154559
-     * http://blog.csdn.net/hackbuteer1/article/details/6657435
+     *
+     * A general approach to backtracking questions in Java (Subsets, Permutations, Combination Sum, Palindrome Partioning):
+     *
      * https://discuss.leetcode.com/topic/46162/a-general-approach-to-backtracking-questions-in-java-subsets
      * -permutations-combination-sum-palindrome-partioning
      */

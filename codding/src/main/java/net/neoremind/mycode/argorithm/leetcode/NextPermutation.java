@@ -93,7 +93,9 @@ public class NextPermutation {
         nextPermutation(p);
         assertThat(p, Matchers.is(new int[] {1, 3, 4, 2}));
 
+        System.out.println("======");
         int[] x = new int[] {1, 2, 3, 4};
+        System.out.println(Arrays.toString(x));
         for (int i = 0; i < 24; i++) {
             nextPermutation(x);
             System.out.println(Arrays.toString(x));

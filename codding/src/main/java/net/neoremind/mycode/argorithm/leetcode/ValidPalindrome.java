@@ -18,7 +18,8 @@ public class ValidPalindrome {
         }
         int head = 0, tail = s.length() - 1;
         char cHead, cTail;
-        while (head <= tail) {
+        // < or <= both ok
+        while (head < tail) {
             cHead = s.charAt(head);
             cTail = s.charAt(tail);
             if (!Character.isLetterOrDigit(cHead)) {

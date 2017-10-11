@@ -167,6 +167,29 @@ public boolean dfs(int[][] maze, int m, int n, int[] start, int[] dest, boolean[
     return false;
 ```
 
+### [472. Concatenated Words](https://leetcode.com/problems/concatenated-words/description/)
+
+H, 复用word break。先排序，然后一个个加入preWords，word和PreWords做word break的测试
+
+```
+Input: ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+
+Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+```
+
+这里必须用word break的解法3，否则会TLE。
+```
+if (preWords.isEmpty()) return false;
+boolean[] dp = new boolean[s.length() + 1];
+dp[0] = true;
+for (int i = 1; i <= s.length(); i++) {
+    for (int j = 0; j < i; j++) {
+        if (dp[j] && preWords.contains(s.substring(j, i))) {
+            dp[i] = true;
+            break;
+return dp[s.length()];
+```
+
 ### [464. Can I Win](https://leetcode.com/problems/can-i-win/description/)
 
 M, 轮流拿数字，直到拿到指定的target为赢，问是否可以一定赢。和nim game类似。

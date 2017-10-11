@@ -125,4 +125,79 @@ public class AddAndSearchWord {
         }
     }
 
+    /**
+     * 徒手写的
+     */
+    class WordDictionary2 {
+
+        class Node {
+            char val;
+            boolean isWord;
+            Node[] children = new Node[26];
+
+            public Node(char val) {
+                this.val = val;
+            }
+        }
+
+        Node root;
+
+        /**
+         * Initialize your data structure here.
+         */
+        public WordDictionary2() {
+            root = new Node(' ');
+        }
+
+        /**
+         * Adds a word into the data structure.
+         */
+        public void addWord(String word) {
+            if (word == null || word.isEmpty()) {
+                return;
+            }
+            char[] chars = word.toCharArray();
+            Node node = root;
+            for (char c : chars) {
+                if (node.children[c - 'a'] == null) {
+                    node.children[c - 'a'] = new Node(c);
+                }
+                node = node.children[c - 'a'];
+            }
+            node.isWord = true;
+        }
+
+        /**
+         * Returns if the word is in the data structure. A word could contain the dot character '.' to represent any
+         * one letter.
+         */
+        public boolean search(String word) {
+            if (word == null || word.isEmpty()) {
+                return false;
+            }
+            char[] chars = word.toCharArray();
+            return dfs(root, chars, 0);
+        }
+
+        public boolean dfs(Node node, char[] chars, int index) {
+            if (node == null) return false;
+            if (index == chars.length) return node.isWord;
+            char c = chars[index];
+            if (c == '.') {
+                for (int i = 0; i < 26; i++) {
+                    if (dfs(node.children[i], chars, index + 1)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                if (node.children[c - 'a'] == null) {
+                    return false;
+                }
+                node = node.children[c - 'a'];
+                return dfs(node, chars, index + 1);
+            }
+        }
+    }
+
 }

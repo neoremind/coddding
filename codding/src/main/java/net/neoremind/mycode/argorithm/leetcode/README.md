@@ -4078,6 +4078,23 @@ for (int i = 0; i < s.length(); i++) {
 return dp[s.length()];
 ```
 
+方法3：方法2的劣势在于wordDict很大的时候会TLE，可以尝试用
+```
+public boolean wordBreakDP2(String s, Set<String> wordDict) {
+    boolean[] dp = new boolean[s.length() + 1];
+    dp[0] = true;
+    for (int i = 1; i <= s.length(); i++) {
+        for (int j = 0; j < i; j++) {
+            if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                dp[i] = true;
+                break;
+            }
+        }
+    }
+    return dp[s.length()];
+}
+```
+
 
 ### [137. Single Number II](https://leetcode.com/problems/single-number-ii/)
 

@@ -320,11 +320,43 @@ int getSum(int a, int b) {
 ```
 一连串bitwise的操作见evernote笔记。
 
+### [350. Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/description/)
+
+同349的方法2.
+
 ### [349. Intersection of Two Arrays](https://leetcode.com/problems/intersection-of-two-arrays/)
 
 E, Binary Search Hash Table Two Pointers Sort
 
 Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return [2].
+
+方法1：全放在set里面求交集。
+
+方法2：先排序，双指针。
+
+```
+Arrays.sort(nums1);
+Arrays.sort(nums2);
+int i = 0;
+int j = 0;
+while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+        i++;
+    } else if (nums1[i] > nums2[j]) {
+        j++;
+    } else {
+        set.add(nums1[i]);
+        i++;
+        j++;
+int[] result = new int[set.size()];
+int k = 0;
+for (Integer num : set) {
+    result[k++] = num;
+}
+return result;
+```
+
+方法3：排序一个，然后二分查找。
 
 三种[java解法](https://discuss.leetcode.com/topic/45685/three-java-solutions)
 

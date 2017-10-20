@@ -40,7 +40,7 @@ public class Knapsack {
         System.out.println(result[6][10]);
         assertThat(result[6][10], Matchers.is(19));
 
-        // 和上面的颠倒了一些顺序，可以看出在item固定的情况下，先去挑谁都无所谓，因为这具有最优自结构的特性，所以结果不变
+        // 和上面的颠倒了一些顺序，可以看出在item固定的情况下，先去挑谁都无所谓，因为这具有最优子结构的特性，所以结果不变
         price = new int[] {4, 5, 6, 9, 7, 3};
         weights = new int[] {2, 3, 4, 6, 4, 1};
         sackCapacity = 10;
@@ -52,7 +52,7 @@ public class Knapsack {
     /**
      * 输出动态规划的矩阵。01背包的状态转换方程 ：
      * <pre>
-     *     f[i,j] = Max{f[i-1, j-Wi] + Wi( j >= Wi ),  f[i-1, j] }
+     *     f[i,j] = Max{f[i-1, j-Wi] + Pi( j >= Wi ),  f[i-1, j] }
      * </pre>
      * 横坐标是背包可以承载的重量，纵坐标是可以拿的item数量
      * <pre>

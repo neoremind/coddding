@@ -24,6 +24,7 @@ public class InsertionSortList {
             ListNode ins = dummy;
             while (ins.next.val < curr.val) {
                 ins = ins.next;
+
             }
             if (ins.next == curr) {
                 pre = curr;

@@ -24,6 +24,19 @@ public class PowXN {
      * 6^3 = 6 * 6^2 * 6^2
      *
      * 6 ^-3 = ( 6^-1 * 6^-1) / 6
+     *
+     * stack
+     * x   n
+     * 6 ^ 4 n%2==0 && n>0 return 36*36=1296
+     * 6 ^ 2 n%2==0 && n>0 return 6*6=36
+     * 6 ^ 1 n%2!=0 && n>0 return 6*1*1=6
+     * 6 ^ 0 return 1
+     *
+     *
+     * x   n
+     * 6 ^ -3 n%2!=0 && n<0 return (1/6*1/6) / 6
+     * 6 ^ -1 n%2!=0 && n<0 return (1*1)/6=1/6
+     * 6 ^ 0 return 1
      * </pre>
      * <p>
      * {@link net.neoremind.mycode.argorithm.dac.Power}只支持整数以及正数的DAC
@@ -46,6 +59,7 @@ public class PowXN {
 
     @Test
     public void test() {
-        assertThat(Math.pow(36, 2), Matchers.is(1296d));
+        assertThat(myPow(36, 2), Matchers.is(1296d));
+        //assertThat(myPow(36, -2), Matchers.is(1296d));
     }
 }

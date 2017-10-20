@@ -43,6 +43,63 @@ private boolean solve(ArrayList<Double> nums) {
 }
 ```
 
+### [639. Decode Ways II](https://leetcode.com/problems/decode-ways-ii/description/)
+
+HARD,
+
+和DecodeWays类似，引入了星号，可以代表1到9之间的任意数字，但是难度加大了不少，是个HARD题目。
+
+有了星号以后，整个题就变得异常的复杂，所以结果才让我们对一个很大的数求余，避免溢出。所以对一个很大的数字取模。
+
+精髓：各种情况都要考虑清楚。其实就是考虑1，2，26，*这些关系。别不合法。
+
+还是DP，状态dp[i]表示前i个字符的解码方法等个数，长度为字符串的长度加1，状态转移方程的分支很多。下面介绍：
+初始化： 将dp[0]初始化为1，然后我们判断，如果字符串第一个字符是0，那么直接返回0，如果是*，则dp[1]初始化为9，否则初始化为1。
+一共三个分支：s[i-1]表示当前的字符
+分支考虑的情况都是先看单独一个s[i-1]能否成立，然后再看s[i-2,i-1]组成一个数字是否成立，考虑1和2 + * 三种子情况。
+```
+分支1：s[i-1]==0 
+先看单独一个s[i-1]能否成立：单独一个0肯定不行，所以不能加可能。 
+然后再看s[i-2,i-1]组成一个数字是否成立： 
+分支1-1：s[i-2]==1 or 2 有dp[i-2]种可能 
+分支1-2：s[i-2]==* 要么为1，要么为2，所以有2*dp[i-2]种可能 
+分支1-3：其他情况都return 0退出去，因为根本组成不了合法的数字。不合法。
+
+分支2：s[i-1] := [1,9] 
+先看单独一个s[i-1]能否成立：单独一个数字成立，所以先至少有dp[i-1]中可能。 
+然后再看s[i-2,i-1]组成一个数字是否成立： 
+分支2-1：s[i-2]==1 有dp[i-2]种可能 
+分支2-2：s[i-2]==2 and s[i-1] := [1,6] 有dp[i-2]种可能 
+分支2-3：s[i-2]==* 如果 s[i-1] := [1,6]那么就可以选择1或者2，就是2*dp[i-2]种可能，否则就是dp[i-2]种可能
+
+分支3：s[i-1]==* 
+先看单独一个s[i-1]能否成立：单独一个数字成立，先至少有9*dp[i-1]中可能。 
+然后再看s[i-2,i-1]组成一个数字是否成立： 
+分支3-1：s[i-2]==1，有9*dp[i-2]种可能 
+分支3-2：s[i-2]==2 有6*dp[i-2]种可能 
+分支3-3：s[i-2]==* 有（9+6）*dp[i-2]种可能
+
+最后的结果别忘记%10^9+7,dp要是long类型的。
+```
+
+### [560. Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/description/)
+
+和另外一道题[325. Maximum Size Subarray Sum Equals k]()很类似，
+
+注意map.put每次都得put。
+```
+int sum = 0;
+int result = 0;
+Map<Integer, Integer> map = new HashMap<>();
+map.put(0, 1);
+for (int i = 0; i < nums.length; i++) {
+    sum += nums[i];
+    if (map.containsKey(sum - k)) {
+        result += map.get(sum - k);
+    map.put(sum, map.getOrDefault(sum, 0) + 1);
+return result;
+```
+
 ### [542. 01 Matrix](https://leetcode.com/problems/01-matrix/description/)
 
 M, 有一点技巧的BFS,用DFS很难写，我的第一个解法是DFS的需要很多临时辅助变量。
@@ -84,6 +141,76 @@ class Point {
 ### [499. The Maze III]()
 
 LOCK, H, 和MazeII不一样的是，如果存在距离相等的多条路径，返回字典序最短的那条。输出路径用backtrack来做。
+
+### [494. Target Sum](https://leetcode.com/problems/target-sum/description/)
+
+M, 给一串数字，添加+,-符号，是的和等于给定值，问有多少种方法？
+```
+Input: nums is [1, 1, 1, 1, 1], S is 3. 
+Output: 5
+```
+
+方法1：和Game24类似。使用DFS的模板，找两个数字合并，然后直到只剩下一个数字为止，时间复杂度2^n，exponential，会TLE。
+
+仔细想想N皇后的时间复杂度是N!，实际因为有choice is possible的判断，所有不可能这么高，但是还是高于2^n的，N=8的时候是2057，2^8才等于256。
+```
+dfs(step0) {
+    if all steps had solutions
+        selected_choices is an answer
+    foreach choice in all choices in current step
+        if choice is possible
+            selected_choices[step] = choice
+            dfs(next step)
+            selected_choices[step] = no choice or last choice // this is called backtracking
+}
+```
+
+方法2：方法1实际是自己想出来的，但是有非常简单的DFS，不会TLE。
+
+```
+int count = 0;
+public int findTargetSumWays2(int[] nums, int S) {
+    calculate(nums, 0, 0, S);
+    return count;
+
+public void calculate(int[] nums, int i, int sum, int S) {
+    if (i == nums.length) {
+        if (sum == S)
+            count++;
+    } else {
+        calculate(nums, i + 1, sum + nums[i], S);
+        calculate(nums, i + 1, sum - nums[i], S);
+```
+
+方法3：在方法2基础上，有子问题重叠，所以加入记忆化优化。
+保持一个map，key是跑到了哪个index位置，value也是一个map记录在这个位置上，家和为sum的组合有多少种。
+
+```
+public int findTargetSumWays3(int[] nums, int S) {
+    Map<Integer, Map<Integer, Integer>> mem = new HashMap<>();
+    return calculate(nums, 0, 0, S, mem);
+
+public int calculate(int[] nums, int i, int sum, int S, Map<Integer, Map<Integer, Integer>> mem) {
+    if (mem.containsKey(i) && mem.get(i).get(sum) != null) {
+        return mem.get(i).get(sum);
+    if (i == nums.length) {
+        if (sum == S)
+            return 1;
+        else
+            return 0;
+    } else {
+        int add = calculate(nums, i + 1, sum + nums[i], S, mem);
+        int sub = calculate(nums, i + 1, sum - nums[i], S, mem);
+        if (!mem.containsKey(i)) {
+            mem.put(i, new HashMap<>());
+        }
+        mem.get(i).put(sum, mem.get(i).getOrDefault(sum, 0) + add + sub);
+        return add + sub;
+```
+
+方法4：DP，有1D DP和2D DP，没理解。
+
+方法5：转换为subset sum问题的DP，TODO。
 
 ### [490. The Maze]()
 
@@ -248,6 +375,29 @@ while (i < chars.length) {
         再次stack.pop();出前面用于处理3[2[ab]i]这种i结尾的情况
         stack.push(alpha.toString());
 stack全部pop出来倒序输出即可
+```
+
+### [325. Maximum Size Subarray Sum Equals k]()
+
+HIDE, 给一个数组，找到长度最长的一个子串，其和等于K。时间复杂度要求O(N)。
+
+如果找不大答案返回-1. 核心就是叠加sum，然后把sum存起来，到达某个i，找sum-k的index，如果存在，那么中间的这段就是要找的子串。
+注意和560. Subarray Sum Equals K很像，但是mem.put不用每次都put，只put第一次就好了，因为肯定是最靠前的，因为我们要的是最长的子串。
+```
+int sum = 0;
+int maxLen = Integer.MIN_VALUE;
+Map<Integer, Integer> mem = new HashMap<>();
+for (int i = 0; i < nums.length; i++) {
+    sum += nums[i];
+    if (sum == k) {
+        maxLen = i + 1;
+    } else if (mem.containsKey(sum - k)) {
+        maxLen = Math.max(maxLen, i - mem.get(sum - k));
+    if (!mem.containsKey(sum)) {
+        mem.put(sum, i);
+    }
+}
+return maxLen == Integer.MIN_VALUE ? -1 : maxLen;
 ```
 
 ### [317. Shortest Distance from All Buildings](https://leetcode.com/problems/shortest-distance-from-all-buildings)
@@ -596,6 +746,17 @@ private void dfs(int[][] rooms, int i, int j, int m, int n, int step) {
 } 
 ```
 
+### [280. Wiggle Sort]()
+
+方法1：排序，然后取2个对调，步长+2
+
+方法2：找规律。
+当i为奇数时，nums[i] >= nums[i - 1]
+
+当i为偶数时，nums[i] <= nums[i - 1]
+
+那么我们只要对每个数字，根据其奇偶性，跟其对应的条件比较，如果不符合就和前面的数交换位置即可。
+
 ### [203. Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/description/)
 
 E, 
@@ -633,6 +794,63 @@ private ListNode helper(ListNode node, int val) {
         }
         node.next = temp;
         return helper(temp, val);
+```
+
+### [158. Read N Characters Given Read4 II - Call multiple times]
+
+这道题是之前那道Read N Characters Given Read4的拓展，那道题说read函数只能调用一次，而这道题说read函数可以调用多次，那么难度就增加了，为了更简单直观的说明问题，我们举个简单的例子吧，比如：
+buf = "ab", [read(1),read(2)]，返回 ["a","b"]
+
+那么第一次调用read(1)后，从buf中读出一个字符，那么就是第一个字符a，然后又调用了一个read(2)，想取出两个字符，但是buf中只剩一个b了，所以就把取出的结果就是b。再来看一个例子：
+
+buf = "a", [read(0),read(1),read(2)]，返回 ["","a",""]
+
+第一次调用read(0)，不取任何字符，返回空，第二次调用read(1)，取一个字符，buf中只有一个字符，取出为a，然后再调用read(2)，想取出两个字符，但是buf中没有字符了，所以取出为空。
+
+```
+char[] prevBuf = new char[4];
+int prevSize = 0;
+int prevIndex = 0;
+
+public int read(char[] buf, int n) {
+    int counter = 0;
+    while (counter < n) {
+        if (prevIndex < prevSize) {
+            buf[counter++] = prevBuf[prevIndex++];
+        } else {
+            prevSize = read4(prevBuf);
+            prevIndex = 0;
+            if (prevSize == 0) {
+                // no more data to consume from stream
+                break;
+    return counter;
+}
+```
+
+### [157. Read N Characters Given Read4]
+
+这道题给了我们一个Read4函数，每次可以从一个文件中最多读出4个字符，如果文件中的字符不足4个字符时，
+返回准确的当前剩余的字符数。现在让我们实现一个最多能读取n个字符的函数。
+
+```
+public int read(char[] buf, int n) {
+    char[] buffer = new char[4];
+    boolean endOfFile = false;
+    int readBytes = 0;
+
+    while (readBytes < n && !endOfFile) {
+        int size = read4(buffer);
+        if (size != 4) {
+            endOfFile = true;
+        }
+        int length = Math.min(n - readBytes, size);
+        for (int i = 0; i < length; i++) {
+            buf[readBytes + i] = buffer[i];
+        }
+        readBytes += length;
+    }
+    return readBytes;
+}
 ```
 
 ### [131. Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/description/)

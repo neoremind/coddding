@@ -44,6 +44,22 @@ public class ClimbingStairs {
         return dp[2];
     }
 
+    public int climbStairs3(int n) {
+        //d[i] = d[i-1] + d[i-2] , i > 2
+        //d[0] = 0
+        //d[1] = 1
+        //d[2] = 2
+        if (n < 3) return n;
+        int[] d = {0, 1, 2};
+        for (int i = 3; i <= n; i++) {
+            int val = d[2] + d[1];
+            d[0] = d[1];
+            d[1] = d[2];
+            d[2] = val;
+        }
+        return d[2];
+    }
+
     @Test
     public void test() {
         assertThat(climbStairs(1), Matchers.is(1));

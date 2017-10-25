@@ -67,6 +67,12 @@ import static org.junit.Assert.assertThat;
  * <p>
  * //TODO subset sum 问题
  *
+ * T(N) = 2T(N-1)
+ *      = 2 * 2 T(N-2)
+ *      = 2 * 2 * 2 T(N-3)
+ *      = 2^n * 1
+ * 所以时间复杂度O(2^N)
+ *
  * @author xu.zhang
  */
 public class TargetSum {

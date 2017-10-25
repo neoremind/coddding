@@ -31,6 +31,13 @@ import org.junit.Test;
  * <p>
  * backtrack实际是一个DFS的过程
  *
+ * T(N) = T(N-1) + T(N-2) + T(N-3) + ... T(1)
+ *      = 2 [T(N-2) + T(N-3) + ... T(1)]
+ *      = 2 * 2 * [T(N-3) + T(N-4)... T(1)]
+ *      = 2^n * T(1)
+ *      = 2^n
+ * 所以时间复杂度O(2^N)
+ *
  * @author zhangxu
  * @see https://leetcode.com/problems/subsets/
  */

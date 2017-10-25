@@ -1,6 +1,6 @@
 # Catagory
 
-##Array
+## Array
 [1. Two Sum](README.md#1-two-sum)
 
 [4. Median of Two Sorted Arrays](README.md#4-median-of-two-sorted-arrays)
@@ -108,7 +108,7 @@
 [283. Move Zeroes](README.md#283-move-zeroes)
 
 
-##Hashtable
+## Hashtable
 [1. Two Sum](README.md#1-two-sum)
 
 [3. Longest Substring Without Repeating Characters](README.md#3-longest-substring-without-repeating-characters)
@@ -143,7 +143,7 @@
 
 [358. Rearrange String k Distance Apart]()
 
-##Linked List
+## Linked List
 
 [2. Add Two Numbers](README.md#2-add-two-numbers)
 
@@ -178,7 +178,7 @@
 [237. Delete Node in a Linked List]() //
 
 
-##Math
+## Math
 
 [2. Add Two Numbers](README.md#2-add-two-numbers)
 
@@ -227,7 +227,7 @@
 [367. Valid Perfect Square]()
 
 
-##Two Pointers
+## Two Pointers
 [3. Longest Substring Without Repeating Characters](README.md#3-longest-substring-without-repeating-characters)
 
 [11. Container With Most Water](README.md#11-container-with-most-water)
@@ -277,7 +277,7 @@
 [349. Intersection of Two Arrays](README.md#349-intersection-of-two-arrays)
 
 
-##String
+## String
 
 [3. Longest Substring Without Repeating Characters](README.md#3-longest-substring-without-repeating-characters)
 
@@ -331,7 +331,7 @@
 
 [395. Longest Substring with At Least K Repeating Characters]()
 
-##Divide and Conquer
+## Divide and Conquer
 
 [4. Median of Two Sorted Arrays](README.md#4-median-of-two-sorted-arrays)
 
@@ -347,7 +347,7 @@
 
 [315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
-##Binary Search
+## Binary Search
 
 [4. Median of Two Sorted Arrays](README.md#4-median-of-two-sorted-arrays)
 
@@ -379,7 +379,7 @@
 
 [367. Valid Perfect Square]()
 
-##Dynamic Programming
+## Dynamic Programming
 
 [44. Wildcard Matching](README.md#44-wildcard-matching)
 
@@ -427,7 +427,7 @@
 
 [403. Frog Jump]()
 
-##Backtracking
+## Backtracking
 
 [17. Letter Combinations of a Phone Number](README.md#17-letter-combinations-of-a-phone-number)
 
@@ -470,7 +470,7 @@
 [216. Combination Sum III](README.md#216-combination-sum-iii)
 
 
-##Stack
+## Stack
 
 [20. Valid Parentheses](README.md#20-valid-parentheses)
 
@@ -496,7 +496,7 @@
 
 [232. Implement Queue using Stacks](README.md#232-implement-queue-using-stacks)
 
-##Heap
+## Heap
 
 [23. Merge k Sorted Lists](README.md#23-merge-k-sorted-lists)
 
@@ -504,7 +504,7 @@
 
 [347. Top K Frequent Elements](README.md#347-top-k-frequent-elements)
 
-##Greedy
+## Greedy
 
 [44. Wildcard Matching](README.md#44-wildcard-matching)
 
@@ -521,7 +521,7 @@
 [253. Meeting Rooms II]()
 
 
-##Sort
+## Sort
 
 [56. Merge Intervals](README.md#56-merge-intervals)
 
@@ -539,7 +539,7 @@
 
 [358. Rearrange String k Distance Apart]()
 
-##Bit Manipulation
+## Bit Manipulation
 
 [78. Subsets](README.md#78-subsets)
 
@@ -564,7 +564,7 @@
 [371. Sum of Two Integers]()
 
 
-##Tree
+## Tree
 
 [94. Binary Tree Inorder Traversal](README.md#94-binary-tree-inorder-traversal)
 
@@ -628,7 +628,15 @@
 
 [257. Binary Tree Paths](README.md#257-binary-tree-paths)
 
-##Depth-first Search
+[366. Find Leaves of Binary Tree]()
+
+[404. Sum of Left Leaves]()
+
+[314. Binary Tree Vertical Order Traversal]()
+
+[572. Subtree of Another Tree]()
+
+## Depth-first Search
 
 [98. Validate Binary Search Tree](README.md#98-validate-binary-search-tree)
 
@@ -684,7 +692,7 @@
 
 [329. Longest Increasing Path in a Matrix]() //
 
-##Breadth-first Search
+## Breadth-first Search
 
 [101. Symmetric Tree](README.md#101-symmetric-tree)
 
@@ -700,14 +708,14 @@
 
 
 
-##Union Find
+## Union Find
 [128. Longest Consecutive Sequence](README.md#128-longest-consecutive-sequence)
 
 [200. Number of Islands](README.md#200-number-of-islands)
 
 [130. Surrounded Regions](README.md#130-surrounded-regions)
 
-##Graph
+## Graph
 
 [133. Clone Graph]() //
 
@@ -715,7 +723,7 @@
 
 [210. Course Schedule II](README.md#210-course-schedule-ii)
 
-##Design
+## Design
 
 [146. LRU Cache]() //
 
@@ -729,7 +737,7 @@
 
 [232. Implement Queue using Stacks](README.md#232-implement-queue-using-stacks)
 
-##Topological Sort
+## Topological Sort
 
 [207. Course Schedule](README.md#207-course-schedule)
 
@@ -738,40 +746,40 @@
 [329. Longest Increasing Path in a Matrix]()
 
 
-##Trie
+## Trie
 
 [208. Implement Trie (Prefix Tree)](README.md#208-implement-trie-prefix-tree)
 
 [212. Word Search II]()
 
-##Binary Indexed Tree
+## Binary Indexed Tree
 
 [307. Range Sum Query - Mutable](README.md#307-range-sum-query---mutable)
 
 [315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
 
-##Segment Tree
+## Segment Tree
 
 [307. Range Sum Query - Mutable](README.md#307-range-sum-query---mutable)
 
 [315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
 
-##Binary Search Tree
+## Binary Search Tree
 
 [220. Contains Duplicate III](README.md#220-contains-duplicate-iii)
 
 [315. Count of Smaller Numbers After Self](README.md#315-count-of-smaller-numbers-after-self)
 
-##Recursion
+## Recursion
 
-##Brainteaser
+## Brainteaser
 
-##Memoization
+## Memoization
 
 [329. Longest Increasing Path in a Matrix]()//
 
-##Queue
+## Queue
 
-##Reservoir Sampling
+## Reservoir Sampling

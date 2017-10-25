@@ -106,5 +106,17 @@ public class DivideTwoIntegers {
     @Test
     public void test() {
         assertThat(divide(421, 3), Matchers.is(140));
+        System.out.println(divide(2, 1)); //2
+        System.out.println(divide(1, 2)); //0
+        System.out.println(divide(4, 2)); //2
+        System.out.println(divide(5, 2)); //2
+        System.out.println(divide(6, 2)); //3
+        System.out.println(divide(6, -2)); //-3
+        System.out.println(divide(-6, 2)); //-3 验证符号
+        System.out.println(divide(10, 0)); //MAX_INT 验证除数是0
+        System.out.println(divide(0, 10)); //0 验证被除数是0
+        System.out.println(divide(Integer.MAX_VALUE, 1)); //MAX_INT
+        System.out.println(divide(Integer.MIN_VALUE, -1)); //解决res>max_int的overflow case，否则就会得到min_int，是个负数，并且Math
+        // .abs里面必须有long转型。
     }
 }

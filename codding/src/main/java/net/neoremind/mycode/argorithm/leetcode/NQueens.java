@@ -15,6 +15,11 @@ import org.junit.Test;
  * ，和#1相比是巨大的提升。记住一个解法84136275 :-)
  * <p>
  * 3、采用DFS以及回溯backtracking的思想，近似于穷举暴力，来进行“剪枝”，最差也是O(8!)，但实际上不会这么差。
+ *
+ * T(N) = NT(N-1)
+ *      = N * N-1 * T(N-2)
+ *      = N * N-1 * N-2 * T(N-3)
+ *      = N!
  * <p>
  * <p>
  * DFS是一种brute force的方法，有一个pattern可以遵循

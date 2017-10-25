@@ -30,6 +30,8 @@ import static org.junit.Assert.assertThat;
  * Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms
  * should be stateless.
  *
+ * 和449. Serialize and Deserialize BST一样。
+ *
  * @author xu.zhang
  * @see https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/
  */
@@ -123,19 +125,22 @@ public class SerializeAndDeserializeBinaryTree {
     }
 
     public TreeNode deserialize2(String data) {
-        Deque<String> nodes = new LinkedList<>();
-        nodes.addAll(Arrays.asList(data.split(",")));
-        return buildTree(nodes);
+        if (data == null || data.equals("")) return null;
+        String[] chars = data.split(",");
+        Queue<String> q = new LinkedList<>();
+        q.addAll(Arrays.asList(chars));
+        return helper(q);
     }
 
-    private TreeNode buildTree(Deque<String> nodes) {
-        String val = nodes.poll();
-        if (val.equals("#")) return null;
-        else {
-            TreeNode node = new TreeNode(Integer.valueOf(val));
-            node.left = buildTree(nodes);
-            node.right = buildTree(nodes);
-            return node;
+    TreeNode helper(Queue<String> q) {
+        String val = q.poll();
+        if (val.equals("#")) {
+            return null;
+        } else {
+            TreeNode parent = new TreeNode(Integer.parseInt(val));
+            parent.left = helper(q);
+            parent.right = helper(q);
+            return parent;
         }
     }
 

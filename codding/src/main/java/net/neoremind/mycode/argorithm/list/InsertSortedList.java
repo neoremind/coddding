@@ -4,6 +4,8 @@ import net.neoremind.mycode.argorithm.leetcode.support.ListNode;
 import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * @author xu.zhang
  */
@@ -13,33 +15,61 @@ public class InsertSortedList {
     public void test() {
         ListNode head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5, 7, 8, 9});
         int value = 6;
-        insert(head, value);
+        head = insert(head, value);
         System.out.println(ListNodeHelper.getPrintableListNode(head));
 
         head = ListNodeHelper.build(new int[]{1});
-        value = 6;
-        insert(head, value);
+        value = 2;
+        head = insert(head, value);
         System.out.println(ListNodeHelper.getPrintableListNode(head));
 
-        head = ListNodeHelper.build(new int[]{9});
-        value = 6;
-        insert(head, value);
+        head = ListNodeHelper.build(new int[]{1});
+        value = 0;
+        head = insert(head, value);
         System.out.println(ListNodeHelper.getPrintableListNode(head));
 
-        head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5, 7, 8, 9});
-        value = 10;
-        insert(head, value);
+        head = ListNodeHelper.build(new int[]{});
+        value = 0;
+        head = insert(head, value);
+        System.out.println(ListNodeHelper.getPrintableListNode(head));
+
+        head = ListNodeHelper.build(new int[]{1, 2});
+        value = 3;
+        head = insert(head, value);
+        System.out.println(ListNodeHelper.getPrintableListNode(head));
+
+        head = ListNodeHelper.build(new int[]{1, 2});
+        value = 0;
+        head = insert(head, value);
+        System.out.println(ListNodeHelper.getPrintableListNode(head));
+
+        head = ListNodeHelper.build(new int[]{1, 2, 3});
+        value = 4;
+        head = insert(head, value);
+        System.out.println(ListNodeHelper.getPrintableListNode(head));
+
+        head = ListNodeHelper.build(new int[]{1, 2, 3});
+        value = 0;
+        head = insert(head, value);
         System.out.println(ListNodeHelper.getPrintableListNode(head));
     }
 
-    private void insert(ListNode head, int value) {
-        if (head.next == null) {
+    private ListNode insert(ListNode head, int value) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        helper(dummy, value);
+        return dummy.next;
+    }
 
+    private void helper(ListNode head, int value) {
+        if (head.next == null) {
+            head.next = new ListNode(value);
+            return;
         }
         if (head.next.val > value) {
             doInsert(head, value);
         } else {
-            insert(head.next, value);
+            helper(head.next, value);
         }
     }
 

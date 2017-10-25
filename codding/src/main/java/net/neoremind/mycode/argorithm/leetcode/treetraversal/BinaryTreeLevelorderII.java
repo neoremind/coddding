@@ -101,6 +101,27 @@ public class BinaryTreeLevelorderII {
         }
     }
 
+
+    static void helper(Queue<TreeNode> q, List<List<Integer>> res) {
+        if (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> tmp = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                TreeNode node = q.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    q.add(node.left);
+                }
+                if (node.right != null) {
+                    q.add(node.right);
+                }
+            }
+            helper(q, res);
+            res.add(tmp);
+        }
+    }
+
+
     /**
      * <pre>
      *      1

@@ -1,5 +1,24 @@
 # Leetcode records
 
+### [572. Subtree of Another Tree](https://leetcode.com/problems/subtree-of-another-tree/description/)
+
+给定一棵树S和T，判断T是否为S的子树。
+
+利用same tree那道题做递归即可。
+
+```
+public boolean isSubtree(TreeNode s, TreeNode t) {
+    if (s != null) {
+        if (sameTree(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t)) {
+            return true;
+    return false;
+
+public boolean sameTree(TreeNode s, TreeNode t) {
+    if (s == null || t == null) {
+        return s == t;
+    return s.val == t.val && sameTree(s.left, t.left) && sameTree(s.right, t.right);
+```
+
 ### [440. K-th Smallest in Lexicographical Order](https://leetcode.com/problems/k-th-smallest-in-lexicographical-order/)
 
 H, 类似题目[386. Lexicographical Numbers](https://leetcode.com/problems/lexicographical-numbers/)
@@ -128,6 +147,13 @@ boolean dfs(int[] stones, int index, int lastStep) {
 
 这个解法在leetcode会TLE，所以需要做一个dp[][]来存储在i为位置，如果前一步lastStep步下能否有解，避免无谓的深入下去。
 
+### [404. Sum of Left Leaves](https://leetcode.com/problems/sum-of-left-leaves/description/)
+
+E, 左叶子节点的和。用queue来做，判断
+```
+if (node.left != null && node.left.left == null && node.left.right == null) {
+    res += node.left.val;
+```
 
 ### [395. Longest Substring with At Least K Repeating Characters](https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/)
 
@@ -319,6 +345,34 @@ int getSum(int a, int b) {
 }
 ```
 一连串bitwise的操作见evernote笔记。
+
+### [366. Find Leaves of Binary Tree]()
+
+M, 
+```
+      1
+     / \
+    2   3
+   / \     
+  4   5    
+Returns [4, 5, 3], [2], [1].
+```
+
+利用max depth of binary tree，在遍历的时候加入list结果即可。
+```
+    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    helper(result, root);
+    return result;
+
+private int helper(List<List<Integer>> result, TreeNode root) {
+    if (root == null) return 0;
+    int depth = 1 + Math.max(helper(result, root.left), helper(result, root.right));
+    if (result.size() < depth) {
+        result.add(new ArrayList<>());
+    result.get(depth - 1).add(root.val);
+    return depth;
+}
+```
 
 ### [350. Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/description/)
 
@@ -816,6 +870,54 @@ private void update(int i, int[] tree) {
 
 [leetcode讨论](https://discuss.leetcode.com/topic/39656/short-java-binary-index-tree-beat-97-33-with-detailed-explanation/2)
 
+### [314. Binary Tree Vertical Order Traversal]()
+
+M, 
+```
+    _3_
+   /   \
+  9    20
+ / \   / \
+4   5 2   7
+return its vertical order traversal as:
+[
+  [4],
+  [9],
+  [3,5,2],
+  [20],
+  [7]
+]
+```
+
+存在一个列的概念，利用层序遍历的思想，多维护一个queue，表明在哪列，然后一个map key是col，value是该col的所有val。
+维护一个min、max表明列的左右极端，最后for i in [min, max]遍历map即可。
+
+```
+List<List<Integer>> res = new ArrayList<>();
+Map<Integer, List<Integer>> col2Val = new HashMap<>();
+int min = 0, max = 0;
+Queue<TreeNode> q = new LinkedList<>();
+Queue<Integer> colQ = new LinkedList<>();
+q.add(root);
+colQ.add(0);
+while (!q.isEmpty() && !colQ.isEmpty()) {
+    TreeNode node = q.poll();
+    int col = colQ.poll();
+    if (!col2Val.containsKey(col)) {
+        col2Val.put(col, new ArrayList<>());
+    col2Val.get(col).add(node.val);
+    if (node.left != null) {
+        q.add(node.left);
+        colQ.add(col - 1);
+        min = Math.min(min, col - 1);
+    if (node.right != null) {
+        q.add(node.right);
+        colQ.add(col + 1);
+        max = Math.max(max, col + 1);
+for (int i = min; i <= max; i++) {
+    res.add(col2Val.get(i));
+return res;
+```
 
 ### [307. Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/)
 
@@ -4897,6 +4999,20 @@ E, Tree Depth-first Search
 
 给定一棵二叉树，判定它是否为平衡二叉树。
 
+A balanced binary tree is the binary tree where the depth of the two subtrees of every node never differ by more than 1.
+
+A complete binary tree is a binary tree whose all levels except the last level are completely filled and all the leaves in the last level are all to the left side.
+
+Below is a balanced binary tree but not a complete binary tree. Every complete binary tree is balanced but not the other way around.
+```
+        1
+     1     1
+   1   1     1
+ 1 
+ ```
+As implies, in a complete tree, always the level difference will be no more than 1 so it is always balanced.
+
+
 算法分析：
 平衡二叉树（Balanced Binary Tree）又被称为AVL树（有别于AVL算法），且具有以下性质：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。
 
@@ -4919,9 +5035,28 @@ public static int getHeight(TreeNode root) {
     return Math.max(left, right) + 1;
 ```
 
-如果题目是检查一棵树是否平衡，平衡是指任意两个叶子节点到root的距离之差不大于1.
+validate是否为complete tree:
+```
+final Queue<TreeNode> queue = new LinkedList<TreeNode>();
+queue.add(root);
+boolean incompleteDetected = false;
+while (!queue.isEmpty()) {
+    TreeNode node = queue.poll();
+    if (node.left != null) {
+        if (incompleteDetected) return false;
+        queue.add(node.left);
+    } else {
+        incompleteDetected = true;
 
-判断平衡就利用111题目中的max depth - min depth <=1 来判断。
+    if (node.right != null) {
+        if (incompleteDetected) return false;
+        queue.add(node.right);
+    } else {
+        incompleteDetected = true;
+return true;
+```
+
+如果题目是检查一棵树是否平衡，平衡是指任意两个叶子节点到root的距离之差不大于1.
 
 下面的树满足本题的要求，是一个balanced binary tree，但是他不平衡。
 ```
@@ -4935,7 +5070,6 @@ public static int getHeight(TreeNode root) {
          /
         5
 ```
-
 
 ### [108. Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/)
 
@@ -4959,34 +5093,31 @@ TreeNode helper(int[] nums, int start, int end) {
 
 E, Tree Breadth-first Search
 
-bottom-up level，和题目102类似，需要做一次backtrack的思想，把add操作放在DFS递归的后面。
+bottom-up level，和题目102类似，需要做一次backtrack的思想递归进去就行，把add操作放在DFS递归的后面。
 
 ```
 public List<List<Integer>> traverse(TreeNode root) {
-    if (root == null) return new ArrayList<>(0);
-    List<List<Integer>> result = new ArrayList<>();
-    List<TreeNode> level = new ArrayList<>(1);
-    level.add(root);
-    levelOrderBottom(level, result);
-    return result;
-}
+    List<List<Integer>> res = new ArrayList<>();
+    if (root == null) return res;
+    Queue<TreeNode> q = new LinkedList<>();
+    q.add(root);
+    helper(q, res);
+    return res;
 
 private static void levelOrderBottom(List<TreeNode> level, List<List<Integer>> result) {
-    List<TreeNode> newLevel = new ArrayList<>(level.size() << 1);
-    List<Integer> levelValues = new ArrayList<>(level.size());
-    for (TreeNode treeNode : level) {
-        levelValues.add(treeNode.val);
-        if (treeNode.left != null) {
-            newLevel.add(treeNode.left);
-        }
-        if (treeNode.right != null) {
-            newLevel.add(treeNode.right);
-        }
+    if (!q.isEmpty()) {
+        int size = q.size();
+        List<Integer> tmp = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            TreeNode node = q.poll();
+            tmp.add(node.val);
+            if (node.left != null) {
+                q.add(node.left);
+            if (node.right != null) {
+                q.add(node.right);
+        helper(q, res);
+        res.add(tmp);
     }
-    if (!newLevel.isEmpty()) {
-        levelOrderBottom(newLevel, result);
-    }
-    result.add(levelValues);
 }
 ```
 
@@ -5081,26 +5212,22 @@ E, Tree Breadth-first Search
 层序遍历。
 
 ```
-if (root == null) return new ArrayList<>(0);
-List<List<Integer>> result = new ArrayList<>();
-List<TreeNode> level = new ArrayList<>(1);
-level.add(root);
-List<TreeNode> newLevel;
-List<Integer> levelValues;
-while (true) {
-    temp = new list
-    newLevel = new list
-    add temp to result
-    for each i in level
-        add i to temp
-        add i.left to newLevel
-        add i.right to newLevel
-    level = newLevel;
-    if (level is empty) {
-        break;
-    }
-}
-return result;
+List<List<Integer>> res = new ArrayList<>();
+if (root == null) return res;
+Queue<TreeNode> q = new LinkedList<>();
+q.add(root);
+while (!q.isEmpty()) {
+    int size = q.size();
+    List<Integer> tmp = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) {
+        TreeNode node = q.poll();
+        tmp.add(node.val);
+        if (node.left != null) {
+            q.add(node.left);
+        if (node.right != null) {
+            q.add(node.right);
+    res.add(tmp);
+return res;
 ```
 
 更容易记忆的解法，用queue来实现。
@@ -5201,6 +5328,13 @@ if (p == null || q == null)
      return p == q;
 else return p.val == q.val && isSameTree(p.left, q.left)&& isSameTree(p.right, q.right);
 ```
+
+### [99. Recover Binary Search Tree](https://leetcode.com/problems/recover-binary-search-tree/description/)
+
+某个BST，某两个node的值对调了，如何恢复？
+
+inorder遍历，然后存储两个first、second node，每次都prev=root，一旦prev.val >= root.val 尝试赋值第一个first，如果first赋值过
+还是一旦prev.val >= root.val ，就赋值second，最后first和second的值swap下即可。
 
 ### [98. Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/)
 
@@ -7839,6 +7973,22 @@ M, Array
 
 如果自己可以手写出来全排列，那么就有利于分析，例如下面的1，2，3，4全排列序列，等于4!=24个。
 
+next permutation：
+```
+1、从后往前找最后升序[i, i+1]
+2、不存在就反排
+3、从后往前找第一个比i大的，交换。
+4、[i+1,最后]反排
+```
+
+previous permutation：
+```
+1、从后往前找最后降序[i, i+1]
+2、不存在就反排
+3、[i+1,最后]反排
+3、从后往前找第一个比i小的，交换。
+```
+
 ```
 [1, 2, 3, 4]
 [1, 2, 4, 3]
@@ -7897,6 +8047,39 @@ for (int i = num.length - 1; i > pos; i--)
 reverse(num, pos + 1, num.length - 1);
 
 reverse用two pointer while(left < right)即可
+```
+
+另外一个previous permutation的算法如下：
+```
+public void previousPermutation(int[] num) {
+    //1.找到最后一个降序位置pos
+    int pos = -1;
+    for (int i = num.length - 1; i > 0; i--) {
+        if (num[i] < num[i - 1]) {
+            pos = i - 1;
+            break;
+        }
+    }
+
+    //2.如果不存在序，即这个数是最小的，那么反排这个数组
+    if (pos < 0) {
+        reverse(num, 0, num.length - 1);
+        return;
+    }
+
+    //3.存在降序，那么找到pos之后的序列反排
+    reverse(num, pos + 1, num.length - 1);
+
+    //4. 后面的序列找比pos小的交换。
+    for (int i = num.length - 1; i > pos; i--) {
+        if (num[i] < num[pos]) {
+            int tmp = num[i];
+            num[i] = num[pos];
+            num[pos] = tmp;
+            break;
+        }
+    }
+}
 ```
 
 

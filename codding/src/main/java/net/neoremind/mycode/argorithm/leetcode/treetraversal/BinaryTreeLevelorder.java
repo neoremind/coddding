@@ -80,6 +80,31 @@ public class BinaryTreeLevelorder {
         return result;
     }
 
+    public List<List<Integer>> traverse3(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> tmp = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                TreeNode node = q.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    q.add(node.left);
+                }
+                if (node.right != null) {
+                    q.add(node.right);
+                }
+            }
+            res.add(tmp);
+        }
+        return res;
+    }
+
     /**
      * <pre>
      *      1

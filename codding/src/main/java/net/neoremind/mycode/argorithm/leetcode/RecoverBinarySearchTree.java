@@ -19,7 +19,6 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
  * @author zhangxu
  * @see https://leetcode.com/problems/recover-binary-search-tree/
  */
-//TODO 还没有吃透
 public class RecoverBinarySearchTree {
 
     TreeNode prev = new TreeNode(Integer.MIN_VALUE);

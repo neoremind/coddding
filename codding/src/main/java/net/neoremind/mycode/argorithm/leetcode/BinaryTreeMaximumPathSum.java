@@ -100,6 +100,11 @@ public class BinaryTreeMaximumPathSum {
         assertThat(maxPathSum(root), is(18));
         System.out.println(maxSinglyPathSum(root));
 
+        root = TreeNodeHelper.init("4,-2,6,1,-9,-5,7");
+        System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
+        assertThat(maxPathSum(root), is(17));
+        System.out.println(maxSinglyPathSum(root));
+
         root = TreeNodeHelper.init("6,4,9,-2,#,-7,-10,1,3,#,8");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         assertThat(maxPathSum(root), is(21));

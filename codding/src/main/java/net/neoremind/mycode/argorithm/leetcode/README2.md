@@ -1,3 +1,30 @@
+### [713. Subarray Product Less Than K](https://leetcode.com/problems/subarray-product-less-than-k/description/)
+找到连续的subarray他们的乘积小于K，给出有多少个。
+
+Input: nums = [10, 5, 2, 6], k = 100
+Output: 8
+Explanation: The 8 subarrays that have product less than 100 are: [10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6].
+Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.
+
+```
+public int numSubarrayProductLessThanK(int[] nums, int k) {
+    if (k <= 1) {
+        return 0;
+    }
+    int res = 0;
+    int product = 1;
+    int left = 0;
+    for (int i = 0; i < nums.length; i++) {
+        product *= nums[i];
+        while (product >= k) {
+            product = product / nums[left++];
+        }
+        res += i - left + 1;
+    }
+    return res;
+}
+```
+
 ### [679. 24 Game](https://leetcode.com/problems/24-game/description/)
 
 H, DFS, 用`*, /, +, -, (, ) `to get the value of 24.

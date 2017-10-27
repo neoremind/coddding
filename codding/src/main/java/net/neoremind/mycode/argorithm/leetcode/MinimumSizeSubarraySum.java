@@ -91,6 +91,24 @@ public class MinimumSizeSubarraySum {
         return minLen == Integer.MAX_VALUE ? 0 : minLen;
     }
 
+    /**
+     * 更简洁的做法
+     */
+    public int minSubArrayLen3(int s, int[] nums) {
+        int sum = 0;
+        int minLen = Integer.MAX_VALUE;
+        int start = 0;
+        for (int i = 0; i< nums.length; i++) {
+            sum += nums[i];
+            while (sum >= s) {
+                minLen = Math.min(i - start + 1, minLen);
+                sum -= nums[start];
+                start++;
+            }
+        }
+        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+    }
+
     @Test
     public void test() {
         int[] nums = new int[] {2, 3, 1, 2, 4, 3};

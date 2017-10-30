@@ -106,6 +106,54 @@ HARD,
 最后的结果别忘记%10^9+7,dp要是long类型的。
 ```
 
+### [621. Task Scheduler](https://leetcode.com/problems/task-scheduler/description/)
+
+给一个task列表，然后一个interval N，相同的task必须至少有N个间隔的CPU周期，问最短需要多少时间间隔完成任务。
+```
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+```
+贪心算法，有两种解法。
+
+解法1，数学归纳法。采用分段的方法，有些巧妙，不赘述。
+
+解法2，使用贪心的算法。维护一个task->count的map，然后放到PriorityQueue里面，每次取出count最大的task开始执行，直到到达了N+1的大小
+或者没有任何task可以执行了，这就算是一个周期结束了。往复这个过程，注意queue为空的话，证明所有任务都放进去了，所以大小不会大于N+1。
+
+```
+public int leastInterval(char[] tasks, int n) {
+    if (tasks == null || tasks.length == 0) {
+        return 0;
+    Map<Character, Integer> task2cnt = new HashMap<>(tasks.length * 4 / 3);
+    for (char task : tasks) {
+        task2cnt.put(task, task2cnt.getOrDefault(task, 0) + 1);
+    Queue<Map.Entry<Character, Integer>> q = new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());
+    q.addAll(task2cnt.entrySet());
+    int totalSlot = 0;
+    while (!q.isEmpty()) {
+        int k = n + 1;
+        List<Map.Entry<Character, Integer>> temp = new ArrayList<>();
+        while (k > 0 && !q.isEmpty()) {
+            temp.add(q.poll());
+            k--;
+        }
+        for (Map.Entry<Character, Integer> e : temp) {
+            e.setValue(e.getValue() - 1);
+            if (e.getValue() != 0) {
+                q.add(e);
+        if (!q.isEmpty()) {
+            totalSlot += n + 1;
+        } else {
+            totalSlot += temp.size();
+        }
+    }
+    return totalSlot;
+}
+```
+
+扩展，如果要求保证任务顺序呢？没那么难，直接遍历数组，维护一个task上次最近执行时间的map，不够就加idle即可。
+
 ### [560. Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/description/)
 
 和另外一道题[325. Maximum Size Subarray Sum Equals k]()很类似，

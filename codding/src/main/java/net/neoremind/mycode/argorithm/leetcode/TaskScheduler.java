@@ -111,6 +111,26 @@ public class TaskScheduler {
         return sb.toString();
     }
 
+    public static String ordered(char[] tasks, int n) {
+        Map<Character, Integer> task2LastRunTime = new HashMap<>(tasks.length * 4 / 3);
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        for (char task : tasks) {
+            // new task
+            if (!task2LastRunTime.containsKey(task)) {
+                sb.append(task);
+            } else {
+                while (index++ - task2LastRunTime.get(task) <= n) {
+                    sb.append("_");
+                }
+                sb.append(task);
+            }
+            task2LastRunTime.put(task, index);
+            index++;
+        }
+        return sb.toString();
+    }
+
     @Test
     public void test() {
         char[] tasks = new char[]{'A', 'A', 'A', 'B', 'B', 'B'};
@@ -140,5 +160,10 @@ public class TaskScheduler {
         // ABE|AFB|ABF|EA //A-0,B-0,E-0,F-0
         System.out.println(leastInterval2(tasks, 2));
         assertThat(result, Matchers.is(11));
+
+        tasks = new char[]{'A','A','B','A','C','C','D','C','D'};
+        // A___AB__AC___CD__CD
+        // A___AB__AC___CD__CD
+        System.out.println(ordered(tasks, 3));
     }
 }

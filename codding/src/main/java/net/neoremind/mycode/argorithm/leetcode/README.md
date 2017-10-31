@@ -1,5 +1,21 @@
 # Leetcode records
 
+### [680. ValidPalindromeII](https://leetcode.com/problems/valid-palindrome-ii/description/)
+
+at most删除一个字符，是否可以形成一个回文串
+```
+public boolean validPalindrome(String s) {
+    int i = 0, j = s.length() - 1;
+    while (i < j && s.charAt(i) == s.charAt(j)) {
+        i++; j--;
+    }
+
+    if (i >= j) return true;
+
+    if (isPalin(s, i + 1, j) || isPalin(s, i, j - 1)) return true;
+    return false;
+```
+
 ### [572. Subtree of Another Tree](https://leetcode.com/problems/subtree-of-another-tree/description/)
 
 给定一棵树S和T，判断T是否为S的子树。

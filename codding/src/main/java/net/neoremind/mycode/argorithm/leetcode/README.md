@@ -646,6 +646,16 @@ for (int end = 0; end < str.length; end++) {
 return maxLen;
 ```
 
+### [336. Palindrome Pairs](https://leetcode.com/problems/palindrome-pairs/)
+
+找规律
+```
+Case1: If s1 is a blank string, then for any string that is palindrome s2, s1+s2 and s2+s1 are palindrome.
+Case 2: If s2 is the reversing string of s1, then s1+s2 and s2+s1 are palindrome.
+Case 3: If s1[0:cut] is palindrome and there exists s2 is the reversing string of s1[cut+1:] , then s2+s1 is palindrome.
+Case 4: Similiar to case3. If s1[cut+1: ] is palindrome and there exists s2 is the reversing string of s1[0:cut] , then s1+s2 is palindrome.
+```
+
 ### [329. Longest Increasing Path in a Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)
 
 H, Depth-first Search Topological Sort Memoization
@@ -4280,6 +4290,28 @@ int res = nums[0];
 for (int i = 1; i < nums.length; i++)
     res ^= nums[i];
 return res;
+```
+
+### [131. Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)
+
+把单词的所有回文串的组合全部找出来。
+```
+public List<List<String>> partition(String s) {
+    List<List<String>> res = new ArrayList<>();
+    helper(s, 0, s.length(), res, new ArrayList<>());
+    return res;
+}
+
+void helper(String s, int index, int len, List<List<String>> res, List<String> temp) {
+    if (index == len) {
+        res.add(new ArrayList<>(temp));
+    } else {
+        for (int i = index; i < len; i++) {
+            String sub = s.substring(index, i + 1);
+            if (isP(sub)) {
+                temp.add(sub);
+                helper(s, i + 1, len, res, temp);
+                temp.remove(temp.size() - 1);
 ```
 
 ### [127. Word Ladder](https://leetcode.com/problems/word-ladder/)

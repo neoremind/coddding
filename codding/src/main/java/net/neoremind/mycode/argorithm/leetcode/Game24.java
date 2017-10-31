@@ -61,7 +61,6 @@ public class Game24 {
                         }
                     }
                     for (int k = 0; k < 4; k++) {
-                        if (k < 2 && j > i) continue; /// why???
                         if (k == 0) nums2.add(nums.get(i) + nums.get(j));
                         if (k == 1) nums2.add(nums.get(i) * nums.get(j));
                         if (k == 2) nums2.add(nums.get(i) - nums.get(j));

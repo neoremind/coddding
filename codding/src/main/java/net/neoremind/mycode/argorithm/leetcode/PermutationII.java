@@ -35,8 +35,8 @@ public class PermutationII {
         return result;
     }
 
-    private void doPermute(int[] nums, int i, List<List<Integer>> result) {
-        if (i == nums.length) {
+    private void doPermute(int[] nums, int index, List<List<Integer>> result) {
+        if (index == nums.length) {
             List<Integer> numsList = new ArrayList<>(nums.length);
             for (int num : nums) {
                 numsList.add(num);
@@ -44,11 +44,11 @@ public class PermutationII {
             result.add(numsList);
             System.out.println(numsList);
         } else {
-            for (int j = i; j < nums.length; j++) {
-                if (isNotSame(nums, i, j)) {
-                    swap(nums, i, j);
-                    doPermute(nums, i + 1, result);
-                    swap(nums, i, j);
+            for (int j = index; j < nums.length; j++) {
+                if (isNotSame(nums, index, j)) {
+                    swap(nums, index, j);
+                    doPermute(nums, index + 1, result);
+                    swap(nums, index, j);
                 }
             }
         }
@@ -59,8 +59,8 @@ public class PermutationII {
      *
      * 这个方法会挪动到最后的那个1再开始全排列。
      */
-    private boolean isNotSame(int[] nums, int i, int j) {
-        for (int k = i; k < j; k++) {
+    private boolean isNotSame(int[] nums, int index, int j) {
+        for (int k = index; k < j; k++) {
             if (nums[k] == nums[j]) {
                 return false;
             }

@@ -8590,6 +8590,50 @@ start.next = start.next.next;
 return dummy.next;
 ```
 
+### [18. 4Sum](https://leetcode.com/problems/4sum/description/)
+
+复用O(N^2)的3 sum。
+```
+public List<List<Integer>> fourSum(int[] nums, int target) {
+    List<List<Integer>> res = new LinkedList<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length - 3; i++) {
+        if (i == 0 || (i > 0 && nums[i] != nums[i - 1])) {
+            int newTarget = target - nums[i];
+            List<List<Integer>> temp = threeSum(nums, i + 1, nums.length - 1, newTarget);
+            for (List<Integer> list : temp) {
+                List<Integer> newList = new ArrayList<>(list);
+                list.add(nums[i]);
+                res.add(newList);
+            }
+        }
+    }
+    return res;
+}
+
+public List<List<Integer>> threeSum(int[] num, int start, int end, int target) {
+    List<List<Integer>> res = new LinkedList<>();
+    for (int i = start; i < end - 1; i++) {
+        if (i == start || (i > start && num[i] != num[i - 1])) {
+            int lo = i + 1, hi = end, sum = target - num[i];
+            while (lo < hi) {
+                if (num[lo] + num[hi] == sum) {
+                    res.add(Arrays.asList(num[i], num[lo], num[hi]));
+                    while (lo < hi && num[lo] == num[lo + 1]) lo++;
+                    while (lo < hi && num[hi] == num[hi - 1]) hi--;
+                    lo++;
+                    hi--;
+                } else if (num[lo] + num[hi] < sum) {
+                    lo++;
+                } else {
+                    hi--;
+                }
+            }
+        }
+    }
+    return res;
+}
+```
 
 
 ### [17. Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)

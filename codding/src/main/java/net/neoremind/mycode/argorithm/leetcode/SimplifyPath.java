@@ -1,6 +1,7 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,34 @@ public class SimplifyPath {
             res[i] = stack.pop();
         }
         return Arrays.stream(res).collect(Collectors.joining("/", "/", ""));
+    }
+
+    public String simplifyPath2(String path) {
+        if (path == null) return "";
+        Stack<String> stack = new Stack<>();
+        for (String s : path.split("/")) {
+            if (s.equals("..") && !stack.isEmpty()) {
+                stack.pop();
+            } else if (s.equals("..") || s.equals("") || s.equals(".")) {
+                continue;
+            } else {
+                stack.push(s);
+            }
+        }
+        LinkedList<String> res = new LinkedList<>();
+        while (!stack.isEmpty()) {
+            res.add(stack.pop());
+        }
+        if (res.size() == 0) {
+            return "/";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            while (!res.isEmpty()) {
+                sb.append("/");
+                sb.append(res.pollLast());
+            }
+            return sb.toString();
+        }
     }
 
 }

@@ -423,6 +423,88 @@ boolean helper(List<Integer> numbers, int desiredTotal, boolean[] used, Map<Stri
     return false;
 ```
 
+### [438. Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/description/)
+
+和Minimum Window Substring如初一折的模板，唯一不同的就是括起来的地方。
+```
+ Given a string S and a string T, find the minimum window in S which will contain all the characters in T in
+ complexity O(n).
+ For example,
+ S = "ADOBECODEBANC"
+ T = "ABC"
+ Minimum window is "BANC".
+```
+```
+public List<Integer> findAnagrams(String s, String p) {
+    int start = 0, end = 0;
+    int counter = p.length();
+    int[] a = new int[256];
+    for (char c : p.toCharArray()) {
+        a[c]++;
+    }
+    List<Integer> res = new ArrayList<>();
+    while (end < s.length()) {
+        if (a[s.charAt(end)] > 0) {
+            counter--;
+        }
+        a[s.charAt(end)]--;
+        end++;
+        //******************
+        while (counter == 0 && end - start >= p.length()) {
+            if (end - start == p.length()) {
+                res.add(start);
+            }  ******************//
+            a[s.charAt(start)]++;
+            if (a[s.charAt(start)] > 0) {
+                counter++;
+            }
+            start++;
+    return res;
+```
+
+### [415. Add strings](https://leetcode.com/problems/add-strings/)
+
+和lc#2的两个list做加法一样，注意carry的使用和剩下的数字的相加，以及最后的0的处理。
+```
+if (num1 == null || num1.length() == 0) return num2;
+if (num2 == null || num2.length() == 0) return num1;
+StringBuilder sb = new StringBuilder();
+int i = num1.length() - 1;
+int j = num2.length() - 1;
+int carry = 0;
+while (i >= 0 && j >= 0) {
+    //TODO check k1 and k2 valid
+    int k1 = num1.charAt(i) - '0';
+    int k2 = num2.charAt(j) - '0';
+    int value = carry + k1 + k2;
+    sb.append(value % 10);
+    carry = value / 10;
+    i--;
+    j--;
+}
+
+while (i >= 0) {
+    int k1 = num1.charAt(i) - '0';
+    int value = carry + k1;
+    sb.append(value % 10);
+    carry = value / 10;
+    i--;
+}
+
+while (j >= 0) {
+    int k2 = num2.charAt(j) - '0';
+    int value = carry + k2;
+    sb.append(value % 10);
+    carry = value / 10;
+    j--;
+}
+
+if (carry > 0) {
+    sb.append(carry);
+}
+return sb.reverse().toString();
+```
+
 ### [394. Decode String](https://leetcode.com/problems/decode-string/description/)
 
 M, `s = "2[abc]3[cd]ef", return "abcabccdcdcdef".` 另外一道对应的471. Encode String with Shortest Length比较难，用DP。

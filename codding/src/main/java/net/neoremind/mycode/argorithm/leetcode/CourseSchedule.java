@@ -161,6 +161,13 @@ public class CourseSchedule {
             graph[prerequisites[i][1]].add(prerequisites[i][0]);
         }
 
+        int counter = 0;
+        for (ArrayList arrayList : graph) {
+            System.out.println(counter + "=" + arrayList);
+            counter++;
+        }
+        System.out.println(Arrays.toString(degree));
+
         // 第二步，找度0的，放入队列
         for (int i = 0; i < degree.length; i++) {
             if (degree[i] == 0) {
@@ -236,15 +243,51 @@ public class CourseSchedule {
      *      |        |          |
      *      |        \/         \/
      * 1 ---         5 -------> 4 -------> 3 ------> 6
-     *      |                  /\ |                 /|\
+     *      |                  /\ |       /\        /|\
      *      |                   | -------------------
-     *      ---------------------
+     *      ---------------------         |
+     *      |_____________________________|
      * </pre>
+     * <p>
+     * visit - 1, queue = 2
+     * <pre>
+     *               2 ----------
+     *               |          |
+     *               \/         \/
+     *               5 -------> 4 -------> 3 ------> 6
+     *                          |                  /|\
+     *                           -------------------
+     * </pre>
+     * visit - 2, queue = 5
+     * <pre>
+     *
+     *               5 -------> 4 -------> 3 ------> 6
+     *                          |                  /|\
+     *                           -------------------
+     * </pre>
+     * visit - 5, queue = 4
+     * <pre>
+     *
+     *                          4 -------> 3 ------> 6
+     *                          |                  /|\
+     *                           -------------------
+     * </pre>
+     * visit - 4, queue = 3
+     * <pre>
+     *
+     *                           3 ------> 6
+     * </pre>
+     * visit - 3, queue = 6
+     * <pre>
+     *
+     *                           6
+     * </pre>
+     * visit - 6, queue = null
      */
     @Test
     public void test() {
         int numCourses = 8;
-        int[][] prerequisites = new int[][] {
+        int[][] prerequisites = new int[][]{
                 {2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}, {6, 7}, {7, 4}, {7, 5}
         };
         assertThat(canFinish(numCourses, prerequisites), Matchers.is(true));
@@ -252,7 +295,7 @@ public class CourseSchedule {
         assertThat(canFinishDFS(numCourses, prerequisites), Matchers.is(true));
 
         numCourses = 7;
-        prerequisites = new int[][] {
+        prerequisites = new int[][]{
                 {2, 1}, {3, 1}, {3, 4}, {4, 1}, {4, 2}, {4, 5}, {5, 2}, {6, 3}, {6, 4}
         };
         assertThat(canFinish(numCourses, prerequisites), Matchers.is(true));

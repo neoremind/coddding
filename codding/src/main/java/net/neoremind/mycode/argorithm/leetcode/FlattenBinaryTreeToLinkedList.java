@@ -116,5 +116,10 @@ public class FlattenBinaryTreeToLinkedList {
         System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         flatten(root);
         System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(root));
+
+        root = TreeNodeHelper.init("1,2,#");
+        System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(root));
+        flatten(root);
+        System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(root));
     }
 }

@@ -40,9 +40,10 @@ public class ReadNCharactersGivenRead4 {
                 endOfFile = true;
             }
             int length = Math.min(n - readBytes, size);
-            for (int i = 0; i < length; i++) {
-                buf[readBytes + i] = buffer[i];
-            }
+//            for (int i = 0; i < length; i++) {
+//                buf[readBytes + i] = buffer[i];
+//            }
+            System.arraycopy(buffer, 0, buf, readBytes, length);
             readBytes += length;
         }
         return readBytes;

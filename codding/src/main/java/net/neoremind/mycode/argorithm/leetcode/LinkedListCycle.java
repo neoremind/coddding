@@ -40,12 +40,20 @@ public class LinkedListCycle {
 
     @Test
     public void test() {
-        ListNode head = ListNodeHelper.build(new int[] {1, 2, 3, 4, 5});
+        ListNode head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5});
         System.out.println(head);
         assertThat(hasCycle(head), is(false));
 
-        head = ListNodeHelper.build(new int[] {1, 2, 3, 4, 5});
+        head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5});
         ListNode curr = head;
+        while (curr.next != null) {
+            curr = curr.next;
+        }
+        curr.next = head;
+        assertThat(hasCycle(head), is(true));
+
+        head = ListNodeHelper.build(new int[]{1});
+        curr = head;
         while (curr.next != null) {
             curr = curr.next;
         }

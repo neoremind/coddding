@@ -1780,6 +1780,17 @@ boolean searchMatrixDAC(int[][] matrix, int stX, int stY, int edX, int edY, int 
 return searchMatrixDAC(matrix, 0, 0, matrix.length, matrix[0].length, target);
 ```
 
+### [237. Delete Node in a Linked List](https://leetcode.com/problems/delete-node-in-a-linked-list/discuss/)
+
+非常简单的题目
+
+```
+public void deleteNode(ListNode node) {
+    node.val = node.next.val;
+    node.next = node.next.next;
+}
+```
+
 ### [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)
 
 M, Tree
@@ -2936,6 +2947,38 @@ M,Depth-first Search Breadth-first Search Graph Topological Sort
 6 = 2
 ```
 
+```       
+visit - 1, queue = 2
+                     2 ----------
+                     |          |
+                     \/         \/
+                     5 -------> 4 -------> 3 ------> 6
+                                |                  /|\
+                                 -------------------
+       
+visit - 2, queue = 5
+      
+                     5 -------> 4 -------> 3 ------> 6
+                                |                  /|\
+                                 -------------------
+       
+visit - 5, queue = 4
+      
+                                4 -------> 3 ------> 6
+                                |                  /|\
+                                 -------------------
+       
+visit - 4, queue = 3
+      
+                                 3 ------> 6
+       
+visit - 3, queue = 6
+      
+                                 6
+       
+visit - 6, queue = null
+```
+
 代码如下，标准标准教科书般的邻接表，广度优先搜索解法。
 ```
 // 邻接表（二维列表）以及初始化
@@ -2969,8 +3012,6 @@ while (queue.size() != 0) {
             queue.add(next);
             count++;
         }
-    }
-}
 
 return count == numCourses;
 ```

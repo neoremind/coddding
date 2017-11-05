@@ -106,6 +106,44 @@ HARD,
 最后的结果别忘记%10^9+7,dp要是long类型的。
 ```
 
+### [636. Exclusive Time of Functions](https://leetcode.com/problems/exclusive-time-of-functions/description/)
+```
+Input:
+n = 2
+logs = 
+["0:start:0",
+ "1:start:2",
+ "1:end:5",
+ "0:end:6"]
+Output:[3, 4]，每个index表示每个func的id，分别是0和1的执行CPU时间片段。
+```
+
+```
+if (n == 0 || logs == null || logs.size() == 0) {
+        return new int[]{};
+    }
+    Stack<Integer> stack = new Stack<>();
+    int[] res = new int[n];
+    int prevTime = 0;
+    for (String s : logs) {
+        String[] fields = s.split(":");
+        int funcId = Integer.parseInt(fields[0]);
+        String action = fields[1];
+        int time = Integer.parseInt(fields[2]);
+        if (!stack.isEmpty()) {
+            res[stack.peek()] += time - prevTime;
+        }
+        prevTime = time;
+        if (action.equals("start")) {
+            stack.push(funcId);
+        } else {
+            res[stack.pop()]++;
+            prevTime++;
+        }
+    }
+    return res;
+```
+
 ### [621. Task Scheduler](https://leetcode.com/problems/task-scheduler/description/)
 
 给一个task列表，然后一个interval N，相同的task必须至少有N个间隔的CPU周期，问最短需要多少时间间隔完成任务。
@@ -190,6 +228,30 @@ while (q.size()) {
         if (xx>=0 && xx<rows && yy>=0 && yy<clos && ret[xx][yy]==-1) {
             ret[xx][yy] = ret[x][y] + 1;
             q.push(point(xx,yy));
+```
+
+### [525. Contiguous Array](https://leetcode.com/problems/contiguous-array/description/)
+
+只包含0和1，找到最长的一段，包含数目相等的0和1.和Maximum Size Subarray Sum Equals k非常类似。
+```
+public int findMaxLength(int[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] == 0) nums[i] = -1;
+    }
+    Map<Integer, Integer> map = new HashMap<>();
+    map.put(0, -1);
+    int sum = 0;
+    int res = 0;
+    for (int i = 0; i < nums.length; i++) {
+        sum += nums[i];
+        if (map.containsKey(sum)) {
+            res = Math.max(res, i - map.get(sum));
+        } else {
+            map.put(sum, i);
+        }
+    }
+    return res;
+}
 ```
 
 ### [505. The Maze II]()  
@@ -366,6 +428,22 @@ public boolean dfs(int[][] maze, int m, int n, int[] start, int[] dest, boolean[
     return false;
 ```
 
+### [477. Total Hamming Distance](https://leetcode.com/problems/total-hamming-distance/description/)
+```
+int len = nums.length;
+int[] countOfOnes = new int[32];
+for (int i = 0; i < len; i++) {
+    for (int j = 0; j < 32; j++) {
+        countOfOnes[j] += (nums[i] >> j) & 1;
+    }
+}
+int sum = 0;
+for (int count: countOfOnes) {
+    sum += count * (len - count);
+}
+return sum;
+```
+
 ### [472. Concatenated Words](https://leetcode.com/problems/concatenated-words/description/)
 
 H, 复用word break。先排序，然后一个个加入preWords，word和PreWords做word break的测试
@@ -423,6 +501,31 @@ boolean helper(List<Integer> numbers, int desiredTotal, boolean[] used, Map<Stri
     return false;
 ```
 
+### [461. Hamming Distance](https://leetcode.com/problems/hamming-distance/description/)
+
+计算Hamming Distance
+方法1：
+```
+public int hammingDistance(int x, int y) {
+    int dis = 0;
+    for (int i = 0; i < 32; i++) {
+        int m = (x >>> (31 - i)) & 1;
+        int n = (y >>> (31 - i)) & 1;
+        if ((m ^ n) == 1) {
+            dis++;
+    return dis;
+}
+```
+方法2：
+```
+int xor = x ^ y, count = 0;
+for (int i = 0; i < 32; i++) {
+    count += (xor >> i) & 1;
+}
+return count;
+```
+
+
 ### [438. Find All Anagrams in a String](https://leetcode.com/problems/find-all-anagrams-in-a-string/description/)
 
 和Minimum Window Substring如初一折的模板，唯一不同的就是括起来的地方。
@@ -460,6 +563,69 @@ public List<Integer> findAnagrams(String s, String p) {
             }
             start++;
     return res;
+```
+
+### [419. Battleships in a Board](https://leetcode.com/problems/battleships-in-a-board/description/)
+
+和number of islands非常的相似，但是存在一个非常简单的O(MN)的解法。
+方法1：DFS，4个方法一条路走到黑。
+```
+public int countBattleships(char[][] board) {
+    int m = board.length;
+    int n = board[0].length;
+    boolean[][] visited = new boolean[m][n];
+    int count = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (board[i][j] == 'X' && !visited[i][j]) {
+                //System.out.println(i + " " + j);
+                visited[i][j] = true;
+                helper(board, visited, i + 1, j, m, n, 0);
+                helper(board, visited, i - 1, j, m, n, 1);
+                helper(board, visited, i, j + 1, m, n, 2);
+                helper(board, visited, i, j - 1, m, n, 3);
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+void helper(char[][] board, boolean[][] visited, int i, int j, int m, int n, int dir) {
+    if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] == '.' || visited[i][j]) {
+        return;
+    }
+    visited[i][j] = true;
+    if (dir == 0) {
+        helper(board, visited, i + 1, j, m, n, dir);
+    } else if (dir == 1) {
+        helper(board, visited, i - 1, j, m, n, dir);
+    } else if (dir == 2) {
+        helper(board, visited, i, j + 1, m, n, dir);
+    } else {
+        helper(board, visited, i, j - 1, m, n, dir);
+    }
+}
+```
+
+方法2：往上和左看，如果是X，则之前计算过，跳过即可。
+```
+int m = board.length;
+if (m==0) return 0;
+int n = board[0].length;
+
+int count=0;
+
+for (int i=0; i<m; i++) {
+    for (int j=0; j<n; j++) {
+        if (board[i][j] == '.') continue;
+        if (i > 0 && board[i-1][j] == 'X') continue;
+        if (j > 0 && board[i][j-1] == 'X') continue;
+        count++;
+    }
+}
+
+return count;
 ```
 
 ### [415. Add strings](https://leetcode.com/problems/add-strings/)
@@ -673,6 +839,102 @@ return res;
  * 复用valid parentheses题目的解法，加入判断非([{等符号的字符continue判断
  */
 public boolean isValid(String s) 
+```
+
+### [304. Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/discuss/)
+```
+Given matrix = [
+  [3, 0, 1, 4, 2],
+  [5, 6, 3, 2, 1],
+  [1, 2, 0, 1, 5],
+  [4, 1, 0, 1, 7],
+  [1, 0, 3, 0, 5]
+]
+
+查询区域
+2，0，1
+1，0，1
+0，3，0
+sumRegion(2, 1, 4, 3) -> 8
+
+其他如下
+sumRegion(1, 1, 2, 2) -> 11
+sumRegion(1, 2, 2, 4) -> 12
+```
+画图即可：
+```
+To calculate sums, the ideas as below
+
++-----+-+-------+     +--------+-----+     +-----+---------+     +-----+--------+
+|     | |       |     |        |     |     |     |         |     |     |        |
+|     | |       |     |        |     |     |     |         |     |     |        |
++-----+-+       |     +--------+     |     |     |         |     +-----+        |
+|     | |       |  =  |              |  +  |     |         |  -  |              |
++-----+-+       |     |              |     +-----+         |     |              |
+|               |     |              |     |               |     |              |
+|               |     |              |     |               |     |              |
++---------------+     +--------------+     +---------------+     +--------------+
+
+   sums[i][j]      =    sums[i-1][j]    +     sums[i][j-1]    -   sums[i-1][j-1]   +  matrix[i-1][j-1]
+
+So, we use the same idea to find the specific area's sum.
+
++---------------+   +--------------+   +---------------+   +--------------+   +--------------+
+|               |   |         |    |   |   |           |   |         |    |   |   |          |
+|   (r1,c1)     |   |         |    |   |   |           |   |         |    |   |   |          |
+|   +------+    |   |         |    |   |   |           |   +---------+    |   +---+          |
+|   |      |    | = |         |    | - |   |           | - |      (r1,c2) | + |   (r1,c1)    |
+|   |      |    |   |         |    |   |   |           |   |              |   |              |
+|   +------+    |   +---------+    |   +---+           |   |              |   |              |
+|        (r2,c2)|   |       (r2,c2)|   |   (r2,c1)     |   |              |   |              |
++---------------+   +--------------+   +---------------+   +--------------+   +--------------+
+```
+
+注意要初始化一个len+1的dp二维数组。
+```
+class NumMatrix {
+    int[][] dp;
+    public NumMatrix(int[][] matrix) {
+        if (matrix.length == 0) {
+            return;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + matrix[i - 1][j - 1];
+    }
+
+    public int sumRegion(int row1, int col1, int row2, int col2) {
+        if (dp == null) {
+            return 0;
+        int iMin = Math.min(row1, row2) + 1;
+        int iMax = Math.max(row1, row2) + 1;
+        int jMin = Math.min(col1, col2) + 1;
+        int jMax = Math.max(col1, col2) + 1;
+        return dp[iMax][jMax] - dp[iMin - 1][jMax] - dp[iMax][jMin - 1] + dp[iMin - 1][jMin - 1];
+    }
+}
+```
+
+### [303. Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/description/)
+
+```
+class NumArray {
+    int[] sum;
+    public NumArray(int[] nums) {
+        sum = new int[nums.length + 1];
+        if (nums.length != 0) {
+            for (int i = 1; i <= nums.length; i++) {
+                sum[i] = sum[i - 1] + nums[i - 1];
+    }
+
+    public int sumRange(int i, int j) {
+        if (i == 0) {
+            return sum[j + 1];
+        return sum[j + 1] - sum[i];
+    }
+}
 ```
 
 ### [297. Serialize and Deserialize Binary Tree](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/)
@@ -1035,6 +1297,37 @@ public int read(char[] buf, int n) {
         readBytes += length;
     }
     return readBytes;
+}
+```
+
+### [138. Copy List with Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/description/)
+
+方法1：使用map存储老node->新的node的映射。时间O(N)，空间O(N)
+
+方法2：老node中间插入新的node，空间会优化。
+ 
+```
+public RandomListNode copyRandomList(RandomListNode head) {
+  if (head == null) return null;
+  
+  Map<RandomListNode, RandomListNode> map = new HashMap<RandomListNode, RandomListNode>();
+  
+  // loop 1. copy all the nodes
+  RandomListNode node = head;
+  while (node != null) {
+    map.put(node, new RandomListNode(node.label));
+    node = node.next;
+  }
+  
+  // loop 2. assign next and random pointers
+  node = head;
+  while (node != null) {
+    map.get(node).next = map.get(node.next);
+    map.get(node).random = map.get(node.random);
+    node = node.next;
+  }
+  
+  return map.get(head);
 }
 ```
 

@@ -55,6 +55,31 @@ public class InsertInterval {
         return result;
     }
 
+    public List<Interval> insert2(List<Interval> intervals, Interval newInterval) {
+        if (intervals.size() <= 1) {
+            return intervals;
+        }
+        List<Interval> res = new ArrayList<Interval>();
+        Collections.sort(intervals, (a, b) -> Integer.compare(a.start, b.start));
+        boolean hasInsert = false;
+        for (Interval i : intervals) {
+            if (hasInsert || newInterval.start > i.end) {
+                res.add(i);
+            } else if (newInterval.end < i.start) {
+                res.add(newInterval);
+                hasInsert = true;
+                res.add(i);
+            } else {
+                newInterval.start = Math.min(newInterval.start, i.start);
+                newInterval.end = Math.max(newInterval.end, i.end);
+            }
+        }
+        if (!hasInsert) {
+            res.add(newInterval);
+        }
+        return res;
+    }
+
     @Test
     public void test() {
         List<Interval> intervals =

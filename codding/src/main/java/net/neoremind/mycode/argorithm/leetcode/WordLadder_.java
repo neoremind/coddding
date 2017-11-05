@@ -1,21 +1,13 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
-import com.google.common.collect.Sets;
+import java.util.*;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation
@@ -36,32 +28,54 @@ import com.google.common.collect.Sets;
  * Return 0 if there is no such transformation sequence.
  * All words have the same length.
  * All words contain only lowercase alphabetic characters.
+ * <p>
+ * <p>
+ * //TODO    TLE
  *
  * @author zhangxu
  * @see <a href="https://leetcode.com/problems/word-ladder/">word-ladder</a>
  */
-// may have problem?
-public class WordLadder {
+public class WordLadder_ {
 
     @Test
     public void test() {
-        Set<String> wordList = Sets.newHashSet("hot", "dot", "dog", "lot", "log");
+        /**
+         * <pre>
+         *     hit -> hot ------> dot -> dog ----->cog
+         *                   |                |
+         *                    --> lot -> log --
+         * </pre>
+         */
+        List<String> wordList = Lists.newArrayList("hot", "dot", "dog", "lot", "log", "cog");
         assertThat(ladderLength("hit", "cog", wordList), is(5));
         assertThat(ladderLength("hyy", "cog", wordList), is(0));
         assertThat(ladderLength("hit", "cxx", wordList), is(0));
 
-        wordList = Sets.newHashSet("hot");
+        /**
+         * <pre>
+         *            ------------------------------
+         *            |                            |
+         *     hit -> hot ------> dot ------------->cot
+         *                   |                 |
+         *                    --> lot -> bot --
+         * </pre>
+         */
+        wordList = Lists.newArrayList("hot", "dot", "lot", "bot", "cot");
+        assertThat(ladderLength("hit", "cot", wordList), is(3));
+
+        wordList = Lists.newArrayList("hot");
         assertThat(ladderLength("hot", "hot", wordList), is(0));
 
-        wordList = Sets.newHashSet("hot", "ted");
+        wordList = Lists.newArrayList("hot", "ted");
         assertThat(ladderLength("hot", "ted", wordList), is(0));
 
-        wordList = Sets.newHashSet("hot", "dot");
+        wordList = Lists.newArrayList("hot", "dot");
         assertThat(ladderLength("hot", "dot", wordList), is(2));
 
         long start = System.currentTimeMillis();
         wordList =
-                Sets.newHashSet("dose", "ends", "dine", "jars", "prow", "soap", "guns", "hops", "cray", "hove", "ella",
+                Lists.newArrayList("dose", "ends", "dine", "jars", "prow", "soap", "guns", "hops", "cray", "hove",
+                        "ella",
                         "hour", "lens", "jive", "wiry", "earl", "mara", "part", "flue", "putt", "rory", "bull", "york",
                         "ruts", "lily", "vamp", "bask", "peer", "boat", "dens", "lyre", "jets", "wide", "rile", "boos",
                         "down", "path", "onyx", "mows", "toke", "soto", "dork", "nape", "mans", "loin", "jots", "male",
@@ -94,72 +108,59 @@ public class WordLadder {
         System.out.println((System.currentTimeMillis() - start));
     }
 
-    public int ladderLength(String beginWord, String endWord, Set<String> wordList) {
-        if (beginWord.endsWith(endWord)) {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        // assume word is not empty
+        if (beginWord.equals(endWord)) {
             return 0;
         }
-        wordList.add(endWord);
-        Set<String> visited = new HashSet<>();
         Map<String, Vertex> map = new HashMap<>();
-
-        Queue<String> queue = new LinkedList<>();
-        queue.add(beginWord);
-        visited.add(beginWord);
-        map.put(beginWord, new Vertex(beginWord));
-
-        while (!queue.isEmpty()) {
-            String currWord = queue.poll();
-            char[] chs = currWord.toCharArray();
-
-            for (int i = 0; i < currWord.length(); i++) {
-                char old = chs[i];
-                for (char j = 'a'; j < 'z'; j++) {
-                    chs[i] = j;
-                    String newWord = String.valueOf(chs);
-                    if (!visited.contains(newWord) && wordList.contains(newWord)) {
-                        queue.add(newWord);
-                        Vertex v = new Vertex(newWord);
-                        v.prev = map.get(currWord);
-                        map.put(newWord, v);
-                        visited.add(newWord);
+        Queue<Vertex> q = new LinkedList<>();
+        q.add(new Vertex(beginWord, 1));
+        map.put(beginWord, q.peek());
+        while (!q.isEmpty()) {
+            Vertex v = q.poll();
+            //System.out.println(v);
+            String word = v.word;
+            int level = v.level;
+            char[] arr = word.toCharArray();
+            for (int i = 0; i < word.length(); i++) {
+                char old = arr[i];
+                for (int j = 0; j < 26; j++) {
+                    arr[i] = (char) ('a' + j);
+                    String newWord = new String(arr);
+                    if (!map.containsKey(newWord) && wordList.contains(newWord)) {
+                        Vertex newVertex = new Vertex(newWord, level + 1);
+                        newVertex.prev = v;
+                        q.offer(newVertex);
+                        map.put(newWord, newVertex);
                     }
-                    chs[i] = old;
                 }
+                arr[i] = old;
             }
         }
-
-        System.out.println(map);
         if (!map.containsKey(endWord)) {
             return 0;
         }
-
-        LinkedList<String> path = new LinkedList<>();
-        findPath(map.get(endWord), path);
-        System.out.println(path);
-
-        return path.size();
-    }
-
-    private void findPath(Vertex vertex, LinkedList<String> path) {
-        path.addFirst(vertex.word);
-        if (vertex.prev == null) {
-            return;
-        }
-        findPath(vertex.prev, path);
+        return map.get(endWord).level;
     }
 
     class Vertex {
         String word;
+        int level;
         Vertex prev;
-        int dist = Integer.MAX_VALUE;
 
-        public Vertex(String word) {
+        public Vertex(String word, int level) {
             this.word = word;
+            this.level = level;
         }
 
         @Override
         public String toString() {
-            return word + "<-" + (prev == null ? "null" : prev.word);
+            return "Vertex{" +
+                    "word='" + word + '\'' +
+                    ", level=" + level +
+                    ", prev=" + prev +
+                    '}';
         }
     }
 

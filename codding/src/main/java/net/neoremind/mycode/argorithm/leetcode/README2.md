@@ -25,6 +25,28 @@ public int numSubarrayProductLessThanK(int[] nums, int k) {
 }
 ```
 
+### [695. Max Area of Island](https://leetcode.com/problems/max-area-of-island/discuss/)
+
+[200. Number of Islands](https://leetcode.com/problems/number-of-islands/)的延伸题目。
+
+```
+public int maxAreaOfIsland(int[][] grid) {
+    int max_area = 0;
+    for(int i = 0; i < grid.length; i++)
+        for(int j = 0; j < grid[0].length; j++)
+            if(grid[i][j] == 1)max_area = Math.max(max_area, AreaOfIsland(grid, i, j));
+    return max_area;
+}
+
+public int AreaOfIsland(int[][] grid, int i, int j){
+    if( i >= 0 && i < grid.length && j >= 0 && j < grid[0].length && grid[i][j] == 1){
+        grid[i][j] = 0;
+        return 1 + AreaOfIsland(grid, i+1, j) + AreaOfIsland(grid, i-1, j) + AreaOfIsland(grid, i, j-1) + AreaOfIsland(grid, i, j+1);
+    }
+    return 0;
+}
+```
+
 ### [679. 24 Game](https://leetcode.com/problems/24-game/description/)
 
 H, DFS, 用`*, /, +, -, (, ) `to get the value of 24.
@@ -501,6 +523,57 @@ boolean helper(List<Integer> numbers, int desiredTotal, boolean[] used, Map<Stri
     return false;
 ```
 
+### [463. Island Perimeter](https://leetcode.com/problems/island-perimeter/discuss/)
+
+算岛的周长，复用[200. Number of Islands](https://leetcode.com/problems/number-of-islands/)的DFS方法。
+```
+public int islandPerimeter(int[][] grid) {
+    if (grid == null) {
+        return 0;
+    int count = 0;
+    int rows = grid.length;
+    if (rows == 0) { //corner case
+        return 0;
+    int cols = grid[0].length;
+    boolean[][] visited = new boolean[rows][cols];
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (grid[i][j] == 1 && !visited[i][j]) {
+                dfs(grid, visited, i, j, rows, cols);
+                count++;
+    return x;
+
+int x = 0;
+
+void dfs(int[][] grid, boolean[][] visited, int i, int j, int rows, int cols) {
+    if (i < 0 || j < 0 || i >= rows || j >= cols || grid[i][j] == 0) {
+        x++;
+        return;
+    if (visited[i][j]) {
+        return;
+    visited[i][j] = true;
+    dfs(grid, visited, i + 1, j, rows, cols);
+    dfs(grid, visited, i, j + 1, rows, cols);
+    dfs(grid, visited, i - 1, j, rows, cols);
+    dfs(grid, visited, i, j - 1, rows, cols);
+}
+```
+
+一个更简单的O(N*M)的解法是：
+loop over the matrix and count the number of islands;
+if the current dot is an island, count if it has any right neighbour or down neighbour;
+the result is islands * 4 - neighbours * 2
+```
+int islands = 0, neighbours = 0;
+for (int i = 0; i < grid.length; i++) {
+    for (int j = 0; j < grid[i].length; j++) {
+        if (grid[i][j] == 1) {
+            islands++; // count islands
+            if (i < grid.length - 1 && grid[i + 1][j] == 1) neighbours++; // count down neighbours
+            if (j < grid[i].length - 1 && grid[i][j + 1] == 1) neighbours++; // count right neighbours
+return islands * 4 - neighbours * 2;
+```
+
 ### [461. Hamming Distance](https://leetcode.com/problems/hamming-distance/description/)
 
 计算Hamming Distance
@@ -805,11 +878,11 @@ H, 删除"最少的"括号
 
 BFS解法，每移除一个括号都看做一种状态，实际就是一个N!个可能性的树搜索问题。
 ```
-()())()
-|        \         \ \ \ \ \ \
-)())()  (())()  .....
-|     \ 
-())() )))()
+         ()())()
+        /        \       \ \ \ \ \ \
+      )())()    (())()  .....
+        |     \ 
+      ())() )))()
 ```
 
 ```
@@ -839,6 +912,44 @@ return res;
  * 复用valid parentheses题目的解法，加入判断非([{等符号的字符continue判断
  */
 public boolean isValid(String s) 
+```
+
+BFS解法，非常不推荐，因为会不断的往下走，题目的要求是删除"最少的"使字符串合法。
+
+```
+public List<String> removeInvalidParenthesesDfs(String s) {
+    List<String> res = new ArrayList<>();
+    if (s == null || s.length() == 0) {
+        res.add("");
+        return res;
+    }
+
+    Set<String> visited = new HashSet<>();
+    dfs(s, res, visited);
+    if (res.isEmpty()) {
+        return res;
+    int max = -1;
+    for (String str: res) {
+        max = Math.max(max, str.length());
+    final int maxLen = max;
+    return res.stream().filter(str -> str.length() == maxLen).collect(Collectors.toList());
+}
+
+void dfs(String s, List<String> res, Set<String> visited) {
+    if (visited.contains(s)) {
+        return;
+    visited.add(s);
+    if (s.length() == 0) {
+        res.add(s);
+        return;
+    } else if (isValid(s)) {
+        res.add(s);
+    } else {
+        for (int k = 0; k < s.length(); k++) {
+            if (s.charAt(k) != '(' && s.charAt(k) != ')') continue;
+            String str = s.substring(0, k) + s.substring(k + 1);
+            dfs(str, res, visited);
+        }
 ```
 
 ### [304. Range Sum Query 2D - Immutable](https://leetcode.com/problems/range-sum-query-2d-immutable/discuss/)
@@ -1202,6 +1313,43 @@ while (m < n) {
     }
 }
 return m;
+```
+
+### [273. Integer to English Words](https://leetcode.com/problems/integer-to-english-words/description/)
+```
+String[] less20 = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+        "Eighteen", "Nineteen"};
+String[] tens = {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+String[] thousands = {"", "Thousand", "Million", "Billion"};
+
+
+public String numberToWords(int num) {
+    if (num == 0) {
+        return "Zero";
+    int i = 0;
+    String str = "";
+    while (num > 0) {
+        if (num % 1000 != 0) {
+            str = helper(num % 1000) + thousands[i] + " " + str;
+        }
+        num /= 1000;
+        i++;
+    return str.trim();
+}
+
+public String helper(int num) {
+    if (num == 0) {
+        return "";
+    } else if (num < 20) {
+        return less20[num % 20] + " ";
+    } else if (num >= 20 && num < 100) {
+        return tens[num / 10] + " " + helper(num % 10);
+    } else if (num >= 100 && num < 1000) {
+        return less20[num / 100] + " Hundred " + helper(num % 100);
+    }
+    throw new RuntimeException("should not go here");
+}
 ```
 
 ### [203. Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/description/)

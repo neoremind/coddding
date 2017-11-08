@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -55,6 +56,68 @@ public class RemoveInvalidParentheses {
             }
         }
         return res;
+    }
+
+    public List<String> removeInvalidParenthesesDfs(String s) {
+        List<String> res = new ArrayList<>();
+        if (s == null || s.length() == 0) {
+            res.add("");
+            return res;
+        }
+
+        Set<String> visited = new HashSet<>();
+        dfs(s, res, visited);
+        if (res.isEmpty()) {
+            return res;
+        }
+        int max = -1;
+        for (String str: res) {
+            max = Math.max(max, str.length());
+        }
+        final int maxLen = max;
+        return res.stream().filter(str -> str.length() == maxLen).collect(Collectors.toList());
+    }
+
+    void dfs(String s, List<String> res, Set<String> visited) {
+        if (visited.contains(s)) {
+            return;
+        }
+        visited.add(s);
+        if (s.length() == 0) {
+            res.add(s);
+            return;
+        } else if (isValid(s)) {
+            res.add(s);
+        } else {
+            for (int k = 0; k < s.length(); k++) {
+                if (s.charAt(k) != '(' && s.charAt(k) != ')') continue;
+                String str = s.substring(0, k) + s.substring(k + 1);
+                dfs(str, res, visited);
+            }
+        }
+    }
+
+    public boolean isValid3(String s) {
+        if (s == null || s.length() == 0) return true;
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c != '(' && c != ')') {
+                continue;
+            }
+            if (c == '(') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                char top = stack.pop();
+                if (top != '(') {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
     }
 
     /**

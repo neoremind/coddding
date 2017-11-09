@@ -89,6 +89,20 @@ private boolean solve(ArrayList<Double> nums) {
 }
 ```
 
+### [674. Longest continuous increasing subsequence](https://leetcode.com/problems/longest-continuous-increasing-subsequence/discuss/)
+
+和最长递增子序列(Longest Increasing Subsequence,LIS)[OK-leetcode300]比，要求连续，不用DP。
+```
+public int findLengthOfLCIS(int[] nums) {
+    int res = 0, cnt = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (i == 0 || nums[i - 1] < nums[i]) res = Math.max(res, ++cnt);
+        else cnt = 1;
+    }
+    return res;
+}
+```
+
 ### [639. Decode Ways II](https://leetcode.com/problems/decode-ways-ii/description/)
 
 HARD,
@@ -230,6 +244,30 @@ for (int i = 0; i < nums.length; i++) {
         result += map.get(sum - k);
     map.put(sum, map.getOrDefault(sum, 0) + 1);
 return result;
+```
+
+### [543. Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/discuss/)
+
+二叉树的直径。For every node, length of longest path which pass it = MaxDepth of its left subtree + MaxDepth of its right subtree.
+
+```
+public int diameterOfBinaryTree2(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    int dia = depth(root.left) + depth(root.right);
+    int ldia = diameterOfBinaryTree(root.left);
+    int rdia = diameterOfBinaryTree(root.right);
+    return Math.max(dia, Math.max(ldia, rdia));
+
+}
+
+public int depth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    return 1 + Math.max(depth(root.left), depth(root.right));
+}
 ```
 
 ### [542. 01 Matrix](https://leetcode.com/problems/01-matrix/description/)
@@ -742,6 +780,47 @@ if (carry > 0) {
     sb.append(carry);
 }
 return sb.reverse().toString();
+```
+
+### [398. RandomPickIndex](https://leetcode.com/problems/random-pick-index/discuss/)
+
+蓄水池算法（Reservoir Sampling）Simple Reservoir Sampling solution。 
+
+```
+//stream代表数据流 
+//reservoir代表返回长度为k的池塘
+//从stream中取前k个放入reservoir；
+   for ( int i = 1; i < k; i++)
+       reservoir[i] = stream[i];
+   for (i = k; stream != null; i++) {
+       p = random(0, i);
+       if (p < k)
+           reservoir[p] = stream[i];
+   return reservoir;
+```
+   
+```
+int[] nums;
+Random rnd;
+
+public RandomPickIndex(int[] nums) {
+    this.nums = nums;
+    this.rnd = new Random();
+}
+
+public int pick(int target) {
+    int result = -1;
+    int count = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != target)
+            continue;
+        // 左开右闭
+        if (rnd.nextInt(++count) == 0)
+            result = i;
+    }
+
+    return result;
+}
 ```
 
 ### [394. Decode String](https://leetcode.com/problems/decode-string/description/)
@@ -1349,6 +1428,70 @@ public String helper(int num) {
         return less20[num / 100] + " Hundred " + helper(num % 100);
     }
     throw new RuntimeException("should not go here");
+}
+```
+
+### [270. Closest Binary Search Tree Value]()
+
+方法1：in-order遍历，一个一个的比较，维护一个最小值，不停的更新，直到找到临界点。 
+
+方法2：下面这种递归的写法和上面迭代的方法思路相同，都是根据二分搜索树的性质来优化查找，但是递归的写法用的是回溯法，先遍历到叶节点，然后一层一层的往回走，把最小值一层一层的运回来 
+
+方法3：和方法2类似的二分思想，实际我们可以利用二分搜索树的特点(左<根<右) 来快速定位，由于根节点是中间值，我们在往下遍历时，我们根据目标值和根节点的值大小关系来比较，如果目标值小于节点值，则我们应该找更小的值，于是我们到左子树去找，反之我们去右子树找
+```
+int closestValue(TreeNode root, double target) {
+    if (root == null) {
+        return 0;
+    }
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode curr = root;
+    boolean flag = false;
+    TreeNode pre = null;
+    while (curr != null || !stack.isEmpty()) {
+        if (curr != null) {
+            stack.push(curr);
+            curr = curr.left;
+        } else {
+            TreeNode node = stack.pop();
+            if (flag) {
+                if (target >= pre.val && target <= node.val) {
+                    return Math.abs(target - pre.val) < Math.abs(target - node.val) ? pre.val : node.val;
+                }
+            } else {
+                flag = true;
+            }
+            pre = node;
+            curr = node.right;
+        }
+    }
+    return pre.val;
+}
+
+int closestValue2(TreeNode root, double target) {
+    if (root == null) {
+        return 0;
+    }
+    TreeNode child = root.val < target ? root.right : root.left;
+    if (child == null) {
+        return root.val;
+    }
+    int childVal = closestValue2(child, target);
+    return Math.abs(target - childVal) < Math.abs(target - root.val) ? childVal : root.val;
+}
+
+int closestValue3(TreeNode root, double target) {
+    int ret = root.val;
+    while (root != null) {
+        if (Math.abs(target - root.val) < Math.abs(target - ret)) {
+            ret = root.val;
+        }
+        if (root.val > target) {
+            root = root.left;
+        } else {
+            root = root.right;
+        }
+    }
+    return ret;
 }
 ```
 

@@ -142,6 +142,37 @@ HARD,
 最后的结果别忘记%10^9+7,dp要是long类型的。
 ```
 
+### [637. Average of Levels in Binary Tree](https://leetcode.com/problems/average-of-levels-in-binary-tree/description/)
+
+写BFS一定要数量，注意别忘记
+```
+if (node.left != null) {
+    q.add(node.left);
+}
+```
+还有使用long来叠加，避免溢出。
+```
+Queue<TreeNode> q = new LinkedList<>();
+q.add(root);
+while (!q.isEmpty()) {
+    long sum = 0L;
+    int size = q.size();
+    for (int i = 0; i < size; i++) {
+        TreeNode node = q.poll();
+        sum += node.val;
+        if (node.left != null) {
+            q.add(node.left);
+        }
+        if (node.right != null) {
+            q.add(node.right);
+        }
+    }
+    double res = sum * 1.0 / size;
+    ret.add(res);
+}
+return ret;
+```
+
 ### [636. Exclusive Time of Functions](https://leetcode.com/problems/exclusive-time-of-functions/description/)
 ```
 Input:
@@ -1367,6 +1398,33 @@ private void dfs(int[][] rooms, int i, int j, int m, int n, int step) {
 } 
 ```
 
+### [285. inorder successor in bst]()
+```
+TreeNode successor(TreeNode root, TreeNode p) {
+    if (root == null) {
+        return null;
+    }
+    if (root.val <= p.val) {
+        return successor(root.right, p);
+    } else {
+        TreeNode left = successor(root.left, p);
+        return left != null ? left : root;
+    }
+}
+
+TreeNode predecessor(TreeNode root, TreeNode p) {
+    if (root == null) {
+        return null;
+    }
+    if (root.val >= p.val) {
+        return predecessor(root.left, p);
+    } else {
+        TreeNode right = predecessor(root.right, p);
+        return right != null ? right : root;
+    }
+}
+```
+
 ### [280. Wiggle Sort]()
 
 方法1：排序，然后取2个对调，步长+2
@@ -1495,6 +1553,82 @@ int closestValue3(TreeNode root, double target) {
 }
 ```
 
+### [261. graph valid tree]()
+判断输入的边是否能构成一个树，我们需要确定两件事：
+* 这些边是否构成环路，如果有环则不能构成树
+* 这些边是否能将所有节点连通，如果有不能连通的节点则不能构成树
+
+```
+boolean validTree(int n, int[][] nodes) {
+    UF uf = new UF(n);
+    for (int i = 0; i < nodes.length; i++) {
+        int x = uf.find(nodes[i][0]);
+        int y = uf.find(nodes[i][1]);
+        if (x == y) {
+            return false;
+        uf.union(nodes[i][0], nodes[i][1]);
+    }
+    return uf.cnt == 0;
+}
+
+static class UF {
+    int[] w;
+    int[] a;
+    int cnt = 0;
+
+    public UF(int n) {
+        w = new int[n];
+        a = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = i;
+            w[i] = 1;
+        }
+        cnt = n - 1;
+    }
+
+    int find(int p) {
+        while (p != a[p]) {
+            p = a[p];
+        }
+        return p;
+    }
+
+    void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ) {
+            return;
+        } else {
+            if (w[rootP] < w[rootQ]) {
+                a[rootP] = rootQ;
+                w[rootQ] += w[rootP];
+            } else {
+                a[rootQ] = rootP;
+                w[rootP] += w[rootQ];
+            }
+        }
+        cnt--;
+    }
+}
+```
+
+### [238. Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/description/)
+除自己外的其他元素的乘积，O(N)时间复杂度解决。
+```
+int n = nums.length;
+int[] res = new int[n];
+res[0] = 1;
+for (int i = 1; i < n; i++) {
+    res[i] = res[i - 1] * nums[i - 1];
+}
+int right = 1;
+for (int i = n - 1; i >= 0; i--) {
+    res[i] *= right;
+    right *= nums[i];
+}
+return res;
+```
+
 ### [203. Remove Linked List Elements](https://leetcode.com/problems/remove-linked-list-elements/description/)
 
 E, 
@@ -1532,6 +1666,31 @@ private ListNode helper(ListNode node, int val) {
         }
         node.next = temp;
         return helper(temp, val);
+```
+
+### [161. One Edit Distance]()
+
+```
+public boolean isOneEditDistance(String s, String t) {
+    if (Math.abs(s.length() - t.length()) > 1) {
+        return false;
+    if (s.length() == t.length()) {
+        int diff = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                diff++;
+        return diff == 1;
+    } else if (s.length() > t.length()) {
+        return helper(s, t);
+    } else {
+        return helper(t, s);
+
+ * s is longer
+private boolean helper(String s, String t) {
+    for (int i = 0; i < t.length(); i++) {
+        if (s.charAt(i) != t.charAt(i)) {
+            return s.substring(i + 1).equals(t.substring(i));
+    return true;
 ```
 
 ### [158. Read N Characters Given Read4 II - Call multiple times]()

@@ -70,6 +70,43 @@ public class WordSearch {
         return isAnyOk;
     }
 
+    public boolean exist2(char[][] board, String word) {
+        if (word == null || word.length() == 0) return true;
+        int row = board.length;
+        int col = board[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                boolean[][] visited = new boolean[row][col];
+                if (dfs2(board, visited, word, row, col, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    int[][] d = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    boolean dfs2(char[][] board, boolean[][] visited, String word, int row, int col, int i, int j, int index) {
+        if (index == word.length()) {
+            return true;
+        }
+        if (i < 0 || i >= row || j < 0 || j >= col || visited[i][j]) {
+            return false;
+        }
+        if (word.charAt(index) != board[i][j]) {
+            return false;
+        }
+        visited[i][j] = true;
+        for (int k = 0; k < 4; k++) {
+            if (dfs2(board, visited, word, row, col, i + d[k][0], j + d[k][1], index + 1)) {
+                return true;
+            }
+        }
+        visited[i][j] = false;
+        return false;
+    }
+
     @Test
     public void test() {
         char[][] board = new char[][] {

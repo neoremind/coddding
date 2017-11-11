@@ -41,6 +41,13 @@ public class BinaryTreeMaximumPathSum {
         return max;
     }
 
+    /**
+     * 对于一个节点，有下面几种可能：
+     * 1）root+left取或者0。
+     * 2）root+right取或者0。
+     * 返回大的就是经过这个节点某一条路的最大值。
+     * 全局的最大值需要是root+left取或者0+right取或者0。
+     */
     private int maxPathDown(TreeNode node) {
         if (node == null) {
             return 0;
@@ -51,8 +58,52 @@ public class BinaryTreeMaximumPathSum {
         return Math.max(left, right) + node.val;
     }
 
+    int min;
+
+    public int minPathSum(TreeNode root) {
+        min = Integer.MAX_VALUE;
+        minPathDown(root);
+        return min;
+    }
+
+    /**
+     * 和{@link #maxPathDown(TreeNode)}对应
+     */
+    private int minPathDown(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        int left = Math.min(0, minPathDown(node.left));
+        int right = Math.min(0, minPathDown(node.right));
+        min = Math.min(min, left + right + node.val);
+        return Math.min(left, right) + node.val;
+    }
+
+    int maxLeaf2Leaf;
+
+    public int maxLeaf2Leaf(TreeNode root) {
+        maxLeaf2Leaf = Integer.MIN_VALUE;
+        maxLeaf2LeafDown(root);
+        return maxLeaf2Leaf;
+    }
+
+    private int maxLeaf2LeafDown(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        int left = maxLeaf2LeafDown(node.left);
+        int right = maxLeaf2LeafDown(node.right);
+        maxLeaf2Leaf = Math.max(maxLeaf2Leaf, left + right + node.val);
+        return Math.max(left, right) + node.val;
+    }
+
     /**
      * 求从根到底最长的路径
+     * <p>
+     * 对于一个节点，有下面几种可能：
+     * 1）算root+left。
+     * 2）算root+right.
+     * 返回大的就行。
      */
     public int maxSinglyPathSum(TreeNode root) {
         if (root == null) {
@@ -61,6 +112,31 @@ public class BinaryTreeMaximumPathSum {
         int left = maxSinglyPathSum(root.left);
         int right = maxSinglyPathSum(root.right);
         return root.val + Math.max(left, right);
+    }
+
+
+    /**
+     * find the “maximum sum” subtree sum in the binary tree
+     * https://coderisland.wordpress.com/2013/05/13/given-a-binary-tree-find-the-maximum-sum-of-a-subtree-in-the
+     * -binary-tree/
+     * <p>
+     * 对于一个节点，有下面几种可能：
+     * 1）不算root。
+     * 2）算root。
+     * 3）算root+left+right
+     * 4）算root+left。
+     * 5）算root+right.
+     * 上面5个找最大的就行。
+     */
+    public int maxSubTreeSum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = maxSubTreeSum(root.left);
+        int right = maxSubTreeSum(root.right);
+        int sum = root.val + left + right;
+        int res = Math.max(0, Math.max(root.val, Math.max(sum, Math.max(root.val + left, root.val + right))));
+        return res;
     }
 
     /**
@@ -94,20 +170,43 @@ public class BinaryTreeMaximumPathSum {
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         assertThat(maxPathSum(root), is(14));
         System.out.println(maxSinglyPathSum(root));
+        System.out.println(maxSubTreeSum(root));
 
         root = TreeNodeHelper.init("4,-2,6,1,3,-5,7");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         assertThat(maxPathSum(root), is(18));
         System.out.println(maxSinglyPathSum(root));
+        System.out.println(maxSubTreeSum(root));
 
         root = TreeNodeHelper.init("4,-2,6,1,-9,-5,7");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
         assertThat(maxPathSum(root), is(17));
         System.out.println(maxSinglyPathSum(root));
+        System.out.println(maxSubTreeSum(root));
 
         root = TreeNodeHelper.init("6,4,9,-2,#,-7,-10,1,3,#,8");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
-        assertThat(maxPathSum(root), is(21));
-        System.out.println(maxSinglyPathSum(root));
+        assertThat(maxPathSum(root), is(21)); //21
+        System.out.println(maxSinglyPathSum(root));  //16
+        System.out.println(maxSubTreeSum(root));  //22
+        System.out.println(maxLeaf2Leaf(root));  //21
+        System.out.println(minPathSum(root));  //-10
+
+
+        /**
+         * <pre>
+         *           6
+         *         /   \
+         *        4     -9
+         *       /     / \
+         *      -2     -7   -10
+         *     / \     \
+         *    1  3     8
+         * </pre>
+         */
+        root = TreeNodeHelper.init("6,4,-9,-2,#,-7,-10,1,3,#,8");
+        System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
+        System.out.println(minPathSum(root)); //-26
+        System.out.println(maxLeaf2Leaf(root)); //8
     }
 }

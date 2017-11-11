@@ -65,6 +65,19 @@ public class RemoveDuplicatesFromSortedArray {
         return slow;
     }
 
+    public int removeDuplicate2(int[] nums) {
+        if (nums.length < 2) {
+            return 1;
+        }
+        int idx = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[idx++] = nums[i];
+            }
+        }
+        return idx;
+    }
+
     @Test
     public void test() {
         int[] nums = new int[] {1, 2, 3, 4, 5, 6};

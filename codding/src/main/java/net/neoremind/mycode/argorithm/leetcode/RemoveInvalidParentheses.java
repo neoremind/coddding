@@ -71,7 +71,7 @@ public class RemoveInvalidParentheses {
             return res;
         }
         int max = -1;
-        for (String str: res) {
+        for (String str : res) {
             max = Math.max(max, str.length());
         }
         final int maxLen = max;
@@ -162,12 +162,62 @@ public class RemoveInvalidParentheses {
         return count == 0;
     }
 
+    /**
+     * http://www.1point3acres.com/bbs/thread-192179-1-1.html
+     */
+    public String addToValid(String s) {
+        s = delR(s);
+        System.out.println(s);
+        s = delL(s);
+        System.out.println("------");
+        return s;
+    }
+
+    private String delR(String s) {
+        int l = 0;
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            sb.append(c);
+            if (c == '(') {
+                l++;
+            } else if (c == ')') {
+                if (l > 0) l--;
+                else {
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+    private String delL(String s) {
+        int l = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = s.length() - 1; i >= 0; i--) {
+            char c = s.charAt(i);
+            sb.insert(0, c);
+            if (c == ')') {
+                l++;
+            } else if (c == '(') {
+                if (l > 0) l--;
+                else sb.deleteCharAt(0);
+            }
+        }
+        return sb.toString();
+    }
+
     @Test
     public void test() {
         assertThat(removeInvalidParentheses("()())()"), is(Lists.newArrayList("(())()", "()()()")));
         System.out.println("======");
         assertThat(removeInvalidParentheses(")(f"), is(Lists.newArrayList("f")));
         assertThat(removeInvalidParentheses(""), is(Lists.newArrayList("")));
+
+        System.out.println(addToValid("(a)()"));
+        System.out.println(addToValid("((bc)"));
+        System.out.println(addToValid(")))a(("));
+        System.out.println(addToValid("(a(b)"));
     }
 
 }

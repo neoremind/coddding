@@ -45,7 +45,7 @@ public class ValidPerfectSquare {
     }
 
     @Test
-    public void testIsValidSudoku() {
+    public void test() {
         for (int i = 0; i < 19; i++) {
             System.out.println(i + " " + isPerfectSquare(i));
         }

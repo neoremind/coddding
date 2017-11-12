@@ -10,7 +10,12 @@
 Pj表示第j个硬币的面值
 
 * 最大连续子序列和[OK-53. Maximum Subarray]
+```
+Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
 
+For example, given the array [-2,1,-3,4,-1,2,1,-5,4],
+the contiguous subarray [4,-1,2,1] has the largest sum = 6.
+```
 状态：s[i]表示以i结尾最大的子数组和，如果s[i - 1]小于0了，则说明在i肯定是保留现在的值更大，否则就叠加前面的s[i - 1]
 状态转移方程：s[i] = Max{s[i] (s[i - 1] < 0), s[i - 1] + v[i]}
 

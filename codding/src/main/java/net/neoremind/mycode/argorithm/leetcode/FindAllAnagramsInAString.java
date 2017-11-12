@@ -10,6 +10,16 @@ import java.util.List;
 import static org.junit.Assert.assertThat;
 
 /**
+ * Input:
+ * s: "cbaebabacd" p: "abc"
+ * <p>
+ * Output:
+ * [0, 6]
+ * <p>
+ * Explanation:
+ * The substring with start index = 0 is "cba", which is an anagram of "abc".
+ * The substring with start index = 6 is "bac", which is an anagram of "abc".
+ *
  * @author xu.zhang
  */
 public class FindAllAnagramsInAString {

@@ -16,7 +16,7 @@ import java.util.Map;
  * Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
  *
  * @author zhangxu
- * @see https://leetcode.com/problems/top-k-frequent-elements/
+ * https://leetcode.com/problems/top-k-frequent-elements/
  */
 public class TopKFrequentElements {
 

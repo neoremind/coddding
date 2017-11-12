@@ -75,6 +75,38 @@ public class WallsAndGates {
         }
     }
 
+    /**
+     * bfs
+     * https://discuss.leetcode.com/topic/25265/java-bfs-solution-o-mn-time/6
+     */
+    public void wallsAndGates3(int[][] rooms) {
+        for (int i = 0; i < rooms.length; i++) {
+            for (int j = 0; j < rooms[0].length; j++) {
+                if (rooms[i][j] == 0)
+                    bfs(rooms, i, j);
+            }
+        }
+    }
+
+    int[][] dir = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    private void bfs(int[][] rooms, int i, int j) {
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{i, j});
+        while (!q.isEmpty()) {
+            int[] xy = q.poll();
+            for (int k = 0; k < 4; k++) {
+                int m = xy[0] + dir[k][0];
+                int n = xy[1] + dir[k][1];
+                if (m >= 0 && m < rooms.length && n >= 0 && n < rooms[0].length &&
+                        rooms[m][n] > rooms[xy[0]][xy[1]] + 1) {
+                    rooms[m][n] = rooms[xy[0]][xy[1]] + 1;
+                    q.add(new int[]{m, n});
+                }
+            }
+        }
+    }
+
     private void dfs(int[][] rooms, int i, int j, int m, int n, int step) {
         if (i < 0 || i >= m || j < 0 || j >= n || rooms[i][j] == -1) {
             return;
@@ -103,6 +135,7 @@ public class WallsAndGates {
             }
             System.out.println();
         }
+        System.out.println("-----");
 
         rooms = new int[][]{
                 {MAX_VALUE, -1, 0, MAX_VALUE},
@@ -111,6 +144,21 @@ public class WallsAndGates {
                 {0, -1, MAX_VALUE, MAX_VALUE}
         };
         wallsAndGates2(rooms);
+        for (int i = 0; i < rooms[0].length; i++) {
+            for (int j = 0; j < rooms.length; j++) {
+                System.out.print(rooms[i][j] + ",");
+            }
+            System.out.println();
+        }
+        System.out.println("-----");
+
+        rooms = new int[][]{
+                {MAX_VALUE, -1, 0, MAX_VALUE},
+                {MAX_VALUE, MAX_VALUE, MAX_VALUE, -1},
+                {MAX_VALUE, -1, MAX_VALUE, -1},
+                {0, -1, MAX_VALUE, MAX_VALUE}
+        };
+        wallsAndGates3(rooms);
         for (int i = 0; i < rooms[0].length; i++) {
             for (int j = 0; j < rooms.length; j++) {
                 System.out.print(rooms[i][j] + ",");

@@ -1478,6 +1478,33 @@ while (m < n) {
 return m;
 ```
 
+### [277. Find the Celebrity]()
+
+```
+int findCelebrity(int n) {
+    if (n <= 1) {
+        return n;
+    }
+    int cel = 0;
+    for (int i = 1; i < n; i++) {
+        if (!knows(i, cel)) {
+            cel = i;
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (i == cel) {
+            continue;
+        } else {
+            if (!knows(i, cel) || knows(cel, i)) {
+                return -1;
+            }
+        }
+    }
+    return cel;
+}
+```
+
 ### [273. Integer to English Words](https://leetcode.com/problems/integer-to-english-words/description/)
 ```
 String[] less20 = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",

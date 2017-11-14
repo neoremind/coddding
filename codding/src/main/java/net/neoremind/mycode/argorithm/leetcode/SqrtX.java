@@ -68,6 +68,27 @@ public class SqrtX {
         return ans;
     }
 
+    public int sqrt(int num) {
+        if (num < 1) {
+            return num;
+        }
+        long left = 1, right = num;// long type to avoid 2147483647 case
+
+        int ans = -1;
+        while (left <= right) {
+            long mid = left + (right - left) / 2;
+            long t = mid * mid;
+            if (t > num) {
+                right = mid - 1;
+            } else if (t <= num) {
+                left = mid + 1;
+                ans = (int) mid;
+            }
+        }
+
+        return ans;
+    }
+
     @Test
     public void test() {
         assertThat(Math.sqrt(144), Matchers.is(12d));

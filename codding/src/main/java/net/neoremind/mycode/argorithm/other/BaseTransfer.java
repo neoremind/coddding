@@ -12,6 +12,7 @@ import org.junit.Test;
  *
  * @author zhangxu
  */
+@Deprecated
 public class BaseTransfer {
 
     final static char[] digits = {

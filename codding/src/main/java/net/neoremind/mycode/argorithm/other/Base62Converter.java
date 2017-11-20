@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author xu.zhang
  */
+@Deprecated
 public class Base62Converter {
 
     /**
@@ -58,5 +59,8 @@ public class Base62Converter {
     public void test() {
         assertThat(base62(1667), is("Qt"));
         assertThat(base62("Qt"), is(1667));
+
+        assertThat(base62(62), is("10"));
+        assertThat(base62("10"), is(62));
     }
 }

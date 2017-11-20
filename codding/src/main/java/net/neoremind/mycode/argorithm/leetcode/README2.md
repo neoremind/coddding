@@ -1721,6 +1721,24 @@ private ListNode helper(ListNode node, int val) {
         return helper(temp, val);
 ```
 
+### [162. Find Peak Element](https://leetcode.com/problems/find-peak-element/description/)
+
+可以想象成为找多个山峰，返回任意一个山峰即可。二分查找一定要画图才可以解决边界条件。
+
+```
+int low = 0;
+int high = nums.length - 1;
+while (low < high) {
+    int mid1 = (low + high) / 2;
+    int mid2 = mid1 + 1;
+    if (nums[mid1] < nums[mid2]) 
+        low = mid2;
+    else
+        high = mid1;
+}
+return low;
+```
+
 ### [161. One Edit Distance]()
 
 ```

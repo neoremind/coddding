@@ -19,6 +19,33 @@ import com.google.common.primitives.Ints;
  */
 public class TrappingRainWater {
 
+    public int trap2(int[] height) {
+        if (height == null ||  height.length < 3) {
+            return 0;
+        }
+        int l = 0, r = height.length - 1;
+        int maxL = 0, maxR = height.length - 1;
+        int res = 0;
+        while (l <= r) {
+            if (height[maxL] <= height[maxR]) {
+                if (height[l] >= height[maxL]) {
+                    maxL = l;
+                } else {
+                    res += height[maxL] - height[l];
+                }
+                l++;
+            } else {
+                if (height[r] >= height[maxR]) {
+                    maxR = r;
+                } else {
+                    res += height[maxR] - height[r];
+                }
+                r--;
+            }
+        }
+        return res;
+    }
+
     public int trap(int[] a) {
         int maxHeight = 0;
         int maxHeightIdx = 0;

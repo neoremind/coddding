@@ -180,6 +180,23 @@ public class BasicBitTest {
         n = 3;
         System.out.println(Integer.toBinaryString(n));
         System.out.println(Integer.toBinaryString(-n));
+
+        int start = Integer.MAX_VALUE / 2;
+        int end = Integer.MAX_VALUE;
+        System.out.println("start = " + start);
+        System.out.println("end = " + end);
+        System.out.println("mid=" + (start + end) / 2);
+        System.out.println("mid=" + ((start + end) >> 1));
+        System.out.println("mid=" + ((start + end) >>> 1));
+
+        System.out.println("========");
+        start = 100;
+        end = 300;
+        System.out.println("start = " + start);
+        System.out.println("end = " + end);
+        System.out.println("mid=" + (start + end) / 2);
+        System.out.println("mid=" + ((start + end) >> 1));
+        System.out.println("mid=" + ((start + end) >>> 1));
     }
 
 }

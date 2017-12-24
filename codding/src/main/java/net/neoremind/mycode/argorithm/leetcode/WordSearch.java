@@ -74,9 +74,9 @@ public class WordSearch {
         if (word == null || word.length() == 0) return true;
         int row = board.length;
         int col = board[0].length;
+        boolean[][] visited = new boolean[row][col];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                boolean[][] visited = new boolean[row][col];
                 if (dfs2(board, visited, word, row, col, i, j, 0)) {
                     return true;
                 }

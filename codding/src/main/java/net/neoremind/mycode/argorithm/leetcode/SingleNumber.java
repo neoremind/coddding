@@ -29,7 +29,7 @@ import static org.junit.Assert.assertThat;
 public class SingleNumber {
 
     public static int singleNumber2(int[] nums) {
-        int[] digits = new int[32];
+        int[] digits = new int[32]; //index=0保存最低位的1的数量
         for (int i = 0; i < 32; i++) {
             for (int num : nums) {
                 digits[i] += (num >> i) & 1;
@@ -37,7 +37,29 @@ public class SingleNumber {
         }
         int res = 0;
         for (int i = 0; i < 32; i++) {
-            res += (digits[i] % 2) << i;
+            res |= (digits[i] % 2) << i; //+ is ok too
+        }
+        return res;
+    }
+
+    /**
+     * 模板同{@link SingleNumberII}
+     */
+    public static int singleNumber3(int[] nums) {
+        int[] digits = new int[32]; //index=0保存最高位的1的数量
+
+        //两个循环哪个里，哪个外没关系。
+        for (int i = 0; i < 32; i++) {
+            for (int num : nums) {
+                if (((num >> (31 - i)) & 1) == 1) {
+                    digits[i] += 1;
+                }
+            }
+            digits[i] %= 2; //要用%2 不用加上判断，否则就会出现大于2的情况！！！
+        }
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            res |= digits[i] << (31 - i);
         }
         return res;
     }

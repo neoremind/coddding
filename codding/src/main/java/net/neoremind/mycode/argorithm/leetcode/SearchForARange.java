@@ -20,7 +20,7 @@ public class SearchForARange {
         int start = 0;
         int end = nums.length - 1;
         while (start <= end) {
-            int mid = start + ((end - start) >>> 1);
+            int mid = (start + end) >>> 1;
             if (nums[mid] < target) {
                 start = mid + 1;
             } else if (nums[mid] > target) {
@@ -34,10 +34,10 @@ public class SearchForARange {
                 while (right < nums.length - 1 && nums[right + 1] == target) {
                     right++;
                 }
-                return new int[] {left, right};
+                return new int[]{left, right};
             }
         }
-        return new int[] {-1, -1};
+        return new int[]{-1, -1};
     }
 
 }

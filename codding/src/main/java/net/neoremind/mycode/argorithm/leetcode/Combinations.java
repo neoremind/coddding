@@ -48,6 +48,24 @@ public class Combinations {
         }
     }
 
+    public List<List<Integer>> combine2(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        helper(res, new ArrayList<>(), 1, n, k);
+        return res;
+    }
+
+    void helper(List<List<Integer>> res, List<Integer> temp, int start, int n, int k) {
+        if (k == 0) {
+            res.add(new ArrayList<>(temp));
+        } else {
+            for (int i = start; i <= n; i++) {
+                temp.add(i);
+                helper(res, temp, i + 1, n, k - 1);
+                temp.remove(temp.size() - 1);
+            }
+        }
+    }
+
     @Test
     public void test() {
         List<List<Integer>> list = combine(4, 2);

@@ -28,13 +28,30 @@ public class SingleNumberII {
         return res;
     }
 
+    public static int singleNumber2(int[] nums) {
+        int[] digits = new int[32];
+        for (int i = 0; i < 32; i++) {
+            for (int num : nums) {
+                if (((num >> (31 - i)) & 1) == 1) {
+                    digits[i] += 1;
+                }
+            }
+            digits[i] %= 3;
+        }
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            res |= digits[i] << (31 - i);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
-        int[] nums = new int[] {8, 6, 3, 6, 1, 6, 3, 8, 3, 8};
+        int[] nums = new int[]{8, 6, 3, 6, 1, 6, 3, 8, 3, 8};
         int single = singleNumber(nums);
         System.out.println(single);
         assertThat(single, is(1));
 
-        nums = new int[] {1, 4, 1, 1};
+        nums = new int[]{1, 4, 1, 1};
         single = singleNumber(nums);
         System.out.println(single);
         assertThat(single, is(4));

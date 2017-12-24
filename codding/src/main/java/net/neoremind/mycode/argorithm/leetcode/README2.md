@@ -129,6 +129,91 @@ public int findLengthOfLCIS(int[] nums) {
 }
 ```
 
+### [642. Design Search Autocomplete System]()
+
+Trie树的应用。
+
+```
+class TrieNode {
+    char value;
+    Map<Character, TrieNode> children = new HashMap<>();
+    Map<String, Integer> counts = new HashMap<>();
+
+    TrieNode(char value) {
+        this.value = value;
+    }
+}
+
+class Trie {
+    TrieNode root;
+
+    Trie() {
+        this.root = new TrieNode(' ');
+    }
+
+    void add(String s, int times) {
+        if (s == null || s.length() == 0) return;
+        TrieNode curr = root;
+        for (char c : s.toCharArray()) {
+            if (!curr.children.containsKey(c)) {
+                curr.children.put(c, new TrieNode(c));
+            }
+            curr = curr.children.get(c);
+            curr.counts.put(s, curr.counts.getOrDefault(s, 0) + times);
+        }
+    }
+
+    TrieNode search(String prefix) {
+        if (prefix == null || prefix.length() == 0) return null;
+        TrieNode curr = root;
+        for (char c : prefix.toCharArray()) {
+            if (!curr.children.containsKey(c)) {
+                return null;
+            }
+            curr = curr.children.get(c);
+        }
+        return curr;
+    }
+}
+
+class SearchAutocompleteSystem {
+
+    Trie trie;
+
+    public SearchAutocompleteSystem(String[] sentences, int[] times) {
+        if (sentences == null || sentences.length == 0) return;
+        trie = new Trie();
+        for (int i = 0; i < sentences.length; i++) {
+            trie.add(sentences[i], times[i]);
+        }
+    }
+
+    String prefix = "";
+
+    public List<String> input(char c) {
+        if (c == '#') {
+            trie.add(prefix, 1);
+            prefix = "";
+            return new ArrayList<>();
+        }
+        prefix = prefix + c;
+        TrieNode node = trie.search(prefix);
+        if (node == null) return new ArrayList<>();
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>((a, b) ->
+                a.getValue().equals(b.getValue()) ? a.getKey().compareTo(b.getKey()) : b.getValue() - a.getValue()
+        );
+        for (Map.Entry<String, Integer> e : node.counts.entrySet()) {
+            pq.add(e);
+        }
+        List<String> res = new ArrayList<>();
+        for (int i = 0; !pq.isEmpty() && i < 3; i++) {
+            res.add(pq.poll().getKey());
+        }
+        return res;
+    }
+}
+```
+
 ### [639. Decode Ways II](https://leetcode.com/problems/decode-ways-ii/description/)
 
 HARD,
@@ -1819,6 +1904,42 @@ public int read(char[] buf, int n) {
     }
     return readBytes;
 }
+```
+
+### [143. Reorder List](https://leetcode.com/problems/reorder-list/description/)
+
+```
+L0→L1→…→Ln-1→Ln,
+L0→Ln→L1→Ln-1→L2→Ln-2→…
+```
+
+思路：一定要画图，找一些general的case，比如奇数、偶数个的，找中点，反转后面的，然后依次把tail插入正确的位置。
+
+```
+// 找中点
+ListNode slow = head;
+ListNode fast = head;
+while (fast.next != null && fast.next.next != null) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+// 中点分割后，后面的revers，复用reverse linked list的代码
+ListNode cursor = slow;
+ListNode tail = reverse(cursor);
+ListNode curr = head;
+if (cursor.next == null) { //这是corner case
+    return;
+cursor.next.next = null; //断开
+cursor.next = null;
+
+// 遍历tail插入合适的位置。
+while (tail != null) {
+    ListNode currNext = curr.next;
+    ListNode tailNext = tail.next;
+    curr.next = tail;
+    tail.next = currNext;
+    curr = currNext;
+    tail = tailNext;
 ```
 
 ### [138. Copy List with Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/description/)

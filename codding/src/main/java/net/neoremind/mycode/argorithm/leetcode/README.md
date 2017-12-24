@@ -3817,6 +3817,52 @@ M, String
 * 7. return new String(str, 0, barrier);
 ```
 
+### [148. Sort List](https://leetcode.com/problems/sort-list/description/)
+
+```
+public ListNode sortList(ListNode head) {
+    if (head == null) return head;
+    return mergeSort(head);
+}
+
+public ListNode mergeSort(ListNode list) {
+    if (list.next == null) {
+        return list;
+    } else {
+        ListNode head = list, walker = list, runner = list;
+        while (runner.next != null && runner.next.next != null) {
+            walker = walker.next;
+            runner = runner.next.next;
+        }
+        // cut
+        ListNode mid = walker.next;
+        walker.next = null;
+        ListNode l = mergeSort(head);
+        ListNode r = mergeSort(mid);
+        return merge(l, r);
+    }
+}
+
+public ListNode merge(ListNode l, ListNode r) {
+    ListNode dummy = new ListNode(0);
+    ListNode curr = dummy;
+    while (l != null && r != null) {
+        if (l.val < r.val) {
+            curr.next = l;
+            l = l.next;
+        } else {
+            curr.next = r;
+            r = r.next;
+        }
+        curr = curr.next;
+    }
+
+    if (l != null) curr.next = l;
+    if (r != null) curr.next = r;
+    return dummy.next;
+}
+```
+
 ### [147. Insertion Sort List](https://leetcode.com/problems/insertion-sort-list/)
 
 M, Linked List Sort
@@ -7699,6 +7745,31 @@ while (right > maxHeightIdx) {
     right--;
 }
 return res;
+
+自己的实现：
+public int trap(int[] height) {
+    if (height == null ||  height.length < 3) {
+        return 0;
+    int l = 0, r = height.length - 1;
+    int maxL = 0, maxR = height.length - 1;
+    int res = 0;
+    while (l <= r) {
+        if (height[maxL] <= height[maxR]) {
+            if (height[l] >= height[maxL]) {
+                maxL = l;
+            } else {
+                res += height[maxL] - height[l];
+            l++;
+        } else {
+            if (height[r] >= height[maxR]) {
+                maxR = r;
+            } else {
+                res += height[maxR] - height[r];
+            r--;
+        }
+    }
+    return res;
+}
 ```
 
 
@@ -8558,6 +8629,22 @@ public void backtrack(List<String> list, String str, int open, int close, int ma
         backtrack(list, str + ")", open, close + 1, max);
     }
 }
+
+一定注意，right < left，才可以继续否则生成了很多非法的。
+List<String> res = new ArrayList<>();
+char[] temp = new char[n * 2];
+helper(res, 0, 0, n, temp, 0);
+
+void helper(List<String> res, int left, int right, int n, char[] temp, int index) {
+    if (index == n * 2) {
+        res.add(new String(temp));
+        return;
+    if (left < n) {
+        temp[index] = '(';
+        helper(res, left + 1, right, n, temp, index + 1);
+    if (right < left) {
+        temp[index] = ')';
+        helper(res, left, right + 1, n, temp, index + 1);
 ```
 
 ### [21. Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/)

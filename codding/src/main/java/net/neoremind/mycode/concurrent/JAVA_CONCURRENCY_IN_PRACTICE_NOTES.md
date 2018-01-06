@@ -106,9 +106,11 @@ Only one thread at a time can own an object's monitor.
 
 综上，所谓唤醒线程，另一种解释可以说是将线程由等待池移动到锁池，notifyAll调用后，会将全部线程由等待池移到锁池，然后参与锁的竞争，竞争成功则继续执行，如果不成功则留在锁池等待锁被释放后再次参与竞争。而notify只会唤醒一个线程。有了这些理论基础，后面的notify可能会导致死锁，而notifyAll则不会的例子也就好解释了
 
-主要的效果区别是notify用得不好容易导致死锁，例如下面提到的例子。public final ArrayList<Object> buf = new ArrayList<Object>();
+主要的效果区别是notify用得不好容易导致死锁，例如下面提到的例子。
 
 ```
+public final ArrayList<Object> buf = new ArrayList<Object>();
+
 public final static int MAX_SIZE = 100;
 
 public synchronized void put(Object o) throws InterruptedException
@@ -139,6 +141,26 @@ public synchronized Object get() throws InterruptedException
 	return o;
 
 }
+
+生产者、消费者数量都为2，缓冲区为1，当按照下列并发顺序执行的时候出现死锁：
+
+1.消费者1获得锁，发现缓冲区为0，wait（wait自动释放锁）；
+
+2.消费者2获得锁，发现缓冲区为0，wait（wait自动释放锁）；
+
+3.生产者1获得锁，发现缓冲区为0可以生产，生产以后放在缓冲区，notify，现在缓冲区为1；
+
+4.第3步notify唤醒了消费者1，但是消费者1没有抢到锁，锁被生产者2拿到了；
+
+5.生产者2发现缓冲区为1（因为只是唤醒了消费者1，但是消费者1没有抢到锁，没法消费），wait（wait自动释放锁）；
+
+6.现在消费者1获得了锁，消费并且notify（此时生产者2和消费者2都处于wait状态），缓冲区为0；
+
+7.很不幸，第6步notify唤醒了消费者2，消费者2醒来后拿到锁发现缓冲区为0，接着wait，与此同时，生产者2也在wait，死锁产生。
+
+可以看出问题的关键在于两个地方，一个是第4步notify并不能保证notify唤醒的线程获得锁，一个是第7步notify可能会唤醒同一种角色的线程。
+
+可以用Lock/Condition解决，两个Condition可以保证notify（signal）不同角色的线程，也可以用notifyAll解决，使线程间变成对锁的竞争。
 ```
 
 自己的理解总结：

@@ -41,6 +41,32 @@ public class SortColors {
         }
     }
 
+    public void sortKColors(int[] nums, int k) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int max = Integer.MIN_VALUE;
+            int min = Integer.MAX_VALUE;
+            for (int i = left; i <= right; i++) {
+                max = Math.max(nums[i], max);
+                min = Math.min(nums[i], min);
+            }
+            int current = left;
+            while (current <= right) {
+                if (nums[current] == min) {
+                    swap(current, left, nums);
+                    current++;
+                    left++;
+                } else if (nums[current] > min && nums[current] < max) {
+                    current++;
+                } else {
+                    swap(current, right, nums);
+                    right--;
+                }
+            }
+        }
+    }
+
     protected void swap(int i, int j, int[] array) {
         int temp = array[i];
         array[i] = array[j];
@@ -51,6 +77,10 @@ public class SortColors {
     public void test() {
         int[] nums = {0, 1, 0, 2, 1, 0, 2, 1};
         sortColors(nums);
-        assertThat(nums, Matchers.is(new int[] {0, 0, 0, 1, 1, 1, 2, 2}));
+        assertThat(nums, Matchers.is(new int[]{0, 0, 0, 1, 1, 1, 2, 2}));
+
+        nums = new int[]{0, 1, 0, 3, 2, 3, 1, 5, 0, 4, 0, 2, 1};
+        sortKColors(nums, 6);
+        assertThat(nums, Matchers.is(new int[]{0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 5}));
     }
 }

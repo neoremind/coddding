@@ -1,9 +1,6 @@
 package net.neoremind.mycode.argorithm.leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Given a non-empty array of integers, return the k most frequent elements.
@@ -16,7 +13,7 @@ import java.util.Map;
  * Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
  *
  * @author zhangxu
- * https://leetcode.com/problems/top-k-frequent-elements/
+ *         https://leetcode.com/problems/top-k-frequent-elements/
  */
 public class TopKFrequentElements {
 
@@ -43,6 +40,26 @@ public class TopKFrequentElements {
                     }
                 }
             }
+        }
+        return res;
+    }
+
+    public List<Integer> topKFrequent2(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int n : nums) {
+            map.put(n, map.getOrDefault(n, 0) + 1);
+        }
+
+        PriorityQueue<Map.Entry<Integer, Integer>> maxHeap =
+                new PriorityQueue<>((a, b) -> (b.getValue() - a.getValue()));
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            maxHeap.add(entry);
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while (res.size() < k) {
+            Map.Entry<Integer, Integer> entry = maxHeap.poll();
+            res.add(entry.getKey());
         }
         return res;
     }

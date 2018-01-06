@@ -37,11 +37,15 @@ public class ConvertSortedListToBinarySearchTree {
 
     @Test
     public void test() {
-        ListNode head = ListNodeHelper.build(new int[] {1, 2, 3});
+        ListNode head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5});
         TreeNode node = sortedListToBST(head);
         System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(node));
 
-        head = ListNodeHelper.build(new int[] {1, 2, 3, 4});
+        head = ListNodeHelper.build(new int[]{1, 2, 3, 4});
+        node = sortedListToBST(head);
+        System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(node));
+
+        head = ListNodeHelper.build(new int[]{1, 2, 3, 4, 5, 6, 7});
         node = sortedListToBST(head);
         System.out.println("tree in-order: " + TreeNodeHelper.inorderTraversal(node));
     }

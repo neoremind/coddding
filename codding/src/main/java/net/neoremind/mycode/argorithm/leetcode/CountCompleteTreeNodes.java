@@ -26,6 +26,7 @@ import net.neoremind.mycode.argorithm.leetcode.support.TreeNodeHelper;
 public class CountCompleteTreeNodes {
 
     public int countNodes(TreeNode root) {
+        if (root == null) return 0;
         int rightDepth = rightDepth(root);
         int leftDepth = leftDepth(root);
         if (leftDepth == rightDepth) {

@@ -19,12 +19,15 @@ import org.junit.Test;
  * <p>
  * Follow up: Could you improve it to O(n log n) time complexity?
  *
+ *
+ *
  * @author zhangxu
  * @see https://leetcode.com/problems/longest-increasing-subsequence/
  */
 public class LongestIncreasingSubsequence {
 
     /**
+     * Time complexity : O(n^2)
      * 递推式如下：
      * <pre>
      *     d(i) = max{1, d(j) + 1},其中j<i,A[j]<=A[i]

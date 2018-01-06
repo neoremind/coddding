@@ -40,6 +40,13 @@ public class ConstructBinaryTreePreorderAndInorderTraversal {
         if (preStart > preEnd || inStart > inEnd) {
             return null;
         }
+        // 可加可不加
+//        if (preStart == preEnd) {
+//            return new TreeNode(preorder[preStart]);
+//        }
+//        if (inStart == inEnd) {
+//            return new TreeNode(inorder[inStart]);
+//        }
         int nodeIndex = -1;
         for (int i = inStart; i <= inEnd; i++) {
             if (inorder[i] == preorder[preStart]) {

@@ -991,6 +991,74 @@ while (i < chars.length) {
 stack全部pop出来倒序输出即可
 ```
 
+### []382. Linked List Random Node](https://leetcode.com/problems/linked-list-random-node/)
+同样蓄水池抽样
+```
+ListNode head;
+Random random;
+public LinkedListRandomNode(ListNode head) {
+    this.head = head;
+    random = new Random();
+}
+public int getRandom() {
+    if (head == null) {
+        return -1;
+    }
+    int count = 1;
+    ListNode curr = head;
+    int res = curr.val;
+    while (curr != null) {
+        if (random.nextInt(count++) == 0) {
+            res = curr.val;
+        }
+        curr = curr.next;
+    }
+    return res;
+}
+```
+
+### [378. Kth Smallest Element in a Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/)
+
+```
+matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+
+return 13.
+```
+
+只需要保证poll k-1次，那么小顶堆的顶就是第K小的元素。
+每次poll出来就把某一行的下一个元素加进去。O(kLogK)时间复杂度。
+```
+PriorityQueue<Point> queue = new PriorityQueue<Point>((a, b) -> Integer.compare(a.val, b.val));
+for (int i = 0; i < m; i++) {
+    queue.add(new Point(i, 0, matrix[i][0]));
+}
+for (int i = 0; i < k - 1; i++) {
+    Point p = queue.poll();
+    if (p.y == n - 1) {
+        continue;
+    }
+    queue.add(new Point(p.x, p.y + 1, matrix[p.x][p.y + 1]));
+}
+return queue.peek().val;
+
+class Point {
+    int x;
+    int y;
+    int val;
+
+    public Point(int x, int y, int val) {
+        this.x = x;
+        this.y = y;
+        this.val = val;
+    }
+}
+```
+
 ### [325. Maximum Size Subarray Sum Equals k]()
 
 HIDE, 给一个数组，找到长度最长的一个子串，其和等于K。时间复杂度要求O(N)。
@@ -1553,7 +1621,7 @@ TreeNode predecessor(TreeNode root, TreeNode p) {
 ```
 int m = 1;
 while (m < n) {
-    int mid = m + ((n - m) >>> 1);
+    int mid = (m + n) >>> 1;
     if (isBadVersion(mid)) {
         n = mid;
     } else {

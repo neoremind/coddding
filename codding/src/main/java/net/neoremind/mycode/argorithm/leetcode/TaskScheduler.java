@@ -120,8 +120,9 @@ public class TaskScheduler {
             if (!task2LastRunTime.containsKey(task)) {
                 sb.append(task);
             } else {
-                while (index++ - task2LastRunTime.get(task) <= n) {
+                while (index - task2LastRunTime.get(task) <= n) {
                     sb.append("_");
+                    index++;
                 }
                 sb.append(task);
             }
@@ -161,9 +162,13 @@ public class TaskScheduler {
         System.out.println(leastInterval2(tasks, 2));
         assertThat(result, Matchers.is(11));
 
-        tasks = new char[]{'A','A','B','A','C','C','D','C','D'};
+        tasks = new char[]{'A', 'A', 'B', 'A', 'C', 'C', 'D', 'C', 'D'};
         // A___AB__AC___CD__CD
         // A___AB__AC___CD__CD
         System.out.println(ordered(tasks, 3));
+
+        tasks = new char[]{'1', '2', '1', '1', '3', '4'};
+        // 12_1__134
+        System.out.println(ordered(tasks, 2));
     }
 }

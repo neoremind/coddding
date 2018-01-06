@@ -74,7 +74,6 @@ public class KthLargestElementInAnArray2 {
      * @param nums 数组
      * @param low  左边界
      * @param high 右边界
-     *
      * @return
      */
     private int quickSelect(int[] nums, int low, int high) {
@@ -107,10 +106,53 @@ public class KthLargestElementInAnArray2 {
         array[to] = tmp;
     }
 
+    public int findKthLargest2(int[] nums, int k) {
+        // 处理两个特殊的情况
+        // 找第最后大的，那就是找最小的
+        if (nums.length == k) {
+            int min = 0;
+            for (int i = 1; i < nums.length; i++) {
+                if (nums[i] < nums[min]) {
+                    min = i;
+                }
+            }
+            return nums[min];
+        }
+
+        // 找第一个大的，那就是最大的了
+        if (k == 1) {
+            int max = 0;
+            for (int i = 1; i < nums.length; i++) {
+                if (nums[i] > nums[max]) {
+                    max = i;
+                }
+            }
+            return nums[max];
+        }
+
+        int right = nums.length - 1;
+        int left = 0;
+        while (left <= right) {
+            int mid = quickSelect(nums, left, right);
+            if (mid == k - 1) {
+                return nums[mid];
+            } else if (mid < k - 1) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        throw new RuntimeException("not here");
+    }
+
     @Test
     public void test() {
-        int[] nums = new int[] {3, 2, 1, 5, 6, 4};
+        int[] nums = new int[]{3, 2, 1, 5, 6, 4};
         int k = findKthLargest(nums, 6);
+        System.out.println(k);
+        assertThat(k, is(1));
+
+        k = findKthLargest2(nums, 6);
         System.out.println(k);
         assertThat(k, is(1));
 
@@ -134,17 +176,17 @@ public class KthLargestElementInAnArray2 {
         System.out.println(k);
         assertThat(k, is(6));
 
-        nums = new int[] {5, 2, 4, 1, 3, 6, 0};
+        nums = new int[]{5, 2, 4, 1, 3, 6, 0};
         k = findKthLargest(nums, 4);
         System.out.println(k);
         assertThat(k, is(3));
 
-        nums = new int[] {3, 3, 3, 3, 3, 3, 3, 3, 3};
+        nums = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3};
         k = findKthLargest(nums, 8);
         System.out.println(k);
         assertThat(k, is(3));
 
-        nums = new int[] {-1, 2, 0};
+        nums = new int[]{-1, 2, 0};
         k = findKthLargest(nums, 2);
         System.out.println(k);
         assertThat(k, is(0));

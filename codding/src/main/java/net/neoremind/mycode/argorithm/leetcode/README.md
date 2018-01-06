@@ -1844,6 +1844,8 @@ int countMatches(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
+下面这种bottom-up的方法还出现在110. Balanced Binary Tree题目中，都可以O(N)的解决问题。
+
 A Bottom-up Approach (Worst case O(n) ): Using a bottom-up approach, we can improve over the top-down approach by avoiding traversing the same nodes over and over again.
 We traverse from the bottom, and once we reach a node which matches one of the two nodes, we pass it up to its parent. The parent would then test its left and right subtree if each contain one of the two nodes. If yes, then the parent must be the LCA and we pass its parent up to the root. If not, we pass the lower node which contains either one of the two nodes (if the left or right subtree contains either p or q), or NULL (if both the left and right subtree does not contain either p or q) up.
 ```
@@ -1860,6 +1862,67 @@ public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
     }
 }
 ```
+
+带有父节点信息的二叉树
+
+那么，一个简单的思路，对p和q向上走，用hashtable记录访问过的节点，
+
+如果某个节点已经被访问过了，那么返回该节点。
+
+复杂度O(h),h为树的高度
+```
+def LCA(root, p, q):
+    vis = set()
+    while p or q:
+        if p:
+            if p in vis:
+                return p
+            vis.add(p)
+            p = p.parent
+        if q:
+            if q in vis:
+                return q
+            vis.add(q)
+            q = q.parent
+    return None
+``` 
+
+更好的方法是求出p和q的高度，高度比较高的向上移动，直到两个节点相遇。
+
+复杂度O(h),h为树的高度
+
+```
+int getHeight(Node *p) {
+  int height = 0;
+  while (p) {
+    height++;
+    p = p->parent;
+  }
+  return height;
+}
+ 
+// As root->parent is NULL, we don't need to pass root in.
+Node *LCA(Node *p, Node *q) {
+  int h1 = getHeight(p);
+  int h2 = getHeight(q);
+  // swap both nodes in case p is deeper than q.
+  if (h1 > h2) {
+    swap(h1, h2);
+    swap(p, q);
+  }
+  // invariant: h1 <= h2.
+  int dh = h2 - h1;
+  for (int h = 0; h < dh; h++)
+    q = q->parent;
+  while (p && q) {
+    if (p == q) return p;
+    p = p->parent;
+    q = q->parent;
+  }
+  return NULL;  // p and q are not in the same tree
+}
+```
+
 
 3. 高级玩法：
 * 多次查询，离线算法Tarjan，利用并查集优越的时空复杂度，可以实现O(n+q)的算法，q是查询次数。
@@ -2100,6 +2163,7 @@ M, Tree Binary Search
 完全二叉树的数量=2^N-1，否则就单独计算左右子树+1.
 ```
 public int countNodes(TreeNode root)
+    if (root == null) return 0;
     int rightDepth = rightDepth(root);
     int leftDepth = leftDepth(root);
     if (leftDepth == rightDepth)
@@ -4845,6 +4909,20 @@ for (int i = 0; i < n; i++)
 return maxProfit;
 ```
 
+更好的解法：
+```
+public int maxProfit(int[] prices) {
+    int oneBuy = Integer.MIN_VALUE, oneBuyOneSell = 0, twoBuy = Integer.MIN_VALUE, twoBuyTwoSell = 0;
+    for (int p : prices) {
+        oneBuy = Math.max(oneBuy, -p);
+        oneBuyOneSell = Math.max(oneBuyOneSell, oneBuy + p);
+        twoBuy = Math.max(twoBuy, oneBuyOneSell - p);
+        twoBuyTwoSell = Math.max(twoBuyTwoSell, twoBuy + p);
+    }
+    return twoBuyTwoSell;
+}
+```
+
 ### [122. Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/)
 
 M, Array Greedy
@@ -5207,7 +5285,7 @@ return true;
 
 如果题目是检查一棵树是否平衡，平衡是指任意两个叶子节点到root的距离之差不大于1.
 
-下面的树满足本题的要求，是一个balanced binary tree，但是他不平衡。
+下面的树满足本题的要求，是一个balanced binary tree。
 ```
                  6
                /   \
@@ -7442,6 +7520,26 @@ for (String s : strs) {
     map.get(keyStr).add(s);
 }
 return new ArrayList<List<String>>(map.values());
+```
+
+run length encoding
+```
+public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, ArrayList<String>> map = new HashMap<>();
+    for (String s : strs) {
+        int[] count = new int[26]; //cuz inputs are lowercase letters, we only need 26
+        for (int i = 0; i < s.length(); i++) 
+            count[s.charAt(i) - 'a']++;
+        String anagram = "";//build a string key, eg."aabcccdd" -> 2a1b3c2d
+        for (int i = 0; i < count.length; i++) 
+            if (count[i] != 0) 
+                anagram += String.valueOf(count[i]) + String.valueOf((char)('a' + i));
+        if (!map.containsKey(anagram)) 
+            map.put(anagram, new ArrayList<>());
+        map.get(anagram).add(s);
+    }
+    return new ArrayList<List<String>>(map.values());
+}
 ```
 
 ### [48. Rotate Image](https://leetcode.com/problems/rotate-image/)

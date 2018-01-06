@@ -53,7 +53,7 @@ public class InorderSuccessorInBST {
     public void test() {
         TreeNode root = TreeNodeHelper.init("4,2,6,1,3,5,7");
         System.out.println("Original tree in-order: " + TreeNodeHelper.inorderTraversal(root));
-        System.out.println(successor(root, new TreeNode(5))); //6
+        System.out.println(successor(root, new TreeNode(6))); //6
         System.out.println(predecessor(root, new TreeNode(5))); //4
     }
 

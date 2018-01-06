@@ -63,8 +63,8 @@ public class LongestIncreasingPathInAMatrix {
             return records[i][j];   // 这点很重要！类似动态规划的记忆式搜索，like a greedy snake, memorize the result
         }
         int res = 1;
-        int[] d1 = new int[] {1, 0, -1, 0};
-        int[] d2 = new int[] {0, 1, 0, -1};
+        int[] d1 = new int[]{1, 0, -1, 0};
+        int[] d2 = new int[]{0, 1, 0, -1};
         for (int x = 0; x < 4; x++) {
             int nextI = i + d1[x];
             int nextJ = j + d2[x];
@@ -76,6 +76,46 @@ public class LongestIncreasingPathInAMatrix {
         }
         records[i][j] = res;
         return res;
+    }
+
+    /**
+     * 自己第二次写的AC，注意一定要matrix[x][y] > matrix[i][j]，否则会陷入死循环，除非加入visited变量
+     */
+    int max = 0; // assume all element are > 0
+
+    public int longestIncreasingPath2(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] mem = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dfs(matrix, i, j, m, n, mem, 1);
+            }
+        }
+        return max;
+    }
+
+    int[][] d = new int[][]{{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+
+    void dfs(int[][] matrix, int i, int j, int m, int n, int[][] mem, int step) {
+        if (mem[i][j] >= step) {
+            return;
+        }
+        mem[i][j] = step;
+        max = Math.max(step, max);
+        for (int k = 0; k < 4; k++) {
+            int x = i + d[k][0];
+            int y = j + d[k][1];
+            if (x < 0 || x >= m || y < 0 || y >= n) {
+                continue;
+            }
+            if (matrix[x][y] > matrix[i][j]) {
+                dfs(matrix, x, y, m, n, mem, step + 1);
+            }
+        }
     }
 
     @Test

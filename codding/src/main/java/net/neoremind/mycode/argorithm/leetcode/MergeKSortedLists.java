@@ -26,86 +26,42 @@ import net.neoremind.mycode.argorithm.leetcode.support.ListNodeHelper;
 public class MergeKSortedLists {
 
     public ListNode mergeKLists(ListNode[] lists) {
-        if (lists == null || lists.length == 0) {
-            return null;
-        }
-        if (lists.length == 1) {
-            return lists[0];
-        }
-        return mergeKLists(lists, 0, lists.length - 1);
+        if (lists == null || lists.length == 0) return null;
+        // 处理lists为空或者长度为0的情况，否则就会StackOverFlow
+        return doMergeKLists(lists, 0, lists.length - 1);
     }
 
-    /**
-     * 递归、回溯思想合并K个lists
-     *
-     * @param lists
-     * @param start
-     * @param end
-     *
-     * @return
-     */
-    private ListNode mergeKLists(ListNode[] lists, int start, int end) {
-        if (start < end) {
-            int center = (start + end) / 2;
-            ListNode list1 = mergeKLists(lists, start, center);
-            ListNode list2 = mergeKLists(lists, center + 1, end);
-            return mergeTwoLists(list1, list2);
+    public ListNode doMergeKLists(ListNode[] lists, int left, int right) {
+        if (left >= right) {
+            return lists[left];
+        } else {
+            int mid = left + ((right - left) >> 1);
+            ListNode l1 = doMergeKLists(lists, left, mid);
+            ListNode l2 = doMergeKLists(lists, mid + 1, right);
+            return mergeTwoSortedList(l1, l2);  //参考题目21
         }
-        return lists[start];  //这种情况下start=end，证明就剩下一个node，直接返回即可。
     }
 
-    /**
-     * 合并两个链表。
-     * <p/>
-     * 没有用到额外的空间，均是pointer的操作
-     *
-     * @param listNode1
-     * @param listNode2
-     *
-     * @return
-     */
-    private ListNode mergeTwoLists(ListNode listNode1, ListNode listNode2) {
-        if (listNode1 == null) {
-            return listNode2;
-        }
-        if (listNode2 == null) {
-            return listNode1;
-        }
-        ListNode result = null;
-        ListNode pointer = null;
-        // 遍历两个list，小的往前排，pointer不断的在两个链表上移动，直到一个链表遍历完毕，把剩下的直接追加即可。
-        while (listNode1 != null && listNode2 != null) {
-            if (listNode1.val <= listNode2.val) {
-                if (result == null) {  // 特殊处理下对于第一次的情况
-                    result = listNode1;
-                    pointer = result;
-                } else {
-                    pointer.next = listNode1;
-                    pointer = pointer.next;
-                }
-                listNode1 = listNode1.next;
+    ListNode mergeTwoSortedList(ListNode a, ListNode b) {
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        while (a != null && b != null) {
+            if (a.val < b.val) {
+                curr.next = a;
+                a = a.next;
             } else {
-                if (result == null) {
-                    result = listNode2;
-                    pointer = result;
-                } else {
-                    pointer.next = listNode2;
-                    pointer = pointer.next;
-                }
-                listNode2 = listNode2.next;
+                curr.next = b;
+                b = b.next;
             }
+            curr = curr.next;
         }
-
-        // 下面可以看做是甩尾操作
-        if (listNode1 != null) {
-            pointer.next = listNode1;
+        if (a != null) {
+            curr.next = a;
         }
-
-        if (listNode2 != null) {
-            pointer.next = listNode2;
+        if (b != null) {
+            curr.next = b;
         }
-
-        return result;
+        return dummy.next;
     }
 
     @Test
@@ -124,7 +80,7 @@ public class MergeKSortedLists {
     public void testMergeTwoLists() {
         ListNode list1 = ListNodeHelper.build(new int[] {2, 3, 4});
         ListNode list2 = ListNodeHelper.build(new int[] {3, 5, 8});
-        ListNode afterHead = mergeTwoLists(list1, list2);
+        ListNode afterHead = mergeTwoSortedList(list1, list2);
         String after = ListNodeHelper.getPrintableListNode(afterHead);
         System.out.println(after);
     }

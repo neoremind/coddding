@@ -30,7 +30,7 @@ public class ValidPerfectSquare {
         long left = 1, right = num;// long type to avoid 2147483647 case
 
         while (left <= right) {
-            long mid = left + (right - left) / 2;
+            long mid = (left + right) / 2;
             long t = mid * mid;
             if (t > num) {
                 right = mid - 1;

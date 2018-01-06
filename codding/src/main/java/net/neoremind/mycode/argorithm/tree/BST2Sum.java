@@ -126,7 +126,7 @@ public class BST2Sum {
     }
 
     /**
-     * time: O(NlogN)
+     * time: O(Nlogh)
      * space: O(h)
      */
     public int[] find2(TreeNode root, int target) {

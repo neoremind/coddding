@@ -19,7 +19,7 @@ import org.junit.Test;
  * postProfit[i]} (0≤i≤n-1)就是最大收益。第i天之前和第i天之后进行一次的最大收益求法同Best Time to Buy and Sell Stock I。
  * <p>
  * 代码：时间O(n)，空间O(n)。
- *
+ * <p>
  * http://liangjiabin.com/blog/2015/04/leetcode-best-time-to-buy-and-sell-stock.html
  * 题目188 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv 最多进行K次交易，动态规划的方程比较难写。
  *
@@ -27,6 +27,17 @@ import org.junit.Test;
  * @see https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii
  */
 public class BestTimeToBuyAndSellStockIII {
+
+    public int maxProfit2(int[] prices) {
+        int oneBuy = Integer.MIN_VALUE, oneBuyOneSell = 0, twoBuy = Integer.MIN_VALUE, twoBuyTwoSell = 0;
+        for (int p : prices) {
+            oneBuy = Math.max(oneBuy, -p);
+            oneBuyOneSell = Math.max(oneBuyOneSell, oneBuy + p);
+            twoBuy = Math.max(twoBuy, oneBuyOneSell - p);
+            twoBuyTwoSell = Math.max(twoBuyTwoSell, twoBuy + p);
+        }
+        return twoBuyTwoSell;
+    }
 
     public int maxProfit(int[] prices) {
         if (prices.length < 2) {
@@ -59,13 +70,16 @@ public class BestTimeToBuyAndSellStockIII {
 
     @Test
     public void test() {
-        int[] prices = new int[] {7, 1, 5, 3, 6, 4};
+        int[] prices = new int[]{7, 1, 5, 3, 6, 4};
         assertThat(maxProfit(prices), Matchers.is(7));
+        assertThat(maxProfit2(prices), Matchers.is(7));
 
-        prices = new int[] {7, 6, 4, 3, 1};
+        prices = new int[]{7, 6, 4, 3, 1};
         assertThat(maxProfit(prices), Matchers.is(0));
+        assertThat(maxProfit2(prices), Matchers.is(0));
 
-        prices = new int[] {1, 2};
+        prices = new int[]{1, 2};
         assertThat(maxProfit(prices), Matchers.is(1));
+        assertThat(maxProfit2(prices), Matchers.is(1));
     }
 }

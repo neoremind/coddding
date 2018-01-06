@@ -57,7 +57,7 @@ public class SqrtX {
         int right = x;
         int ans = -1;
         while (left <= right) {
-            int mid = left + (right - left) / 2;
+            int mid = (left + right) / 2;
             if (mid <= x / mid) {
                 left = mid + 1;
                 ans = mid;

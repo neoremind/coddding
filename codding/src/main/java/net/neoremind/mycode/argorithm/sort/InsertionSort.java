@@ -1,6 +1,11 @@
 package net.neoremind.mycode.argorithm.sort;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertThat;
 
 /**
  * 插入排序
@@ -35,6 +40,41 @@ public class InsertionSort extends SortAble {
 
             array[position] = currentValue;
         }
+    }
+
+    public void sort2(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            int currentValue = array[i];
+            int left = 0;
+            int right = i - 1;
+            while (left <= right) {
+                int mid = (left + right) >>> 1;
+                if (array[mid] >= currentValue) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+            for (int j = i - 1; j >= left; j--) {
+                array[j + 1] = array[j];
+            }
+            array[left] = currentValue;
+        }
+    }
+
+    @Test
+    public void testBinarySearchInsertionSort() {
+        int[] array = ArrayHelper.getShuffledArray(8);
+        System.out.println(Arrays.toString(array));
+        sort2(array);
+        System.out.println(Arrays.toString(array));
+        assertThat(array, Matchers.is(ArrayHelper.getContinuousArray(8)));
+
+        array = ArrayHelper.getShuffledArray(81);
+        System.out.println(Arrays.toString(array));
+        sort2(array);
+        System.out.println(Arrays.toString(array));
+        assertThat(array, Matchers.is(ArrayHelper.getContinuousArray(81)));
     }
 
 }

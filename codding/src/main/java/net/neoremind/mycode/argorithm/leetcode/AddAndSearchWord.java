@@ -191,11 +191,7 @@ public class AddAndSearchWord {
                 }
                 return false;
             } else {
-                if (node.children[c - 'a'] == null) {
-                    return false;
-                }
-                node = node.children[c - 'a'];
-                return dfs(node, chars, index + 1);
+                return dfs(node.children[c - 'a'], chars, index + 1);
             }
         }
     }

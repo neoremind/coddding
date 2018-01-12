@@ -82,6 +82,12 @@ public class TreeToCircularDoublyLinkedList {
         print(head, head);
         TreeNode rightMost = getRightMost(s, head);
         printReverse(rightMost, rightMost);
+
+        s = TreeNodeHelper.init("4,2,6,1,3,5,7");
+        head = convertBSTtoCircularDL(s);
+        print(head, head);
+        rightMost = getRightMost(s, head);
+        printReverse(rightMost, rightMost);
     }
 
     private TreeNode getRightMost(TreeNode node, TreeNode endFlag) {
@@ -94,6 +100,27 @@ public class TreeToCircularDoublyLinkedList {
             index++;
         }
         return node;
+    }
+
+
+    ////////////
+    TreeNode head = null, prev = null;
+    public TreeNode convertBSTtoCircularDL(TreeNode root) {
+        convert_(root);
+        return head;
+    }
+    public void convert_(TreeNode root) {
+        if (root == null)	return;
+        convert_(root.left);
+        root.left = prev;
+        if (prev != null)	prev.right = root;
+        else	head = root;
+        // would make head <-> tail in the end
+        TreeNode right = root.right;
+        head.left = root;
+        root.right = head;
+        prev = root;
+        convert_(right);
     }
 
 }

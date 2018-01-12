@@ -108,6 +108,8 @@ Only one thread at a time can own an object's monitor.
 
 主要的效果区别是notify用得不好容易导致死锁，例如下面提到的例子。
 
+在书里的PAGE 247相关有详细的说明，实际上这是一种信号丢失，是一种被劫持的信号。粗粒度的wait、notify容易，在不同的事情上，比如"满了"，或者"空了"上分别的做条件队列，混合使用，用notifyAll要安全些。
+
 ```
 public final ArrayList<Object> buf = new ArrayList<Object>();
 
@@ -175,6 +177,8 @@ wait就不同了，他是主动让出了锁，并且等等别人唤醒它，此�
 都进入了等待池，notify由JVM随机挑一个进入锁池，notifyAll由JVM把所有等待的都放入锁池，让你们竞争去吧，
 但是最终只会有一个成功，这也就是为什么wait和notify都必须放在synchronized块里面，否则编译器都报错。
 
+试想一下notifyAll把所有等待池里面的线程，放到了blocked状态，也就是锁池，大家还是需要一次走一次独木桥才可以进入等待池，
+这是多大的一笔开销啊，频繁的notifyAll，有很多线程阻塞确实会有很多性能损失。
 
 # 第一部分 基础知识
 

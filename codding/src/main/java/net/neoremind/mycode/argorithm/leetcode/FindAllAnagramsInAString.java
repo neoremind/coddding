@@ -38,7 +38,7 @@ public class FindAllAnagramsInAString {
             }
             a[s.charAt(end)]--;
             end++;
-            while (counter == 0 && end - start >= p.length()) {
+            while (counter == 0) {
                 if (end - start == p.length()) {
                     res.add(start);
                 }

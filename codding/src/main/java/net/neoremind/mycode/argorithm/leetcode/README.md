@@ -8456,17 +8456,40 @@ KMP算法的重点在于每次模式串不用回到匹配串的i+1的位置去�
 
 E, Array Two Pointers
 
+类似的题目有move zeros，remove duplicates from sorted array。
+
 发现元素后，思路为直接从最后的tail补一个元素上来，一个指向tail的指针索引减1。
 
 ```
-int currIndex = 0
-int tailIndex = nums.length - 1
-while (currIndex <= tailIndex)
-    if (nums[currIndex] == val)
-        nums[currIndex] = nums[tailIndex--];
-        continue;
-    currIndex++;
-return tailIndex + 1;
+// 双指针
+public static int removeElement(int[] nums, int val) {
+    int currIndex = 0;
+    int tailIndex = nums.length - 1;
+    while (currIndex <= tailIndex) {
+        if (nums[currIndex] == val) {
+            nums[currIndex] = nums[tailIndex--];
+            continue;
+        }
+        currIndex++;
+    }
+
+    // 下面不是必须的逻辑
+    int[] ret = new int[tailIndex + 1];
+    System.arraycopy(nums, 0, ret, 0, tailIndex + 1);
+    System.out.println(Arrays.toString(ret));
+    return ret.length;
+}
+
+// 稳定的
+public static int removeElement2(int[] nums, int val) {
+    int idx = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != val) {
+            nums[idx++] = nums[i];
+        }
+    }
+    return idx;
+}
 ```
 
 

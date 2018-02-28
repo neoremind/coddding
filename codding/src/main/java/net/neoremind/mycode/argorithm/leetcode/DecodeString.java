@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 public class DecodeString {
 
     public String decodeString(String s) {
+        if (s == null || s.length() == 0) return "";
         Stack<String> stack = new Stack<>();
         char[] chars = s.toCharArray();
         //  System.out.println(chars.length);
@@ -77,11 +78,13 @@ public class DecodeString {
                 stack.push(alpha.toString());
             }
         }
-        StringBuilder res = new StringBuilder();
-        while (!stack.isEmpty()) {
-            res.insert(0, stack.pop());
-        }
-        return res.toString();
+        //是否可以去掉？
+//        StringBuilder res = new StringBuilder();
+//        while (!stack.isEmpty()) {
+//            res.insert(0, stack.pop());
+//        }
+//        return res.toString();
+        return stack.pop();
     }
 
     @Test
@@ -89,5 +92,6 @@ public class DecodeString {
         assertThat(decodeString("3[a]2[bc]"), Matchers.is("aaabcbc"));
         assertThat(decodeString("3[a2[c]]"), Matchers.is("accaccacc"));
         assertThat(decodeString("2[abc]3[cd]ef"), Matchers.is("abcabccdcdcdef"));
+        assertThat(decodeString("3[a]2[b4[f]c]"), Matchers.is("aaabffffcbffffc"));
     }
 }

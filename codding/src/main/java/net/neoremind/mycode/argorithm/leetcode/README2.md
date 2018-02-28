@@ -414,22 +414,40 @@ public int depth(TreeNode root) {
 
 ### [542. 01 Matrix](https://leetcode.com/problems/01-matrix/description/)
 
-M, 有一点技巧的BFS,用DFS很难写，我的第一个解法是DFS的需要很多临时辅助变量。
-
-BFS很合适，一个技巧是一次性把所有元素加入queue，然后置所有1为-1好比较大小。C++如下：
+M, 和walls and gate一样，初始的时候把1赋值成max，然后BFS。
 
 ```
-while (q.size()) {
-    point temp = q.front();
-    q.pop();
-    int x = temp.first;
-    int y = temp.second;
-    for (int i=0; i<4; i++) {
-        int xx = x + d[i].first;
-        int yy = y + d[i].second;
-        if (xx>=0 && xx<rows && yy>=0 && yy<clos && ret[xx][yy]==-1) {
-            ret[xx][yy] = ret[x][y] + 1;
-            q.push(point(xx,yy));
+int m = matrix.length;
+int n = matrix[0].length;
+
+Queue<int[]> queue = new LinkedList<>();
+for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+        if (matrix[i][j] == 0) {
+            queue.offer(new int[]{i, j});
+        } else {
+            matrix[i][j] = Integer.MAX_VALUE;
+        }
+    }
+}
+
+int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+while (!queue.isEmpty()) {
+    int[] cell = queue.poll();
+    for (int[] d : dirs) {
+        int r = cell[0] + d[0];
+        int c = cell[1] + d[1];
+        if (r < 0 || r >= m || c < 0 || c >= n ||
+                matrix[r][c] <= matrix[cell[0]][cell[1]] + 1) {
+            continue;
+        }
+        matrix[r][c] = matrix[cell[0]][cell[1]] + 1;
+        queue.add(new int[]{r, c});
+    }
+}
+
+return matrix;
 ```
 
 ### [525. Contiguous Array](https://leetcode.com/problems/contiguous-array/description/)
@@ -991,7 +1009,7 @@ while (i < chars.length) {
 stack全部pop出来倒序输出即可
 ```
 
-### []382. Linked List Random Node](https://leetcode.com/problems/linked-list-random-node/)
+### [382. Linked List Random Node](https://leetcode.com/problems/linked-list-random-node/)
 同样蓄水池抽样
 ```
 ListNode head;
@@ -1029,6 +1047,8 @@ k = 8,
 
 return 13.
 ```
+
+k路多并排序。
 
 只需要保证poll k-1次，那么小顶堆的顶就是第K小的元素。
 每次poll出来就把某一行的下一个元素加进去。O(kLogK)时间复杂度。

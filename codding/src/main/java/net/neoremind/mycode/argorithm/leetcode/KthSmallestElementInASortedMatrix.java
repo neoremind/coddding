@@ -20,6 +20,8 @@ import java.util.PriorityQueue;
  * Note:
  * You may assume k is always valid, 1 ≤ k ≤ n2.
  *
+ * k路多并排序
+ *
  * @author xu.zhang
  */
 public class KthSmallestElementInASortedMatrix {

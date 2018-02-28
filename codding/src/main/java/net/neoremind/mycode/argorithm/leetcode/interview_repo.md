@@ -1798,7 +1798,7 @@ for (int i = 2; i <= n; i++) {
 return dp[2];
 ```
 
-## DAC & heap
+## Divide and Conquer & heap
 
 ### Kth Largest Element in an Array
 

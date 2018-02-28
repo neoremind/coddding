@@ -2,7 +2,7 @@
 - [DFS/BFS](#dfsbfs)
 - [Backtracking](#backtracking)
 - [Dynamic programming](#dynamic-programming)
-- [DAC & heap](#dac--heap)
+- [Divide and Conquer & Heap](#divide-and-conquer--heap)
 - [Hashtable](#hashtable)
 - [Array](#array)
 - [Two pointers](#two-pointers)

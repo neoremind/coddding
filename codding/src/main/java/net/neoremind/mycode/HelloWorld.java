@@ -8,6 +8,10 @@ import java.util.Random;
 public class HelloWorld {
 
     public static void main(String[] args) {
+        System.out.println("a");
+        System.out.println("b");
+        System.out.println("c");
+        System.out.println("d");
         List<Integer> list = Lists.newArrayList(0, 1, 2, 3, 4, 5);
         List<Integer> list1 = Lists.newArrayList();
         for (int i = 3; i < list.size(); i++) {

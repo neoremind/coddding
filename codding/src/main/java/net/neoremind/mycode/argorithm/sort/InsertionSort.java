@@ -62,17 +62,28 @@ public class InsertionSort extends SortAble {
         }
     }
 
+    public void sort3(int[] array) {
+        int j;
+        for (int i = 1; i < array.length; i++) {
+            int tmp = array[i];
+            for (j = i; j > 0 && tmp < array[j - 1]; j--) {
+                array[j] = array[j - 1];
+            }
+            array[j] = tmp;
+        }
+    }
+
     @Test
     public void testBinarySearchInsertionSort() {
         int[] array = ArrayHelper.getShuffledArray(8);
         System.out.println(Arrays.toString(array));
-        sort2(array);
+        sort3(array);
         System.out.println(Arrays.toString(array));
         assertThat(array, Matchers.is(ArrayHelper.getContinuousArray(8)));
 
         array = ArrayHelper.getShuffledArray(81);
         System.out.println(Arrays.toString(array));
-        sort2(array);
+        sort3(array);
         System.out.println(Arrays.toString(array));
         assertThat(array, Matchers.is(ArrayHelper.getContinuousArray(81)));
     }

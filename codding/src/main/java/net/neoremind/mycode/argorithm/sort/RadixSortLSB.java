@@ -18,7 +18,7 @@ import java.util.List;
  *
  *  https://blog.csdn.net/u011948899/article/details/78027838
  *
- * // TODO 字节实现的基于LSB思想的基数排序
+ *  文章里面的有bug，关于sub*=10的。
  */
 public class RadixSortLSB extends SortAble {
 
@@ -51,9 +51,6 @@ public class RadixSortLSB extends SortAble {
         int exp = 1; // digit num从最低位开始到最高位digitNum
         int sub = 1; // 本轮迭代的值需要除以的数，用于取某个位的值
         while (exp <= digitNum) {
-            while (sub < exp) {
-                sub *= 10;
-            }
             for (int i = 0; i < array.length; i++) {
                 int digit = (array[i] / sub) % 10;
                 bucket.get(digit).add(array[i]);
@@ -68,7 +65,9 @@ public class RadixSortLSB extends SortAble {
                 b.clear();
             }
             exp++;
+            sub *= 10;
         }
     }
+
 
 }

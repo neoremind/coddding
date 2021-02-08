@@ -42,6 +42,41 @@ public class BinaryTreeInorder {
 
     /**
      * 有点技巧，第一次没写对，stackoverflow了
+     *
+     * <pre>
+     *      1
+     *    /   \
+     *   2     3
+     *  / \
+     * 4   5
+     * </pre>
+     *
+     * <pre>
+     *     1
+     *
+     *     2
+     *     1
+     *
+     *     4
+     *     2
+     *     1
+     *
+     *        -> 4 pop visit
+     *     2
+     *     1
+     *
+     *
+     *        -> 2 pop visit
+     *     1
+     *
+     *     5  <- push 2 right
+     *     1
+     *
+     *
+     *
+     * </pre>
+     *
+     *
      */
     class InorderTraversalIteratively implements OrderTraversal {
 

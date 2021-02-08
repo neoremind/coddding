@@ -24,6 +24,49 @@ import org.junit.Test;
  */
 public class MinimumWindowSubstring {
 
+    /**
+     * ac
+     */
+    public String minWindow2(String s, String t) {
+        if (s == null || s.length() == 0 || t == null || t.length() == 0) {
+            return "";
+        }
+        int cnt = 0;
+        int[] a = new int[256];
+        for (int i = 0; i < t.length(); i++) {
+            a[t.charAt(i) - 'A']++;
+            cnt++;
+        }
+
+        int start = 0;
+        int end = 0;
+        int minLen = Integer.MAX_VALUE;
+        int resStart = 0;
+
+        while (end < s.length()) {
+            if (a[s.charAt(end) - 'A'] > 0) {
+                cnt--;
+            }
+            a[s.charAt(end) - 'A']--;
+
+            while (cnt == 0) {
+                if (end - start + 1 < minLen) {
+                    minLen = end - start + 1;
+                    resStart = start;
+                }
+                a[s.charAt(start) - 'A']++;
+                if (a[s.charAt(start++) - 'A'] > 0) {
+                    cnt++;
+                    break;
+                }
+            }
+
+            end++;
+        }
+
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(resStart, minLen + resStart);
+    }
+
     public String minWindow(String s, String t) {
         System.out.println(s);
         System.out.println(t);

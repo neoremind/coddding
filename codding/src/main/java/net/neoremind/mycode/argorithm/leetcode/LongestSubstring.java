@@ -54,21 +54,21 @@ public class LongestSubstring {
         if (s == null || s.length() == 0) {
             return 0;
         }
-        int[] a = new int[256];
-        int start = 0, end = 0;
-        int minLen = Integer.MIN_VALUE;
+        int start = 0;
+        int end = 0;
+        int res = 0;
+        int[] counter = new int[256];
         while (end < s.length()) {
-            //if (a[s.charAt(end)] == 0) {
-            minLen = Math.max(minLen, end - start + 1);
-            //}
-            a[s.charAt(end)]++;
-            end++;  //巧妙的往前看一个
-            while (end < s.length() && a[s.charAt(end)] > 0) {
-                a[s.charAt(start)]--;
+            res = Math.max(res, end - start + 1);
+            counter[s.charAt(end)]++;
+            end++;
+            while (end < s.length() && counter[s.charAt(end)] > 0) {
+                counter[s.charAt(start)]--;
                 start++;
             }
         }
-        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+
+        return res;
     }
 
     public static int lengthOfLongestSubstring(String s) {

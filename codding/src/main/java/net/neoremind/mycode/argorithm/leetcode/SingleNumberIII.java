@@ -19,6 +19,12 @@ import static org.junit.Assert.assertThat;
  */
 public class SingleNumberIII {
 
+    /**
+     * FindRightMost1Bit
+     *    x & -x
+     * 因为2个数不同，一定有一个bit位是不一样的，靠这个位把数组分成两组，套用single number I的解法来。
+     *
+     */
     public static int[] singleNumber(int[] nums) {
         int diff = 0;
         for (int num : nums) {

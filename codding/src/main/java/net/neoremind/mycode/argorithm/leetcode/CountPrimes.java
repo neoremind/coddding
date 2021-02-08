@@ -10,6 +10,8 @@ import org.junit.Test;
  * <p>
  * Count the number of prime numbers less than a non-negative number, n.
  *
+ * 素数的加倍也是素数。
+ *
  * @author zhangxu
  * @see https://leetcode.com/problems/count-primes/
  * @see net.neoremind.mycode.bit.PrimeNumberTest
@@ -41,6 +43,10 @@ public class CountPrimes {
                     flag[j] = true;
                 }
             }
+            // 放下面也行，但是跑的慢一些，47ms，上面的13ms，不是素数就不用加倍的，必须是素数才加倍
+//            for (int j = i; j < n; j = j + i) {
+//                flag[j] = true;
+//            }
         }
         return count;
     }

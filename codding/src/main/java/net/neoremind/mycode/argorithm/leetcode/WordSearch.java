@@ -22,7 +22,7 @@ import org.junit.Test;
  * word = "ABCCED", -> returns true,
  * word = "SEE", -> returns true,
  * word = "ABCB", -> returns false.
- *
+ * <p>
  * beat 66.57%
  *
  * @author zhangxu
@@ -91,25 +91,30 @@ public class WordSearch {
         if (index == word.length()) {
             return true;
         }
-        if (i < 0 || i >= row || j < 0 || j >= col || visited[i][j]) {
+        if (i < 0 || i >= row || j < 0 || j >= col) {
+            return false;
+        }
+        if (visited[i][j]) {
             return false;
         }
         if (word.charAt(index) != board[i][j]) {
             return false;
         }
-        visited[i][j] = true;
+
         for (int k = 0; k < 4; k++) {
+            visited[i][j] = true;
             if (dfs2(board, visited, word, row, col, i + d[k][0], j + d[k][1], index + 1)) {
                 return true;
             }
+            visited[i][j] = false;
         }
-        visited[i][j] = false;
+
         return false;
     }
 
     @Test
     public void test() {
-        char[][] board = new char[][] {
+        char[][] board = new char[][]{
                 {'A', 'B', 'C', 'E'},
                 {'S', 'F', 'C', 'S'},
                 {'A', 'D', 'E', 'E'}
@@ -120,12 +125,12 @@ public class WordSearch {
         assertThat(exist(board, "SEE"), Matchers.is(true));
         assertThat(exist(board, "ABCB"), Matchers.is(false));
 
-        board = new char[][] {
+        board = new char[][]{
                 {'A'}
         };
         assertThat(exist(board, "A"), Matchers.is(true));
 
-        board = new char[][] {
+        board = new char[][]{
                 {'A', 'B', 'C', 'E'},
                 {'S', 'F', 'E', 'S'},
                 {'A', 'D', 'E', 'E'}

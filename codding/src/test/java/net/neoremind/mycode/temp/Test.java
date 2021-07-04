@@ -1,4 +1,4 @@
-package net.neoremind.mycode;
+package net.neoremind.mycode.temp;
 
 // You have a server that hosts a long file, for example:
 // it could a file containg email-ids, separated by new line.
@@ -35,9 +35,6 @@ public class Test {
     // Start of candidate editable code //
 
     void worker(int fileOffset, int length) {
-        System.out.println("**************");
-        System.out.println(" ==> " + fileOffset + " " + length + " " + Range(fileOffset, length));
-        System.out.println("**************");
         // Case 1: fileContents = "Hello"; // no new line, because usually they forget for last line.
         // Case 2: fileContents = "Hello\nWorld";
         //
@@ -46,7 +43,7 @@ public class Test {
         //
 
         if (fileOffset != 0) {
-            fileOffset = findNonOverlapFileOffset(fileOffset);
+            fileOffset = findNonOverlapFileOffset(fileOffset, fileOffset + length);
         }
         if (fileOffset == -1) {
             return;
@@ -69,7 +66,7 @@ public class Test {
             step = Math.min(step, maxLength - startOffset);
             String temp = Range(startOffset, step);
             newLineIndex = temp.indexOf("\n");
-            if (newLineIndex > 0) {
+            if (newLineIndex >= 0) {
                 str.append(temp.substring(0, newLineIndex + 1));
                 break;
             } else {
@@ -80,12 +77,15 @@ public class Test {
 
         String[] emails = str.toString().split("\n");
         for (String email: emails) {
+            if (email.length() == 0) {
+                continue;
+            }
             process(email);
             // handle
         }
     }
 
-    private int findNonOverlapFileOffset(int fileOffset) {
+    private int findNonOverlapFileOffset(int fileOffset, int limit) {
         int maxLength = Length();
 
         int step = 100;
@@ -100,7 +100,10 @@ public class Test {
             step = Math.min(step, maxLength - startOffset);
             String temp = Range(startOffset, step);
             newLineIndex = temp.indexOf("\n");
-            if (newLineIndex > 0) {
+            if (startOffset + newLineIndex >= limit) {
+                return -1;
+            }
+            if (newLineIndex >= 0) {
                 return startOffset + newLineIndex;
             }
             startOffset += step;

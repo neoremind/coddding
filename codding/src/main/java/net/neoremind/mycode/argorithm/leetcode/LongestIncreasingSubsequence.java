@@ -2,6 +2,7 @@ package net.neoremind.mycode.argorithm.leetcode;
 
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import org.hamcrest.Matchers;
@@ -46,6 +47,21 @@ public class LongestIncreasingSubsequence {
             }
         }
         return IntStream.of(longest).max().getAsInt();  //JDK8
+    }
+
+    public int lengthOfLIS2(int[] nums) {
+        int[] longest = new int[nums.length];
+        Arrays.fill(longest, 1);
+        int res = 1;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    longest[i] = Math.max(longest[i], longest[j] + 1);
+                }
+                res = Math.max(res, longest[i]);
+            }
+        }
+        return res;
     }
 
     @Test

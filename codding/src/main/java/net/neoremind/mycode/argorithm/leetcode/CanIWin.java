@@ -44,6 +44,7 @@ import static org.hamcrest.core.Is.is;
  *
  * @author xu.zhang
  */
+@Deprecated
 public class CanIWin {
 
     public boolean canIWin(int maxChoosableInteger, int desiredTotal) {

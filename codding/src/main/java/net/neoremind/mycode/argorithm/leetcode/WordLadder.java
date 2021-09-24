@@ -41,6 +41,7 @@ import com.google.common.collect.Sets;
  * @see <a href="https://leetcode.com/problems/word-ladder/">word-ladder</a>
  */
 // may have problem?
+@Deprecated
 public class WordLadder {
 
     @Test

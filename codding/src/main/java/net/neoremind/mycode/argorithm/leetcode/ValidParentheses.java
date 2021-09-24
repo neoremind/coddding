@@ -42,6 +42,24 @@ public class ValidParentheses {
         return stack.empty();
     }
 
+    public static boolean isValid2(String s) {
+        Stack<Character> stack = new Stack<Character>();
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                Character top = stack.pop();
+                if (top != '(') {
+                    return false;
+                }
+            }
+        }
+        return stack.empty();
+    }
+
     public static void main(String[] args) {
         String s = "{[]}()";
         boolean isValid = isValid(s);
@@ -60,6 +78,16 @@ public class ValidParentheses {
 
         s = "[";
         isValid = isValid(s);
+        System.out.println(isValid);
+        assertThat(isValid, is(false));
+
+        s = "()()(())";
+        isValid = isValid2(s);
+        System.out.println(isValid);
+        assertThat(isValid, is(true));
+
+        s = "()()(()";
+        isValid = isValid2(s);
         System.out.println(isValid);
         assertThat(isValid, is(false));
     }

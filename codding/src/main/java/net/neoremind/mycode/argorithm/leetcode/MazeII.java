@@ -3,10 +3,7 @@ package net.neoremind.mycode.argorithm.leetcode;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 import static org.junit.Assert.assertThat;
 
@@ -21,6 +18,83 @@ import static org.junit.Assert.assertThat;
  * @author xu.zhang
  */
 public class MazeII {
+
+    public int shortestDistance2(int[][] maze, int[] start, int[] destination) {
+        // 与maze 1区别，没有visited，需要更新最短路径。加入dist[][]距离计算
+        if (start[0] == destination[0] && start[1] == destination[1]) return 0;
+        Queue<int[]> q = new LinkedList<>();
+        q.add(start);
+        int rows = maze.length;
+        int cols = maze[0].length;
+        int[][] k = new int[][]{
+                {0, 1}, {1, 0}, {-1, 0}, {0, -1}
+        };
+        int[][] dist = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
+        }
+        dist[start[0]][start[1]] = 0;
+        while (!q.isEmpty()) {
+            int[] p = q.poll();
+            for (int i = 0; i < 4; i++) {
+                int x = p[0];
+                int y = p[1];
+                int step = 0;
+                while ((x + k[i][0] >= 0) && (x + k[i][0] < rows)
+                        && (y + k[i][1] >= 0) && (y + k[i][1] < cols)
+                        && (maze[x + k[i][0]][y + k[i][1]] != 1)) {
+                    x += k[i][0];
+                    y += k[i][1];
+                    step++;
+                }
+                if (dist[x][y] > dist[p[0]][p[1]] + step) {
+                    dist[x][y] = dist[p[0]][p[1]] + step;
+                    q.add(new int[]{x, y});
+                }
+            }
+        }
+        return dist[destination[0]][destination[1]] == Integer.MAX_VALUE ? -1 : dist[destination[0]][destination[1]];
+    }
+
+    public int shortestDistanceDijstra(int[][] maze, int[] start, int[] destination) {
+        if (start[0] == destination[0] && start[1] == destination[1]) return 0;
+
+        int rows = maze.length;
+        int cols = maze[0].length;
+        int[][] dist = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
+        }
+        Queue<int[]> q = new PriorityQueue<int[]>(
+                (a, b) -> Integer.compare(dist[a[0]][a[1]], dist[b[0]][b[1]]));
+        q.add(start);
+
+        int[][] k = new int[][]{
+                {0, 1}, {1, 0}, {-1, 0}, {0, -1}
+        };
+
+        dist[start[0]][start[1]] = 0;
+        while (!q.isEmpty()) {
+            int[] p = q.poll();
+            for (int i = 0; i < 4; i++) {
+                int x = p[0];
+                int y = p[1];
+                int step = 0;
+                while ((x + k[i][0] >= 0) && (x + k[i][0] < rows)
+                        && (y + k[i][1] >= 0) && (y + k[i][1] < cols)
+                        && (maze[x + k[i][0]][y + k[i][1]] != 1)) {
+                    x += k[i][0];
+                    y += k[i][1];
+                    step++;
+                }
+                if (dist[x][y] > dist[p[0]][p[1]] + step) {
+                    dist[x][y] = dist[p[0]][p[1]] + step;
+                    q.add(new int[]{x, y});
+                }
+            }
+        }
+        return dist[destination[0]][destination[1]] == Integer.MAX_VALUE ? -1 : dist[destination[0]][destination[1]];
+    }
 
     /**
      * BFS

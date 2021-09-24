@@ -26,11 +26,13 @@ public class LongestSubstringWithAtMostKDistinctCharacters {
         int start = 0;
         char[] str = s.toCharArray();
         int maxLen = 0;
-        for (int end = 0; end < str.length; end++) {
+        int end = 0;
+        while (end < str.length) {
             if (flag[str[end]] == 0) {
                 counter++;
             }
             flag[str[end]]++;
+            end++;
             while (counter > k) {
                 flag[str[start]]--;
                 if (flag[str[start]] == 0) {
@@ -38,7 +40,7 @@ public class LongestSubstringWithAtMostKDistinctCharacters {
                 }
                 start++;
             }
-            maxLen = Math.max(maxLen, end - start + 1);
+            maxLen = Math.max(maxLen, end - start);
         }
         return maxLen;
     }

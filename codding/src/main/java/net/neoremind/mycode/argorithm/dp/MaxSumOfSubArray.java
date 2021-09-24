@@ -106,6 +106,7 @@ public class MaxSumOfSubArray {
      * <p>
      * 最后遍历一下s[i]数组即可。
      */
+    @Deprecated
     public int findMaxSumOfSubArray_DP(int[] array) {
         int[] s = new int[array.length];
         s[0] = array[0];
@@ -124,6 +125,24 @@ public class MaxSumOfSubArray {
             }
         }
         return maxSum;
+    }
+
+    public int maxSubArray(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        int[] d = new int[nums.length];
+
+        for (int i = 0; i < d.length; i++) {
+            d[i] = nums[i];
+        }
+        for (int i = 1; i < d.length; i++) {
+            d[i] = Math.max(d[i - 1] + nums[i], nums[i]);
+        }
+
+        int res = d[0];
+        for (int i = 0; i < d.length; i++) {
+            res = Math.max(d[i], res);
+        }
+        return res;
     }
 
     /**

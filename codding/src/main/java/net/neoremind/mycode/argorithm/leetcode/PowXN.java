@@ -46,15 +46,15 @@ public class PowXN {
             return 1;
         }
         // 下面的可加可不加
-        if (x == 0d) {
-            return 0;
-        }
-        if (n == 1) {
-            return x;
-        }
-        if (n == -1) {
-            return 1 / x;
-        }
+//        if (x == 0d) {
+//            return 0;
+//        }
+//        if (n == 1) {
+//            return x;
+//        }
+//        if (n == -1) {
+//            return 1 / x;
+//        }
         //
         double temp = myPow(x, n / 2);
         if (n % 2 == 0) {
@@ -70,7 +70,7 @@ public class PowXN {
 
     @Test
     public void test() {
-        assertThat(myPow(36, 2), Matchers.is(1296d));
+        assertThat(myPow(36, -2), Matchers.is(1296d));
         //assertThat(myPow(36, -2), Matchers.is(1296d));
     }
 }

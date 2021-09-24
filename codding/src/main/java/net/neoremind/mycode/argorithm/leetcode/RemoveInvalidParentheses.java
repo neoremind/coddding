@@ -97,6 +97,50 @@ public class RemoveInvalidParentheses {
         }
     }
 
+    public List<String> removeInvalidParentheses3(String s) {
+        if (s == null || s.length() == 0) return new ArrayList<>();
+        Set<String> res = new HashSet<>();
+        Queue<String> q = new LinkedList<>();
+        q.add(s);
+        if (isValid(s)) {
+            res.add(s);
+            return new ArrayList<>(res);
+        }
+        boolean found = false;
+        Set<String> v = new HashSet<>();
+        while (!q.isEmpty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                String e = q.poll();
+                for (int j = 0; j < e.length(); j++) {
+                    if (e.charAt(j) != '(' && e.charAt(j) != ')') {
+                        continue;
+                    }
+                    String newStr = e.substring(0, j) + e.substring(j + 1);
+
+                    // 如果没有记忆化，则TLE
+                    if (v.contains(newStr)) {
+                        continue;
+                    }
+                    v.add(newStr);
+
+                    if (isValid(newStr)) {
+                        res.add(newStr);
+                        found = true;
+                    } else {
+                        q.add(newStr);
+                    }
+                }
+            }
+
+            if (found) {
+                break;
+            }
+        }
+
+        return new ArrayList<>(res);
+    }
+
     public boolean isValid3(String s) {
         if (s == null || s.length() == 0) return true;
         Stack<Character> stack = new Stack<>();

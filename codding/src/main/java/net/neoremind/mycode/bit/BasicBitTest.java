@@ -66,6 +66,9 @@ public class BasicBitTest {
     @Test
     public void testReverse() {
         assertThat(~15 + 1, is(-15));
+
+        int a = -16;
+        assertThat(~a + 1, is(-16));
     }
 
     @Test

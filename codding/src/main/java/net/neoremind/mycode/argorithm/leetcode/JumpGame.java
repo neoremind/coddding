@@ -33,6 +33,20 @@ public class JumpGame {
         return true;
     }
 
+    public boolean canJump2(int[] nums) {
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (max >= nums.length - 1) {
+                break;
+            }
+            if (max < i) {
+                break;
+            }
+            max = Math.max(max, i + nums[i]);
+        }
+        return max >= nums.length - 1;
+    }
+
     @Test
     public void test() {
         int[] nums = new int[] {2, 3, 1, 1, 4};

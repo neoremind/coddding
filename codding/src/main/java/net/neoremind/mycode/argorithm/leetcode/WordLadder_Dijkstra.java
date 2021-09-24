@@ -39,6 +39,7 @@ import com.google.common.collect.Sets;
  * @author zhangxu
  * @see WordLadder
  */
+@Deprecated
 public class WordLadder_Dijkstra {
 
     @Test

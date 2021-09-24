@@ -70,6 +70,39 @@ import static org.junit.Assert.assertThat;
  */
 public class Maze {
 
+    public boolean hasPath(int[][] maze, int[] start, int[] destination) {
+        if (start[0] == destination[0] && start[1] == destination[1]) return true;
+        Queue<int[]> q = new LinkedList<>();
+        q.add(start);
+        int rows = maze.length;
+        int cols = maze[0].length;
+        boolean[][] v = new boolean[rows][cols];
+        v[start[0]][start[1]] = true;
+        int[][] k = new int[][]{
+                {0, 1}, {1, 0}, {-1, 0}, {0, -1}
+        };
+        while (!q.isEmpty()) {
+            int[] p = q.poll();
+            for (int i = 0; i < 4; i++) {
+                int x = p[0];
+                int y = p[1];
+                while ((x + k[i][0] >= 0) && (x + k[i][0] < rows)
+                        && (y + k[i][1] >= 0) && (y + k[i][1] < cols)
+                        && (maze[x + k[i][0]][y + k[i][1]] != 1)) {
+                    x += k[i][0];
+                    y += k[i][1];
+                }
+                if (v[x][y]) {
+                    continue;
+                }
+                v[x][y] = true;
+                if (x == destination[0] && y == destination[1]) return true;
+                q.add(new int[]{x, y});
+            }
+        }
+        return false;
+    }
+
     /**
      * BFS
      */

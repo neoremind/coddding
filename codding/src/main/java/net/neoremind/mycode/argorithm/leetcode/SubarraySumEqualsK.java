@@ -38,6 +38,25 @@ public class SubarraySumEqualsK {
         return result;
     }
 
+    /** naive way O(N^2)*/
+    public int subarraySum2(int[] nums, int k) {
+        int[] sum = new int[nums.length];
+        sum[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            sum[i] = sum[i - 1] + nums[i];
+        }
+        int res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (sum[i] == k) res++;
+            for (int j = i - 1; j >=0; j--) {
+                if (sum[i] - sum[j] == k) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
     @Test
     public void test() {
         assertThat(subarraySum(new int[]{1, -1, 5, -2, 3}, 3), is(2));

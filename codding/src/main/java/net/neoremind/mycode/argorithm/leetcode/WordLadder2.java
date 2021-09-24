@@ -28,41 +28,19 @@ import static org.junit.Assert.assertThat;
  * Return 0 if there is no such transformation sequence.
  * All words have the same length.
  * All words contain only lowercase alphabetic characters.
- * <p>
- * <p>
- * //TODO    TLE
  *
  * @author zhangxu
  * @see <a href="https://leetcode.com/problems/word-ladder/">word-ladder</a>
  */
-@Deprecated
-public class WordLadder_ {
+// may have problem?
+public class WordLadder2 {
 
     @Test
     public void test() {
-        /**
-         * <pre>
-         *     hit -> hot ------> dot -> dog ----->cog
-         *                   |                |
-         *                    --> lot -> log --
-         * </pre>
-         */
-        List<String> wordList = Lists.newArrayList("hot", "dot", "dog", "lot", "log", "cog");
+        List<String> wordList = Lists.newArrayList("hot", "dot", "dog", "lot", "log");
         assertThat(ladderLength("hit", "cog", wordList), is(5));
         assertThat(ladderLength("hyy", "cog", wordList), is(0));
         assertThat(ladderLength("hit", "cxx", wordList), is(0));
-
-        /**
-         * <pre>
-         *            ------------------------------
-         *            |                            |
-         *     hit -> hot ------> dot ------------->cot
-         *                   |                 |
-         *                    --> lot -> bot --
-         * </pre>
-         */
-        wordList = Lists.newArrayList("hot", "dot", "lot", "bot", "cot");
-        assertThat(ladderLength("hit", "cot", wordList), is(3));
 
         wordList = Lists.newArrayList("hot");
         assertThat(ladderLength("hot", "hot", wordList), is(0));
@@ -75,8 +53,7 @@ public class WordLadder_ {
 
         long start = System.currentTimeMillis();
         wordList =
-                Lists.newArrayList("dose", "ends", "dine", "jars", "prow", "soap", "guns", "hops", "cray", "hove",
-                        "ella",
+                Lists.newArrayList("dose", "ends", "dine", "jars", "prow", "soap", "guns", "hops", "cray", "hove", "ella",
                         "hour", "lens", "jive", "wiry", "earl", "mara", "part", "flue", "putt", "rory", "bull", "york",
                         "ruts", "lily", "vamp", "bask", "peer", "boat", "dens", "lyre", "jets", "wide", "rile", "boos",
                         "down", "path", "onyx", "mows", "toke", "soto", "dork", "nape", "mans", "loin", "jots", "male",
@@ -109,60 +86,36 @@ public class WordLadder_ {
         System.out.println((System.currentTimeMillis() - start));
     }
 
+
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        // assume word is not empty
-        if (beginWord.equals(endWord)) {
-            return 0;
-        }
-        Map<String, Vertex> map = new HashMap<>();
-        Queue<Vertex> q = new LinkedList<>();
-        q.add(new Vertex(beginWord, 1));
-        map.put(beginWord, q.peek());
+        Set<String> words = new HashSet<>(wordList);
+        Queue<String> q = new LinkedList<>();
+        q.add(beginWord);
+        int len = 0;
         while (!q.isEmpty()) {
-            Vertex v = q.poll();
-            //System.out.println(v);
-            String word = v.word;
-            int level = v.level;
-            char[] arr = word.toCharArray();
-            for (int i = 0; i < word.length(); i++) {
-                char old = arr[i];
-                for (int j = 0; j < 26; j++) {
-                    arr[i] = (char) ('a' + j);
-                    String newWord = new String(arr);
-                    if (!map.containsKey(newWord) && wordList.contains(newWord)) {
-                        Vertex newVertex = new Vertex(newWord, level + 1);
-                        newVertex.prev = v;
-                        q.offer(newVertex);
-                        map.put(newWord, newVertex);
-                    }
+            len++;
+            int size = q.size();
+            for (int k = 0; k < size; k++) {
+                String s = q.poll();
+                if (s.equals(endWord)) {
+                    return len;
                 }
-                arr[i] = old;
+
+                char[] l = s.toCharArray();
+                for (int i = 0; i < s.length(); i++) {
+                    char o = l[i];
+                    for (int j = 0; j < 26; j++) {
+                        l[i] = (char) ('a' + j);
+                        if (words.contains(new String(l))) {
+                            words.remove(new String(l));
+                            q.add(new String(l));
+                        }
+                    }
+                    l[i] = o;
+                }
             }
         }
-        if (!map.containsKey(endWord)) {
-            return 0;
-        }
-        return map.get(endWord).level;
-    }
-
-    class Vertex {
-        String word;
-        int level;
-        Vertex prev;
-
-        public Vertex(String word, int level) {
-            this.word = word;
-            this.level = level;
-        }
-
-        @Override
-        public String toString() {
-            return "Vertex{" +
-                    "word='" + word + '\'' +
-                    ", level=" + level +
-                    ", prev=" + prev +
-                    '}';
-        }
+        return 0;
     }
 
 }

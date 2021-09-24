@@ -62,4 +62,32 @@ public class RandomPickIndex {
         return result;
     }
 
+    public int pick2(int target) {
+        int result = -1;
+        int count = 0;
+        int i = 0;
+        boolean found = false;
+        // 填水池，水池大小是1
+        for (; i < nums.length; i++) {
+            if (nums[i] == target) {
+                result = i;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new RuntimeException("should not happen");
+        }
+        i++;
+        // 超过水池大小的，用蓄水池算法抽样
+        for (; i < nums.length; i++) {
+            if (nums[i] == target) {
+                if (rnd.nextInt(++count) < 1) { // <k
+                    result = i;
+                }
+            }
+        }
+        return result;
+    }
+
 }

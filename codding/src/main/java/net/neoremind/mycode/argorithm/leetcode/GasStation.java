@@ -54,4 +54,20 @@ public class GasStation {
         return start;
     }
 
+    public int canCompleteCircuit2(int[] gas, int[] cost) {
+        int len = gas.length;
+        for (int i = 0; i < len; i++) {
+            int rest = gas[i] - cost[i];
+            int index = (i + 1) % len;
+            while (rest > 0 && index != i) {
+                rest += gas[index] - cost[index];
+                index = (index + 1) % len;
+            }
+            if (rest >= 0 && index == i) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }

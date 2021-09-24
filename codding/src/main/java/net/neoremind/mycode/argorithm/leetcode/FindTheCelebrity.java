@@ -14,9 +14,21 @@ package net.neoremind.mycode.argorithm.leetcode;
  * Note: There will be exactly one celebrity if he/she is in the party. Return the celebrity's label if there is a
  * celebrity in the party. If there is no celebrity, return -1.
  *
+ * <pre>
+ *   int res = 0;
+ *         for (int i = 0; i < n; ++i) {
+ *             if (knows(res, i)) res = i;
+ *         }
+ *         for (int i = 0; i < n; ++i) {
+ *             if (res != i && (knows(res, i) || !knows(i, res))) return -1;
+ *         }
+ *         return res;
+ * </pre>
+ *
  * @author xu.zhang
  */
 public class FindTheCelebrity {
+
 
     int findCelebrity(int n) {
         if (n <= 1) {

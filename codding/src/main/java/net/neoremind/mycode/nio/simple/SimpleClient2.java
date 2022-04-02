@@ -8,23 +8,18 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.concurrent.atomic.LongAdder;
 
-public class SimpleClient {
+public class SimpleClient2 {
 
     private final ByteBuffer writeBuffer = ByteBuffer.allocate(256);
 
     private final ByteBuffer readBuffer = ByteBuffer.allocate(256);
 
-    private int counter = 0;
-
-    private long startTime = System.currentTimeMillis();
-
     public void run() throws IOException {
         try {
             Random random = new Random(System.currentTimeMillis());
             SocketChannel client = SocketChannel.open(new InetSocketAddress("localhost", 8080));
-            for (int i = 0; i < 100000000; i++) {
+            for (int i = 0; i < 1; i++) {
                 int bodyLen = 1 + random.nextInt(40);
                 String text = RandomStringUtils.randomAlphanumeric(bodyLen);
                 writeBuffer.putInt(bodyLen);
@@ -35,18 +30,14 @@ public class SimpleClient {
                 writeBuffer.clear();
                 int numOfBytesRead = client.read(readBuffer);
                 String response = new String(readBuffer.array(), 0, numOfBytesRead);
-//                System.out.println("response=" + response);
+                //System.out.println("response=" + response);
                 if (!response.equals(text.toUpperCase())) {
                     throw new RuntimeException("Not equal!");
                 }
                 readBuffer.clear();
-                counter++;
-                if (counter % 100000 == 0) {
-                    System.out.println((counter * 1.0) / (System.currentTimeMillis() - startTime));
-                }
-//                if (++i % 1 == 0) {
+//                if (++i % 100 == 0) {
 //                    try {
-//                        Thread.sleep(1000);
+//                        Thread.sleep(1);
 //                    } catch (InterruptedException e) {
 //                        e.printStackTrace();
 //                    }
@@ -58,14 +49,13 @@ public class SimpleClient {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        int threadCount = 8;
-        Thread[] threads = new Thread[threadCount];
-        for (int i = 0; i < threadCount; i++) {
+        Thread[] threads = new Thread[1];
+        for (int i = 0; i < 1; i++) {
             threads[i] = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        new SimpleClient().run();
+                        new SimpleClient2().run();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.concurrent.atomic.LongAdder;
 
 public class SimpleClient {
 
@@ -16,7 +15,9 @@ public class SimpleClient {
 
     private final ByteBuffer readBuffer = ByteBuffer.allocate(256);
 
-    private int counter = 0;
+    private long counter = 0;
+
+    private long totalCounter = 0L;
 
     private long startTime = System.currentTimeMillis();
 
@@ -24,25 +25,29 @@ public class SimpleClient {
         try {
             Random random = new Random(System.currentTimeMillis());
             SocketChannel client = SocketChannel.open(new InetSocketAddress("localhost", 8080));
-            for (int i = 0; i < 100000000; i++) {
+            long times = Integer.MAX_VALUE;
+            for (int i = 0; i < times; i++) {
                 int bodyLen = 1 + random.nextInt(40);
                 String text = RandomStringUtils.randomAlphanumeric(bodyLen);
                 writeBuffer.putInt(bodyLen);
                 writeBuffer.put(text.getBytes(StandardCharsets.UTF_8));
                 writeBuffer.flip();
-                //System.out.println("request =" + text + " " + bodyLen);
+//                System.out.println("request =" + text + " " + bodyLen);
                 client.write(writeBuffer);
                 writeBuffer.clear();
-                int numOfBytesRead = client.read(readBuffer);
-                String response = new String(readBuffer.array(), 0, numOfBytesRead);
+//                int numOfBytesRead = client.read(readBuffer);
+//                String response = new String(readBuffer.array(), 0, numOfBytesRead);
 //                System.out.println("response=" + response);
-                if (!response.equals(text.toUpperCase())) {
-                    throw new RuntimeException("Not equal!");
-                }
-                readBuffer.clear();
+//                if (!response.equals(text.toUpperCase())) {
+//                    throw new RuntimeException("Not equal!");
+//                }
+//                readBuffer.clear();
                 counter++;
+                totalCounter++;
                 if (counter % 100000 == 0) {
-                    System.out.println((counter * 1.0) / (System.currentTimeMillis() - startTime));
+                    System.out.println(totalCounter + " " + (counter * 1.0) / (System.currentTimeMillis() - startTime));
+                    counter = 0;
+                    startTime = System.currentTimeMillis();
                 }
 //                if (++i % 1 == 0) {
 //                    try {

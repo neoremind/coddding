@@ -1,79 +1,32 @@
 package net.neoremind.mycode.nio.simple;
 
 import lombok.extern.slf4j.Slf4j;
+import net.neoremind.mycode.nio.simple.client.CallbackContext;
 import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class NioServer {
+public class NioHandler {
 
-    public static final int DEFAULT_BUFFER_SIZE = 1024;
+    public static final int HEAD_LEN = 8;
 
-    public static final int HEAD_LEN = 4;
+    private final int maxBodyLen;
 
-    private final int port;
+    private final HeaderResolver headerResolver = new HeaderResolver();
 
-    private final int readBufferSize;
+    private final InputHandler inputHandler;
 
-    private final ConcurrentHashMap<SocketChannel, ChannelContext> channelContextMap = new ConcurrentHashMap<>();
-
-    public NioServer(int port, int readBufferSize) {
-        this.port = port;
-        this.readBufferSize = readBufferSize;
+    public NioHandler(int maxBodyLen, InputHandler inputHandler) {
+        this.maxBodyLen = maxBodyLen;
+        this.inputHandler = inputHandler;
     }
 
-    public static void main(String[] args) throws IOException {
-        new NioServer(8080, 64).run();
-    }
-
-    public void run() throws IOException {
-        Selector selector = Selector.open();
-        ServerSocketChannel serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress("localhost", port));
-        serverSocket.configureBlocking(false);
-        serverSocket.register(selector, SelectionKey.OP_ACCEPT);
-        log.info("Server started at " + port);
-
-        // TODO shutdown gracefully
-        while (true) {
-            selector.select();
-            Set<SelectionKey> selectedKeys = selector.selectedKeys();
-            Iterator<SelectionKey> iter = selectedKeys.iterator();
-
-            SelectionKey key = null;
-            while (iter.hasNext()) {
-                try {
-                    key = iter.next();
-                    if (key.isValid()) {
-                        if (key.isAcceptable()) {
-                            register(selector, serverSocket);
-                        }
-                        if (key.isReadable()) {
-                            handle(key);
-                        }
-                    }
-                    iter.remove();
-                } catch (Exception e) {
-                    log.info(e.getMessage(), e);
-                    if (key != null) {
-                        key.cancel();
-                        key.channel().close();
-                    }
-                }
-            }
-        }
-    }
+    private final ConcurrentHashMap<SocketChannel, ChannelContext> channelContextMap = new ConcurrentHashMap<>(64, 0.75f, 16);
 
     /**
      * Make use of long-lived read buffer to read data from TCP kernel space to user space buffer.
@@ -100,20 +53,20 @@ public class NioServer {
      * @param key selection key
      * @throws IOException
      */
-    private void handle(SelectionKey key) throws IOException {
+    public void handle(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
         ChannelContext channelContext = channelContextMap.get(channel);
         if (channelContext == null) {
             throw new IllegalStateException("No channel wrapper found!");
         }
         ByteBuffer readBuffer = channelContext.getReadBuffer();
-        log.debug("Begin handle {}", channelContext);
+        // log.debug("Begin handle {}", channelContext);
         // If read buffer is not able to accommodate bytes with a length of even less than a header length.
         // compact read buffer and reset readerIndex to 0
         if (readBuffer.remaining() < HEAD_LEN) {
-            log.debug("[before] reset buffer due to cannot hold a header {}", channelContext);
+            // log.debug("[before] reset buffer due to cannot hold a header {}", channelContext);
             channelContext.compact();
-            log.debug("[after] reset buffer due to cannot hold a header {}", channelContext);
+            // log.debug("[after] reset buffer due to cannot hold a header {}", channelContext);
         }
 
         int leftover = channelContext.numOfReadableBytes();
@@ -125,12 +78,12 @@ public class NioServer {
         // in that way, we have to add up the bytes read but not processed in last partial packet.
         if (channelContext.getReaderIndex() == 0) {
             numBytesRead += leftover;
-            log.debug("Add leftover={}, {}", leftover, channelContext);
+            // log.debug("Add leftover={}, {}", leftover, channelContext);
         }
 
         for (; ; ) {
             if (channelContext.numOfReadableBytes() < HEAD_LEN) {
-                log.debug("Header hasn't been read completely... {}", channelContext);
+                // log.debug("Header hasn't been read completely... {}", channelContext);
                 if (numBytesRead < 0) {
                     // remote close, so close channel in server-side
                     key.cancel();
@@ -147,8 +100,10 @@ public class NioServer {
             // +---------------------------+
             //  go back to where it reads last time
             readBuffer.position(channelContext.getReaderIndex());
-            int bodyLen = readBuffer.getInt();
-            if (bodyLen > DEFAULT_BUFFER_SIZE - HEAD_LEN) {
+            headerResolver.parse(readBuffer);
+            int bodyLen = headerResolver.getBodyLen();
+            int logId = headerResolver.getLogId();
+            if (bodyLen > maxBodyLen) {
                 throw new IllegalStateException("Cannot read body larger than limit, actualLen=" + bodyLen + ", numBytesRead={}" + numBytesRead + ", " + channelContext);
             }
             channelContext.incReaderIndex(HEAD_LEN);
@@ -165,42 +120,23 @@ public class NioServer {
                 // |  HEADER  |      |         |
                 // +---------------------------+
                 //  compact reader buffer to the beginning to accommodate more body.
-                log.debug("Body hasn't been read completely... need bodyLen={} but only {} in buffer, {}", bodyLen, channelContext.getWriterIndex() - channelContext.getReaderIndex(), channelContext);
+                // log.debug("Body hasn't been read completely... need bodyLen={} but only {} in buffer, {}", bodyLen, channelContext.getWriterIndex() - channelContext.getReaderIndex(), channelContext);
                 channelContext.decReaderIndex(HEAD_LEN);
                 channelContext.compact();
                 break;
             }
             // log.debug("bodyLen={}, {}", bodyLen, channelContext);
-            byte[] requestBody = new byte[bodyLen];
+            inputHandler.handle(channelContext, bodyLen, logId);
             channelContext.incReaderIndex(bodyLen);
-            readBuffer.get(requestBody);
-            doBusinessLogic(channel, requestBody);
         }
     }
 
-    private void doBusinessLogic(SocketChannel channel, byte[] requestBody) throws IOException {
-//        String str = new String(requestBody, "UTF-8");
-//        str = str.toUpperCase();
-//        byte[] response = str.getBytes(StandardCharsets.UTF_8);
-        send(channel, requestBody);
-    }
-
-    private void send(SocketChannel channel, byte[] response) throws IOException {
-        ByteBuffer buffer = ByteBuffer.wrap(response);
-        channel.write(buffer);
-    }
-
-    private void register(Selector selector, ServerSocketChannel serverSocket) throws IOException {
-        SocketChannel channel = serverSocket.accept();
-        channel.configureBlocking(false);
-        channel.register(selector, SelectionKey.OP_READ);
-        ByteBuffer readBuffer = ByteBuffer.allocateDirect(readBufferSize);
+    public void initContext(SocketChannel channel, ByteBuffer readBuffer) {
         ChannelContext channelContext = new ChannelContext(channel, readBuffer);
         channelContextMap.put(channel, channelContext);
-        log.info("Connection accepted: {}", channel.getRemoteAddress());
     }
 
-    static class ChannelContext {
+    public static class ChannelContext {
         private final SocketChannel channel;
         private final ByteBuffer readBuffer;
         private int readerIndex = 0;

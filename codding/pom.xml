@@ -10,7 +10,7 @@
     <name>coddding</name>
 
     <properties>
-        <spring.version>4.1.6.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <junit.version>4.13.1</junit.version>
         <protostuff.version>1.0.7</protostuff.version>
         <jackson.version>1.9.13</jackson.version>
